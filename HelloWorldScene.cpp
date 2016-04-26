@@ -23,12 +23,12 @@ bool HelloWorld::init()
 	}
 
 	////////////////////////////////////
-	//_world;
-	//_world = DataSingleTon::getInstance()->get_world();
-	_world = DataSingleTon::getInstance()->get_world();
-	//윈도우 크기를 구한다
-	winSize = Director::getInstance()->getWinSize();
 
+	gameLayer = DataSingleTon::getInstance()->getGameLayer();
+	_world = DataSingleTon::getInstance()->get_world();
+	monsters = DataSingleTon::getInstance()->getMonsters();
+	winSize = Director::getInstance()->getWinSize();
+	this->addChild(gameLayer, 4);
 	
 	//월드 생성
 	if (this->createBox2dWorld(true))
@@ -39,10 +39,11 @@ bool HelloWorld::init()
 	player = Sprite::create("turret.png");
 	player->setPosition(Vec2(player->getContentSize().width / 2 + 80,
 		winSize.height / 2));
-	this->addChild(player);
+	gameLayer->addChild(player);
 
-	Monster * mon = new Monster();
-	monster.push_back(mon);
+	Monster * mon = new Monster(Vec2(1200,480));
+
+	monsters->push_back(mon);
 	
 	return true;
 }
@@ -75,11 +76,6 @@ void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
 bool HelloWorld::createBox2dWorld(bool debug)
 {
 	//월드 생성 시작----------------------------------------------------------
-
-	//중력의 방향을 결정한다
-	//b2Vec2 gravity = b2Vec2(0.0f, 0.0f);
-
-	//_world = new b2World(gravity);
 
 	//휴식 상태일 때 포함된 바디들을멈추게(sleep)할 것인지 결정한다
 	_world->SetAllowSleeping(true);
@@ -201,9 +197,9 @@ void HelloWorld::tick(float dt)
 	}
 
 
-	/*for(int i = monster.size() - 1; i >= 0; i--){
-		Monster * mos =  monster.at(i);
-		mos->body->SetTransform(b2Vec2(mos->body->GetPosition().x - 0.1, mos->body->GetPosition().y), 0);
+	/*for(int i = monsters->size() - 1; i >= 0; i--){
+		Monster * mos =  monsters->at(i);
+		mos->body
 	}*/
 }
 
@@ -212,9 +208,14 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int
 {
 	//바디데프를 만들고 속성들을 지정한다.
 	b2BodyDef bodyDef;
+
+	auto sprite = Sprite::create("bullet1.png");
+	
+	gameLayer->addChild(sprite);
+
 	bodyDef.type = bodytype;
 	bodyDef.position.Set(point.x / PTM_RATIO, point.y / PTM_RATIO);
-	bodyDef.userData = nullptr;
+	bodyDef.userData = sprite;
 	bodyDef.bullet = true;
 	bodyDef.fixedRotation = true;
 

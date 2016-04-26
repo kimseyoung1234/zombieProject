@@ -23,9 +23,9 @@ public:
 	//플레이어
 	cocos2d::Sprite * player;
 	std::vector<b2Body * > bullet;
-	std::vector<Monster * > monster;
+	std::vector<Monster * >* monsters;
 	b2Body * body;
-
+	cocos2d::LayerColor* gameLayer;
 	ContactListener* myContactListener;
 	////////////////////////물리
 
