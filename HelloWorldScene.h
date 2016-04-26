@@ -4,7 +4,9 @@
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include <GLES-Render.h>
+#include "Monster.h"
 #include "ContactListener.h"
+
 
 #define PTM_RATIO 32
 using namespace cocos2d;
@@ -20,16 +22,16 @@ public:
 
 	//플레이어
 	cocos2d::Sprite * player;
-
+	std::vector<b2Body * > bullet;
+	std::vector<Monster * > monster;
 	b2Body * body;
-	b2Body * monster;
+
 	ContactListener* myContactListener;
 	////////////////////////물리
 
 	bool createBox2dWorld(bool debug);
 	~HelloWorld();
 	virtual void draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags) override;
-
 	virtual void onEnter();
 	virtual void onExit();
 	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
@@ -37,7 +39,6 @@ public:
 	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
 
 	void tick(float dt);
-	//void addNewSpriteAtPosition(cocos2d::Vec2 location);
 	b2Body * addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
 
 	cocos2d::Size winSize;
@@ -45,7 +46,6 @@ public:
 	b2World* _world;
 	//For debugginh
 	GLESDebugDraw* m_debugDraw;
-
 
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

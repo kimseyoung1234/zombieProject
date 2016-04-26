@@ -1,5 +1,5 @@
 ﻿#include "HelloWorldScene.h"
-
+#include "DataSingleTon.h"
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -14,7 +14,6 @@ Scene* HelloWorld::createScene()
 	return scene;
 }
 
-
 bool HelloWorld::init()
 {
 
@@ -24,14 +23,13 @@ bool HelloWorld::init()
 	}
 
 	////////////////////////////////////
-
+	//_world;
+	//_world = DataSingleTon::getInstance()->get_world();
+	_world = DataSingleTon::getInstance()->get_world();
 	//윈도우 크기를 구한다
 	winSize = Director::getInstance()->getWinSize();
 
-	//이미지의 텍스쳐를 구한다
-	//texture = Director::getInstance()->getTextureCache()->addImage("images/blocks.png");
-
-
+	
 	//월드 생성
 	if (this->createBox2dWorld(true))
 	{
@@ -43,8 +41,8 @@ bool HelloWorld::init()
 		winSize.height / 2));
 	this->addChild(player);
 
-
-	monster = this->addNewSprite(Vec2(winSize.width-20,winSize.height/2), Size(50, 50), b2_dynamicBody, 0);
+	Monster * mon = new Monster();
+	monster.push_back(mon);
 	
 	return true;
 }
@@ -67,6 +65,7 @@ void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
 
 	GL::enableVertexAttribs(cocos2d::GL::VERTEX_ATTRIB_FLAG_POSITION);
 	_world->DrawDebugData();
+	
 	CHECK_GL_ERROR_DEBUG();
 
 	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
@@ -78,9 +77,9 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	//월드 생성 시작----------------------------------------------------------
 
 	//중력의 방향을 결정한다
-	b2Vec2 gravity = b2Vec2(0.0f, 0.0f);
+	//b2Vec2 gravity = b2Vec2(0.0f, 0.0f);
 
-	_world = new b2World(gravity);
+	//_world = new b2World(gravity);
 
 	//휴식 상태일 때 포함된 바디들을멈추게(sleep)할 것인지 결정한다
 	_world->SetAllowSleeping(true);
@@ -193,6 +192,7 @@ void HelloWorld::tick(float dt)
 	{
 		if (b->GetUserData() != nullptr)
 		{
+			
 			Sprite* spriteData = (Sprite *)b->GetUserData();
 			spriteData->setPosition(Vec2(b->GetPosition().x * PTM_RATIO,
 				b->GetPosition().y *PTM_RATIO));
@@ -200,7 +200,11 @@ void HelloWorld::tick(float dt)
 		}
 	}
 
-	monster->SetTransform(b2Vec2(monster->GetPosition().x - 0.1, monster->GetPosition().y),0);
+
+	/*for(int i = monster.size() - 1; i >= 0; i--){
+		Monster * mos =  monster.at(i);
+		mos->body->SetTransform(b2Vec2(mos->body->GetPosition().x - 0.1, mos->body->GetPosition().y), 0);
+	}*/
 }
 
 
@@ -261,8 +265,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	shootVector.normalize();
 
 	body->SetLinearVelocity(b2Vec2(shootVector.x * 10, shootVector.y * 10));
-
-	auto Move = MoveTo::create(2.0f, Vec2(touchPoint));	
+	bullet.push_back(body);
 	return true;
 }
 
@@ -270,8 +273,6 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();
-
-
 
 }
 
