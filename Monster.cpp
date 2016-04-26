@@ -11,7 +11,7 @@ USING_NS_CC;
 
 Monster::Monster(Vec2 position)
 	:hp(100),
-	xSpeed(0.1)
+	xSpeed(0.02)
 {
 	this->position = position;
 	_world = DataSingleTon::getInstance()->get_world();
@@ -29,7 +29,8 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	bodyDef.type = bodytype;
 
 	auto sprite = Sprite::create("mole_1.png");
-	sprite->setPosition(point);
+	sprite->setTag(200);
+	
 	gameLayer->addChild(sprite);
 	bodyDef.position.Set(point.x / PTM_RATIO, point.y / PTM_RATIO);
 	bodyDef.userData = sprite;
@@ -54,7 +55,6 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 		circle.m_radius = (size.width / 2) / PTM_RATIO;
 		fixtureDef.shape = &circle;
 	}
-
 	//Define the dynamic body fixture.
 	//밀도
 	fixtureDef.density = 1.0f;
@@ -70,13 +70,11 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 
 void Monster::moving(float dt)
 {
-	log("스케줄러 옴?");
 	body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed,body->GetPosition().y), 0);
 }
 
 void Monster::onEnter()
 {
-	log("여기왜안와 ㅇㄴ");
 	Node::onEnter();
 	
 }

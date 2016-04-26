@@ -198,10 +198,6 @@ void HelloWorld::tick(float dt)
 			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
 		}
 	}
-	/*for(int i = monsters->size() - 1; i >= 0; i--){
-		Monster * mos =  monsters->at(i);
-		mos->body
-	}*/
 }
 
 // 총알 생성
@@ -210,8 +206,8 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int
 	//바디데프를 만들고 속성들을 지정한다.
 	b2BodyDef bodyDef;
 
-	auto sprite = Sprite::create("bullet1.png");
-	
+	auto sprite = Sprite::create("mole_1.png");
+	sprite->setTag(100);
 	gameLayer->addChild(sprite);
 
 	bodyDef.type = bodytype;

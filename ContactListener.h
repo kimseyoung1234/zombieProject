@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
-
+#include "Monster.h"
 using namespace cocos2d;
 
 class ContactListener : public b2ContactListener
@@ -17,6 +17,10 @@ public:
 	virtual void PreSolve(b2Contact *contact,const b2Manifold *oldManifold);
 	virtual void PostSolve(b2Contact *contact, const b2ContactImpulse *impulse);
 
+
+	b2World* _world;
+	cocos2d::LayerColor* gameLayer;
+	std::vector<Monster*>* monsters;
 protected:
 	
 };
