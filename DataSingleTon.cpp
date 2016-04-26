@@ -5,6 +5,7 @@ USING_NS_CC;
 DataSingleTon * DataSingleTon::m_pInstance = nullptr;
 
 DataSingleTon::DataSingleTon() {
+	// 공용변수들 초기화
 	b2Vec2 gravity = b2Vec2(0.0f, 0.0f);
 	_world = new b2World(gravity);
 	monsters = new std::vector<Monster *>;
@@ -19,17 +20,14 @@ DataSingleTon * DataSingleTon::getInstance()
 	{
 		m_pInstance = new DataSingleTon;
 	}
-	b2Vec2 gravity = b2Vec2(0.0f, 0.0f);
-
-
 	return m_pInstance;
 }
 
 b2World* DataSingleTon::get_world()
 {
-
 	return _world;
 }
+
 std::vector<Monster*>* DataSingleTon::getMonsters()
 {
 	return monsters;

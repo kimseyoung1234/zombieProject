@@ -4,6 +4,7 @@
 #include "HelloWorldScene.h"
 #include "Monster.h"
 
+// 모든 클래스에서 사용하기 위한 싱글톤 클래스
 class DataSingleTon {
 private:
 	static DataSingleTon *m_pInstance;

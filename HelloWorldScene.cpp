@@ -24,10 +24,13 @@ bool HelloWorld::init()
 
 	////////////////////////////////////
 
+	//공용변수들 가져오기
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	_world = DataSingleTon::getInstance()->get_world();
 	monsters = DataSingleTon::getInstance()->getMonsters();
 	winSize = Director::getInstance()->getWinSize();
+
+	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
 	
 	//월드 생성
@@ -42,9 +45,9 @@ bool HelloWorld::init()
 	gameLayer->addChild(player);
 
 	Monster * mon = new Monster(Vec2(1200,480));
-
+	gameLayer->addChild(mon);
 	monsters->push_back(mon);
-	
+
 	return true;
 }
 
@@ -195,15 +198,13 @@ void HelloWorld::tick(float dt)
 			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
 		}
 	}
-
-
 	/*for(int i = monsters->size() - 1; i >= 0; i--){
 		Monster * mos =  monsters->at(i);
 		mos->body
 	}*/
 }
 
-
+// 총알 생성
 b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type)
 {
 	//바디데프를 만들고 속성들을 지정한다.

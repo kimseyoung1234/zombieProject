@@ -5,28 +5,14 @@
 
 USING_NS_CC;
 
-/*bool Monster::init()
-{
-	log("init");
-	if (!Node::init())
-	{
-		return false;
-	}
-	return true;
-}*/
+// 생성자 변수 초기화와 공용 변수 불러오기
 
-/*Node* Monster::create1()
-{
-	auto monster = Monster::create();
-	log("createNode");
-	return monster;
-}*/
+
 
 Monster::Monster(Vec2 position)
 	:hp(100),
 	xSpeed(0.1)
 {
-	//auto node = create1();
 	this->position = position;
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
@@ -34,7 +20,6 @@ Monster::Monster(Vec2 position)
 	body = addNewSprite(position, Size(50, 50), b2_dynamicBody, 0);
 	this->schedule(schedule_selector(Monster::moving));
 
-	
 }
 
 b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type)
@@ -91,11 +76,11 @@ void Monster::moving(float dt)
 
 void Monster::onEnter()
 {
-	Sprite::onEnter();
-	log("아나시발");
+	log("여기왜안와 ㅇㄴ");
+	Node::onEnter();
 	
 }
 void Monster::onExit()
 {
-	Sprite::onExit();
+	Node::onExit();
 }
