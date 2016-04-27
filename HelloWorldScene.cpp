@@ -202,7 +202,7 @@ void HelloWorld::tick(float dt)
 	}
 
 	// HP 체크
-	/*for (int i = monsters->size() - 1; i >= 0; i--)
+	for (int i = monsters->size() - 1; i >= 0; i--)
 	{
 		Monster * mon = (Monster*)monsters->at(i);
 		if (mon->hp <= 0)
@@ -215,7 +215,7 @@ void HelloWorld::tick(float dt)
 			monsters->erase(monsters->begin() + i);
 			delete mon;
 		}
-	}*/
+	}
 	
 	//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
 	//만들어진 객체만큼 루프를 돌리면서 바디에 붙인 스프라이트를 여기서 제어한다

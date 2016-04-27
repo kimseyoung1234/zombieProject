@@ -30,14 +30,14 @@ void ContactListener::BeginContact(b2Contact *contact)
 			//	log("둘이 충돌");
 			for (int i = 0; i < monsters->size(); i++)
 			{
+				log("monster size : %d", monsters->size());
 				b2Body * m_body = (b2Body* )monsters->at(i)->body;
-				if (m_body = bodyB)
+				if (m_body == bodyA)
 				{
 					log("몬스터 HP : %d", monsters->at(i)->hp);
 					monsters->at(i)->hp = monsters->at(i)->hp - 50;
 					log("몬스터 HP : %d", monsters->at(i)->hp);
 				}
-				break;
 			}
 		}
 	}
