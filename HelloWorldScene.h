@@ -26,7 +26,7 @@ public:
 	cocos2d::Sprite * player;
 	std::vector<b2Body * > bullet;
 	std::vector<Monster * >* monsters;
-	std::vector<b2Body *>* removeBullets;
+	std::vector<b2Body * >* removeBullets;
 	b2Body * body;
 	cocos2d::LayerColor* gameLayer;
 	ContactListener* myContactListener;

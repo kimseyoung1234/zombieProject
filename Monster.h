@@ -21,6 +21,7 @@ public:
 	virtual void onEnter();
 	virtual void onExit();
 private:
+	cocos2d::Sprite* hpBar;
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
 	cocos2d::Vec2 position;

@@ -30,7 +30,6 @@ void ContactListener::BeginContact(b2Contact *contact)
 			//	log("둘이 충돌");
 			for (int i = 0; i < monsters->size(); i++)
 			{
-				log("monster size : %d", monsters->size());
 				b2Body * m_body = (b2Body* )monsters->at(i)->body;
 				if (m_body == bodyA)
 				{
@@ -44,6 +43,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 	}
 	else if (spriteA == nullptr && spriteB->getTag() == BULLET)
 	{
+		//log("벽이랑");
 		removeBullets->push_back(bodyB);
 	}
 

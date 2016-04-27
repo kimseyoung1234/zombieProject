@@ -26,12 +26,11 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 
 	auto sprite = Sprite::create("mole_1.png");
 	sprite->setTag(MONSTER);
-	
+	sprite->setScale(0.5f);
 	gameLayer->addChild(sprite);
 	bodyDef.position.Set(point.x / PTM_RATIO, point.y / PTM_RATIO);
 	bodyDef.userData = sprite;
-	
-	//bodyDef.bullet = true;
+
 	bodyDef.fixedRotation = true;
 
 	// 월드에 바디데프의 정보로 바디를 만든다
@@ -61,6 +60,17 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 
 	body->SetLinearDamping(2.0);
 	body->CreateFixture(&fixtureDef);
+
+	// HP바 스프라이트
+	hpBar = Sprite::create("white-512x512.png");
+	hpBar->setTextureRect(Rect(0, 0, 100, 5));
+	hpBar->setColor(Color3B::RED);
+
+	Size parentSize;
+	parentSize = sprite->getContentSize();
+	hpBar->setPosition(Vec2(parentSize.width / 2.0, parentSize.height + 10));
+	sprite->addChild(hpBar);
+
 	return body;
 }
 
@@ -72,6 +82,7 @@ Monster::~Monster()
 
 void Monster::moving(float dt)
 {
+	hpBar->setScaleX(hp / 100.0f);
 	body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed,body->GetPosition().y), 0);
 }
 

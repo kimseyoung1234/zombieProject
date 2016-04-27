@@ -45,7 +45,7 @@ bool HelloWorld::init()
 		winSize.height / 2));
 	gameLayer->addChild(player);
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 10; i++) {
 		int rand = random(1, 5);
 		Monster * mon = new Monster(Vec2(1200, 120*rand));
 		gameLayer->addChild(mon);
@@ -209,16 +209,17 @@ void HelloWorld::tick(float dt)
 
 void HelloWorld::removeObject()
 {
+	log("불렛 : %d", removeBullets->size());
 
 	// 총알 제거
-	for (int i = removeBullets->size() - 1; i >= 0; i--)
+	for (int k = removeBullets->size() - 1; k >= 0; k--)
 	{
-		b2Body * r_body = (b2Body*)removeBullets->at(i);
+		b2Body * r_body = (b2Body*)removeBullets->at(k);
 		auto sprite = (Sprite*)r_body->GetUserData();
 		if (sprite != nullptr) {
 			gameLayer->removeChild(sprite);
+			removeBullets->erase(removeBullets->begin() + k);
 			_world->DestroyBody(r_body);
-			removeBullets->erase(removeBullets->begin() + i);
 		}
 	}
 
@@ -232,8 +233,8 @@ void HelloWorld::removeObject()
 			if (sprite != nullptr) {
 				gameLayer->removeChild(sprite);
 				gameLayer->removeChild(mon);
-				_world->DestroyBody(mon->body);
 				monsters->erase(monsters->begin() + i);
+				_world->DestroyBody(mon->body);
 				delete mon;
 			}
 		}
@@ -305,7 +306,6 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	shootVector.normalize();
 
 	body->SetLinearVelocity(b2Vec2(shootVector.x * 20, shootVector.y * 20));
-	//bullet.push_back(body);
 	return true;
 }
 
