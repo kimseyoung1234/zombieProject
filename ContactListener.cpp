@@ -40,7 +40,13 @@ void ContactListener::BeginContact(b2Contact *contact)
 				}
 			}
 		}
+
 	}
+	else if (spriteA == nullptr && spriteB->getTag() == BULLET)
+	{
+		removeBullets->push_back(bodyB);
+	}
+
 }
 
 

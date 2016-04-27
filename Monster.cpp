@@ -6,9 +6,6 @@
 USING_NS_CC;
 
 // 생성자 변수 초기화와 공용 변수 불러오기
-
-
-
 Monster::Monster(Vec2 position)
 	:hp(100),
 	xSpeed(0.1)
@@ -19,7 +16,6 @@ Monster::Monster(Vec2 position)
 
 	body = addNewSprite(position, Size(50, 50), b2_dynamicBody, 0);
 	this->schedule(schedule_selector(Monster::moving));
-
 }
 
 b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type)
