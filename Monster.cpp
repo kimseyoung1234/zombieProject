@@ -11,7 +11,7 @@ USING_NS_CC;
 
 Monster::Monster(Vec2 position)
 	:hp(100),
-	xSpeed(0.02)
+	xSpeed(0.1)
 {
 	this->position = position;
 	_world = DataSingleTon::getInstance()->get_world();
@@ -29,7 +29,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	bodyDef.type = bodytype;
 
 	auto sprite = Sprite::create("mole_1.png");
-	sprite->setTag(200);
+	sprite->setTag(MONSTER);
 	
 	gameLayer->addChild(sprite);
 	bodyDef.position.Set(point.x / PTM_RATIO, point.y / PTM_RATIO);
@@ -57,16 +57,22 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	}
 	//Define the dynamic body fixture.
 	//밀도
-	fixtureDef.density = 1.0f;
+	fixtureDef.density = 0.5f;
 	// 마찰력 - 0 ~ 1
 	fixtureDef.friction = 1.0f;
 	//반발력 - 물체가 다른 물체에 닿았을 때 튕기는 값
-	fixtureDef.restitution = 0.0;
+	fixtureDef.restitution = 1.0;
 
+	body->SetLinearDamping(2.0);
 	body->CreateFixture(&fixtureDef);
 	return body;
 }
 
+
+Monster::~Monster()
+{
+	this->unschedule(schedule_selector(Monster::moving));
+}
 
 void Monster::moving(float dt)
 {

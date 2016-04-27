@@ -12,16 +12,16 @@ class Monster : public cocos2d::Node
 public:
 
 	Monster(Vec2 position);
+	~Monster();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
 	void moving(float dt);
 	b2Body* body;
-
+	int hp;
 	virtual void onEnter();
 	virtual void onExit();
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
-	int hp;
 	cocos2d::Vec2 position;
 	float xSpeed;
 	

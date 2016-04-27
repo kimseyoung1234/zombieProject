@@ -5,6 +5,7 @@ ContactListener::ContactListener() {
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	monsters = DataSingleTon::getInstance()->getMonsters();
+	removeBodys = DataSingleTon::getInstance()->getRemoveBodys();
 }
 
 ContactListener::~ContactListener() {}
@@ -23,24 +24,21 @@ void ContactListener::BeginContact(b2Contact *contact)
 	auto spriteB = (Sprite*)bodyB->GetUserData();
 
 	if (spriteA != nullptr && spriteB != nullptr) {
-		if (spriteA->getTag() == 200 && spriteB->getTag() == 100) {
+		if (spriteA->getTag() == MONSTER && spriteB->getTag() == BULLET) {
 
-			//	bodyB->SetTransform(b2Vec2(0, 0), 0);
-			//gameLayer->removeChild(spriteB, true);
-			log("둘이 충돌");
-			//_world->DestroyBody(bodyB);
-
-			/*for (int i = 0; i < monsters->size(); i++)
+			removeBodys->push_back(bodyB);
+			//	log("둘이 충돌");
+			for (int i = 0; i < monsters->size(); i++)
 			{
-			b2Body * m_body = (b2Body* )monsters->at(i)->body;
-			if (m_body = bodyB)
-			{
-			gameLayer->removeChild(monsters->at(i));
-			monsters->erase(monsters->begin() + i);
-			break;
+				b2Body * m_body = (b2Body* )monsters->at(i)->body;
+				if (m_body = bodyB)
+				{
+					log("몬스터 HP : %d", monsters->at(i)->hp);
+					monsters->at(i)->hp = monsters->at(i)->hp - 50;
+					log("몬스터 HP : %d", monsters->at(i)->hp);
+				}
+				break;
 			}
-			}*/
-
 		}
 	}
 }

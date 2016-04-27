@@ -28,6 +28,7 @@ bool HelloWorld::init()
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	_world = DataSingleTon::getInstance()->get_world();
 	monsters = DataSingleTon::getInstance()->getMonsters();
+	removeBodys = DataSingleTon::getInstance()->getRemoveBodys();
 	winSize = Director::getInstance()->getWinSize();
 
 	// 게임레이어 추가
@@ -44,9 +45,12 @@ bool HelloWorld::init()
 		winSize.height / 2));
 	gameLayer->addChild(player);
 
-	Monster * mon = new Monster(Vec2(1200,480));
-	gameLayer->addChild(mon);
-	monsters->push_back(mon);
+	for (int i = 0; i < 4; i++) {
+		int rand = random(1, 5);
+		Monster * mon = new Monster(Vec2(1200, 120*rand));
+		gameLayer->addChild(mon);
+		monsters->push_back(mon);
+	}
 
 	return true;
 }
@@ -182,9 +186,37 @@ void HelloWorld::tick(float dt)
 	int velocityIterations = 8;
 	int positionIterations = 3;
 
-	// Step : 물리 세계를 시물레이션한ㄴ다
+	// Step : 물리 세계를 시물레이션한다
 	_world->Step(dt, velocityIterations, positionIterations);
 
+
+	// 삭제 할 바디들을 제거한다
+	for (int i = removeBodys->size() - 1; i >= 0; i--)
+	{
+		b2Body * r_body = (b2Body*)removeBodys->at(i);
+		auto sprite = (Sprite*)r_body->GetUserData();
+		gameLayer->removeChild(sprite);
+		_world->DestroyBody(r_body);
+
+		removeBodys->erase(removeBodys->begin() + i);
+	}
+
+	// HP 체크
+	/*for (int i = monsters->size() - 1; i >= 0; i--)
+	{
+		Monster * mon = (Monster*)monsters->at(i);
+		if (mon->hp <= 0)
+		{
+			log("monster size : %d", monsters->size());
+			auto sprite = (Sprite *)mon->body->GetUserData();
+			gameLayer->removeChild(sprite);
+			gameLayer->removeChild(mon);
+			_world->DestroyBody(mon->body);
+			monsters->erase(monsters->begin() + i);
+			delete mon;
+		}
+	}*/
+	
 	//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
 	//만들어진 객체만큼 루프를 돌리면서 바디에 붙인 스프라이트를 여기서 제어한다
 	for (b2Body *b = _world->GetBodyList(); b; b = b->GetNext())
@@ -207,7 +239,8 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int
 	b2BodyDef bodyDef;
 
 	auto sprite = Sprite::create("mole_1.png");
-	sprite->setTag(100);
+	sprite->setTag(BULLET);
+	sprite->setScale(0.01f);
 	gameLayer->addChild(sprite);
 
 	bodyDef.type = bodytype;
@@ -238,9 +271,9 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int
 
 	//Define the dynamic body fixture.
 	//밀도
-	fixtureDef.density = 1.0f;
+	fixtureDef.density = 5.0f;
 	// 마찰력 - 0 ~ 1
-	fixtureDef.friction = 1.0f;
+	fixtureDef.friction = 0.0f;
 	//반발력 - 물체가 다른 물체에 닿았을 때 튕기는 값
 	fixtureDef.restitution = 0.0;
 
@@ -262,8 +295,8 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
 	shootVector.normalize();
 
-	body->SetLinearVelocity(b2Vec2(shootVector.x * 10, shootVector.y * 10));
-	bullet.push_back(body);
+	body->SetLinearVelocity(b2Vec2(shootVector.x * 20, shootVector.y * 20));
+	//bullet.push_back(body);
 	return true;
 }
 

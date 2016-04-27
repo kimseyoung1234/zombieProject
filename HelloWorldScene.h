@@ -9,6 +9,8 @@
 
 
 #define PTM_RATIO 32
+#define MONSTER 200
+#define BULLET 100
 using namespace cocos2d;
 
 class HelloWorld : public cocos2d::Layer
@@ -24,6 +26,7 @@ public:
 	cocos2d::Sprite * player;
 	std::vector<b2Body * > bullet;
 	std::vector<Monster * >* monsters;
+	std::vector<b2Body *>* removeBodys;
 	b2Body * body;
 	cocos2d::LayerColor* gameLayer;
 	ContactListener* myContactListener;
