@@ -21,7 +21,7 @@ public:
 	b2World* _world;
 	cocos2d::LayerColor* gameLayer;
 	std::vector<Monster*>* monsters;
-	std::vector<b2Body *>* removeBodys;
+	std::vector<b2Body *>* removeBullets;
 protected:
 	
 };

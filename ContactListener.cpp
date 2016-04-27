@@ -5,7 +5,7 @@ ContactListener::ContactListener() {
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	monsters = DataSingleTon::getInstance()->getMonsters();
-	removeBodys = DataSingleTon::getInstance()->getRemoveBodys();
+	removeBullets = DataSingleTon::getInstance()->getRemoveBullets();
 }
 
 ContactListener::~ContactListener() {}
@@ -26,7 +26,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 	if (spriteA != nullptr && spriteB != nullptr) {
 		if (spriteA->getTag() == MONSTER && spriteB->getTag() == BULLET) {
 
-			removeBodys->push_back(bodyB);
+			removeBullets->push_back(bodyB);
 			//	log("둘이 충돌");
 			for (int i = 0; i < monsters->size(); i++)
 			{

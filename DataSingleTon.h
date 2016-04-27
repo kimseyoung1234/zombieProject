@@ -10,7 +10,8 @@ private:
 	static DataSingleTon *m_pInstance;
 	b2World* _world;
 	std::vector<Monster*>* monsters;
-	std::vector<b2Body*>* removeBodys;
+	std::vector<b2Body*>* removeBullets;
+	//std::vector<b2Body*>* dieMonsters;
 	cocos2d::LayerColor* gameLayer;
 	DataSingleTon();
 	cocos2d::Size winSize;
@@ -19,7 +20,8 @@ public:
 	static DataSingleTon *getInstance();
 	b2World* get_world();
 	std::vector<Monster*>* getMonsters();
-	std::vector<b2Body*>* getRemoveBodys();
+	std::vector<b2Body*>* getRemoveBullets();
+	//std::vector<b2Body*>* getDieMonsters();
 	cocos2d::LayerColor* getGameLayer();
 
 

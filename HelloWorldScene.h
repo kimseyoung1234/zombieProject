@@ -22,14 +22,20 @@ public:
 
 	CREATE_FUNC(HelloWorld);
 
-	//플레이어
+	// 변수
 	cocos2d::Sprite * player;
 	std::vector<b2Body * > bullet;
 	std::vector<Monster * >* monsters;
-	std::vector<b2Body *>* removeBodys;
+	std::vector<b2Body *>* removeBullets;
 	b2Body * body;
 	cocos2d::LayerColor* gameLayer;
 	ContactListener* myContactListener;
+
+	cocos2d::Size winSize;
+	cocos2d::Texture2D* texture;
+	b2World* _world;
+	//For debugginh
+	GLESDebugDraw* m_debugDraw;
 	////////////////////////물리
 
 	bool createBox2dWorld(bool debug);
@@ -42,13 +48,10 @@ public:
 	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
 
 	void tick(float dt);
-	b2Body * addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
 
-	cocos2d::Size winSize;
-	cocos2d::Texture2D* texture;
-	b2World* _world;
-	//For debugginh
-	GLESDebugDraw* m_debugDraw;
+	void removeObject();
+	b2Body * addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
+	
 
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

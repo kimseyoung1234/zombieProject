@@ -28,7 +28,7 @@ bool HelloWorld::init()
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	_world = DataSingleTon::getInstance()->get_world();
 	monsters = DataSingleTon::getInstance()->getMonsters();
-	removeBodys = DataSingleTon::getInstance()->getRemoveBodys();
+	removeBullets = DataSingleTon::getInstance()->getRemoveBullets();
 	winSize = Director::getInstance()->getWinSize();
 
 	// 게임레이어 추가
@@ -190,32 +190,7 @@ void HelloWorld::tick(float dt)
 	_world->Step(dt, velocityIterations, positionIterations);
 
 
-	// 삭제 할 바디들을 제거한다
-	for (int i = removeBodys->size() - 1; i >= 0; i--)
-	{
-		b2Body * r_body = (b2Body*)removeBodys->at(i);
-		auto sprite = (Sprite*)r_body->GetUserData();
-		gameLayer->removeChild(sprite);
-		_world->DestroyBody(r_body);
-
-		removeBodys->erase(removeBodys->begin() + i);
-	}
-
-	// HP 체크
-	for (int i = monsters->size() - 1; i >= 0; i--)
-	{
-		Monster * mon = (Monster*)monsters->at(i);
-		if (mon->hp <= 0)
-		{
-			log("monster size : %d", monsters->size());
-			auto sprite = (Sprite *)mon->body->GetUserData();
-			gameLayer->removeChild(sprite);
-			gameLayer->removeChild(mon);
-			_world->DestroyBody(mon->body);
-			monsters->erase(monsters->begin() + i);
-			delete mon;
-		}
-	}
+	removeObject();
 	
 	//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
 	//만들어진 객체만큼 루프를 돌리면서 바디에 붙인 스프라이트를 여기서 제어한다
@@ -231,6 +206,40 @@ void HelloWorld::tick(float dt)
 		}
 	}
 }
+
+void HelloWorld::removeObject()
+{
+
+	// 총알 제거
+	for (int i = removeBullets->size() - 1; i >= 0; i--)
+	{
+		b2Body * r_body = (b2Body*)removeBullets->at(i);
+		auto sprite = (Sprite*)r_body->GetUserData();
+		if (sprite != nullptr) {
+			gameLayer->removeChild(sprite);
+			_world->DestroyBody(r_body);
+			removeBullets->erase(removeBullets->begin() + i);
+		}
+	}
+
+	// 몬스터 HP 체크 후 0이하이면 제거
+	for (int i = monsters->size() - 1; i >= 0; i--)
+	{
+		Monster * mon = (Monster*)monsters->at(i);
+		if (mon->hp <= 0)
+		{
+			auto sprite = (Sprite *)mon->body->GetUserData();
+			if (sprite != nullptr) {
+				gameLayer->removeChild(sprite);
+				gameLayer->removeChild(mon);
+				_world->DestroyBody(mon->body);
+				monsters->erase(monsters->begin() + i);
+				delete mon;
+			}
+		}
+	}
+}
+
 
 // 총알 생성
 b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type)

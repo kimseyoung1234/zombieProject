@@ -9,7 +9,8 @@ DataSingleTon::DataSingleTon() {
 	b2Vec2 gravity = b2Vec2(0.0f, 0.0f);
 	_world = new b2World(gravity);
 	monsters = new std::vector<Monster *>;
-	removeBodys = new std::vector<b2Body*>;
+	removeBullets = new std::vector<b2Body*>;
+	//dieMonsters = new std::vector<b2Body*>;
 	winSize = Director::getInstance()->getWinSize();
 	gameLayer = LayerColor::create(Color4B(0, 0, 0, 0),winSize.width,winSize.height);
 }
@@ -34,11 +35,16 @@ std::vector<Monster*>* DataSingleTon::getMonsters()
 	return monsters;
 }
 
-std::vector<b2Body*>* DataSingleTon::getRemoveBodys()
+std::vector<b2Body*>* DataSingleTon::getRemoveBullets()
 {
-	return removeBodys;
+	return removeBullets;
 }
 
+/*std::vector<b2Body*>* DataSingleTon::getDieMonsters()
+{
+	return dieMonsters;
+}
+*/
 LayerColor* DataSingleTon::getGameLayer()
 {
 	return gameLayer;
