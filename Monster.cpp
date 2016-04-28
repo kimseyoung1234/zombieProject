@@ -25,13 +25,13 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	bodyDef.type = bodytype;
 
 
-	auto sprite = Sprite::create("FatZombie_Move.png");
+	auto sprite = Sprite::create("brainZombie_Move.png");
 	auto texture = sprite->getTexture();
 
 	auto animation = Animation::create();
 	animation->setDelayPerUnit(0.05f);
 
-	for (int i = 0; i < 14; i++)
+	for (int i = 0; i < 15; i++)
 	{
 		animation->addSpriteFrameWithTexture(texture, Rect(i* 40, 0, 40, 45));
 	}
