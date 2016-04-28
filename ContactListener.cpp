@@ -14,6 +14,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 {
 //	log("Contact:Begin");
 
+	bool isPushBullet = true;
 	b2Fixture *fixA = contact->GetFixtureA();
 	b2Fixture *fixB = contact->GetFixtureB();
 
@@ -22,12 +23,24 @@ void ContactListener::BeginContact(b2Contact *contact)
 
 	auto spriteA = (Sprite*)bodyA->GetUserData();
 	auto spriteB = (Sprite*)bodyB->GetUserData();
-
+	// 총일과 몬스터 충돌 시 
 	if (spriteA != nullptr && spriteB != nullptr) {
 		if (spriteA->getTag() == MONSTER && spriteB->getTag() == BULLET) {
 
-			removeBullets->push_back(bodyB);
-			//	log("둘이 충돌");
+			// 같은 총알이 벡터에 중복되지 않게 하기 위함
+			for (int i = 0; i<removeBullets->size(); i++)
+			{
+				if (bodyB == removeBullets->at(i))
+				{
+					isPushBullet = false;
+				}
+			}
+			if (isPushBullet) {
+				log("컨텍스 불렛 : %d", removeBullets->size());
+				removeBullets->push_back(bodyB);
+			}
+
+			//  총알과 몬스터 충돌 시 HP 감소 처리
 			for (int i = 0; i < monsters->size(); i++)
 			{
 				b2Body * m_body = (b2Body* )monsters->at(i)->body;
@@ -41,15 +54,22 @@ void ContactListener::BeginContact(b2Contact *contact)
 		}
 
 	}
-	else if (spriteA == nullptr && spriteB->getTag() == BULLET)
+
+	// 총알과 월드 벽 충돌 시 총알 제거 
+	if (spriteA->getTag() == WORLD && spriteB->getTag() == BULLET)
 	{
-		//log("벽이랑");
-		removeBullets->push_back(bodyB);
+		for (int i = 0; i <removeBullets->size(); i++)
+		{
+			if (bodyB == removeBullets->at(i))
+			{
+				isPushBullet = false;
+			}
+		}
+		if (isPushBullet) {
+			removeBullets->push_back(bodyB);
+		}
 	}
-
 }
-
-
 
 void ContactListener::PreSolve(b2Contact *contact, const b2Manifold *oldManifold)
 {
@@ -64,7 +84,6 @@ void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impu
 
 	b2Body *bodyA = fixA->GetBody();
 	b2Body *bodyB = fixB->GetBody();
-
 
 	if (bodyA->GetType() == b2_dynamicBody || bodyB->GetType() == b2_dynamicBody)
 	{

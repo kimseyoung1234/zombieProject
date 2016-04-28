@@ -82,7 +82,9 @@ Monster::~Monster()
 
 void Monster::moving(float dt)
 {
+	// HP에 따른 HP바 크기
 	hpBar->setScaleX(hp / 100.0f);
+	// 바디 이동
 	body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed,body->GetPosition().y), 0);
 }
 

@@ -9,8 +9,10 @@
 
 
 #define PTM_RATIO 32
-#define MONSTER 200
+
 #define BULLET 100
+#define MONSTER 200
+#define WORLD 300
 using namespace cocos2d;
 
 class HelloWorld : public cocos2d::Layer
@@ -36,6 +38,10 @@ public:
 	b2World* _world;
 	//For debugginh
 	GLESDebugDraw* m_debugDraw;
+
+	b2Vec2 attackVector;
+	float attackDelayTime = 0.3;
+	bool isAttack = false;
 	////////////////////////물리
 
 	bool createBox2dWorld(bool debug);
@@ -48,6 +54,7 @@ public:
 	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
 
 	void tick(float dt);
+	
 
 	void removeObject();
 	b2Body * addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);

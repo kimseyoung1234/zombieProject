@@ -1,5 +1,6 @@
 ﻿#include "HelloWorldScene.h"
 #include "DataSingleTon.h"
+#include "windows.h"
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -100,7 +101,7 @@ bool HelloWorld::createBox2dWorld(bool debug)
 
 		uint32 flags = 0;
 		flags += b2Draw::e_shapeBit;
-		flags += b2Draw::e_jointBit;
+		//flags += b2Draw::e_jointBit;
 		//flags += b2Draw::e_aabbBit;
 		//flags += b2Draw::e_pairBit;
 		//flags += b2Draw::e_centerOfMassBit;
@@ -109,12 +110,17 @@ bool HelloWorld::createBox2dWorld(bool debug)
 
 	// -----가장자리(테두리)를 지정해 공간(Ground Box)를 만든다----
 
+	auto sprite = Sprite::create("white-512x512.png");
+	sprite->setTextureRect(Rect(0, 0, 0, 0));
+	sprite->setTag(WORLD);
+	gameLayer->addChild(sprite);
+
 	//바디데프에 좌표를 설정한다
 	b2BodyDef groundBodyDef;
 	groundBodyDef.position.Set(0, 0);
-
+	groundBodyDef.userData = sprite;
 	//월드에 바디데프의 정보(좌표)로 바디를 만ㄷ느다.
-	b2Body *groundBody = _world->CreateBody(&groundBodyDef);
+	auto groundBody = _world->CreateBody(&groundBodyDef);
 
 	//가장자리(테두리) 경계선을 그릴 수 있는 모양의 객체를 만든다
 	b2EdgeShape groundEdge;
@@ -182,13 +188,10 @@ void HelloWorld::onExit()
 
 void HelloWorld::tick(float dt)
 {
-	// 메뉴얼 상의 권장값
 	int velocityIterations = 8;
 	int positionIterations = 3;
 
-	// Step : 물리 세계를 시물레이션한다
 	_world->Step(dt, velocityIterations, positionIterations);
-
 
 	removeObject();
 	
@@ -205,11 +208,24 @@ void HelloWorld::tick(float dt)
 			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
 		}
 	}
+
+	// 터치 누르고 있을 시 자동 공격
+	attackDelayTime = attackDelayTime + dt;
+	if (isAttack) {
+		Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
+		Vec2 nPos2 = player->convertToWorldSpace(nPos1);
+		if (attackDelayTime >= 0.2) {
+			attackDelayTime = 0;
+			body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
+			body->SetLinearVelocity(b2Vec2(attackVector.x * 20, attackVector.y * 20));
+		}
+	}
 }
 
+// 총알이나 몬스터 제거
 void HelloWorld::removeObject()
 {
-	log("불렛 : %d", removeBullets->size());
+	//log("불렛 : %d", removeBullets->size());
 
 	// 총알 제거
 	for (int k = removeBullets->size() - 1; k >= 0; k--)
@@ -296,16 +312,21 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();
 
-	// 총알 생성
+	// 플레이어 기준으로 터치지점 방향벡터 구하기
 	Vec2 shootVector = touchPoint - player->getPosition();
-
 	Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
 	Vec2 nPos2 = player->convertToWorldSpace(nPos1);
-
-	body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
 	shootVector.normalize();
 
-	body->SetLinearVelocity(b2Vec2(shootVector.x * 20, shootVector.y * 20));
+	attackVector = b2Vec2(shootVector.x, shootVector.y);
+
+	// 누르고 공격가능 하면 총알 생성
+	if (attackDelayTime >= 0.2) {
+		isAttack = true;
+		attackDelayTime = 0;
+		body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
+		body->SetLinearVelocity(b2Vec2(shootVector.x * 20, shootVector.y * 20));
+	}
 	return true;
 }
 
@@ -314,11 +335,21 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();
 
+	Vec2 shootVector = touchPoint - player->getPosition();
+	shootVector.normalize();
+	attackVector = b2Vec2(shootVector.x, shootVector.y);
+
+	if (attackDelayTime >= 0.2)
+	{
+		isAttack = true;
+	}
 }
 
 // 손가락을 화면에서 떼는 순간 호출된다
 void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 {
+	isAttack = false;
 }
+
 
 
