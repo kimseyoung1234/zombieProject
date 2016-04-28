@@ -8,13 +8,13 @@ USING_NS_CC;
 // 생성자 변수 초기화와 공용 변수 불러오기
 Monster::Monster(Vec2 position)
 	:hp(100),
-	xSpeed(0.1)
+	xSpeed(0.05)
 {
 	this->position = position;
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 
-	body = addNewSprite(position, Size(50, 50), b2_dynamicBody, 0);
+	body = addNewSprite(position, Size(30, 40), b2_dynamicBody, 0);
 	this->schedule(schedule_selector(Monster::moving));
 }
 
@@ -24,12 +24,31 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	b2BodyDef bodyDef;
 	bodyDef.type = bodytype;
 
-	auto sprite = Sprite::create("mole_1.png");
-	sprite->setTag(MONSTER);
-	sprite->setScale(0.5f);
-	gameLayer->addChild(sprite);
+
+	auto sprite = Sprite::create("FatZombie_Move.png");
+	auto texture = sprite->getTexture();
+
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.05f);
+
+	for (int i = 0; i < 14; i++)
+	{
+		animation->addSpriteFrameWithTexture(texture, Rect(i* 40, 0, 40, 45));
+	}
+
+
+	auto zombie = Sprite::create("FatZombie_Move.png",Rect(0, 0, 40, 45));
+	zombie->setTag(MONSTER);
+	gameLayer->addChild(zombie);
+
+	auto animate = Animate::create(animation);
+	auto rep = RepeatForever::create(animate);
+	zombie->runAction(rep);
+
+
+
 	bodyDef.position.Set(point.x / PTM_RATIO, point.y / PTM_RATIO);
-	bodyDef.userData = sprite;
+	bodyDef.userData = zombie;
 
 	bodyDef.fixedRotation = true;
 
@@ -63,13 +82,13 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 
 	// HP바 스프라이트
 	hpBar = Sprite::create("white-512x512.png");
-	hpBar->setTextureRect(Rect(0, 0, 100, 5));
+	hpBar->setTextureRect(Rect(0, 0, 25, 5));
 	hpBar->setColor(Color3B::RED);
 
 	Size parentSize;
-	parentSize = sprite->getContentSize();
+	parentSize = zombie->getContentSize();
 	hpBar->setPosition(Vec2(parentSize.width / 2.0, parentSize.height + 10));
-	sprite->addChild(hpBar);
+	zombie->addChild(hpBar);
 
 	return body;
 }

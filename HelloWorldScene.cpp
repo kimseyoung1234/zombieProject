@@ -1,11 +1,10 @@
 ﻿#include "HelloWorldScene.h"
 #include "DataSingleTon.h"
-#include "windows.h"
+#include <algorithm>
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
 {
-
 	auto scene = Scene::create();
 
 	auto layer = HelloWorld::create();
@@ -17,14 +16,12 @@ Scene* HelloWorld::createScene()
 
 bool HelloWorld::init()
 {
-
+	
 	if (!Layer::init())
 	{
 		return false;
 	}
-
 	////////////////////////////////////
-
 	//공용변수들 가져오기
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	_world = DataSingleTon::getInstance()->get_world();
@@ -35,12 +32,12 @@ bool HelloWorld::init()
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
 	
+
 	//월드 생성
-	if (this->createBox2dWorld(true))
+	if (this->createBox2dWorld(false))
 	{
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
-
 	player = Sprite::create("turret.png");
 	player->setPosition(Vec2(player->getContentSize().width / 2 + 80,
 		winSize.height / 2));
@@ -52,7 +49,7 @@ bool HelloWorld::init()
 		gameLayer->addChild(mon);
 		monsters->push_back(mon);
 	}
-
+	
 	return true;
 }
 
@@ -78,7 +75,6 @@ void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
 	CHECK_GL_ERROR_DEBUG();
 
 	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-
 }
 
 bool HelloWorld::createBox2dWorld(bool debug)
@@ -266,7 +262,7 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int
 
 	auto sprite = Sprite::create("mole_1.png");
 	sprite->setTag(BULLET);
-	sprite->setScale(0.01f);
+	sprite->setScale(0.1f);
 	gameLayer->addChild(sprite);
 
 	bodyDef.type = bodytype;
