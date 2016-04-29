@@ -37,13 +37,13 @@ bool HelloWorld::init()
 	monsters = DataSingleTon::getInstance()->getMonsters();
 	removeBullets = DataSingleTon::getInstance()->getRemoveBullets();
 	winSize = Director::getInstance()->getWinSize();
-
+	
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
 	
 
 	//월드 생성
-	if (this->createBox2dWorld(false))
+	if (this->createBox2dWorld(true))
 	{
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
@@ -53,7 +53,7 @@ bool HelloWorld::init()
 	gameLayer->addChild(player);
 
 	for (int i = 0; i < 20; i++) {
-		int rand = random(100, 680);
+	    int rand = random(50, 700);
 		int r_monsterType = random(1, 3);
 		Monster * mon = new Monster(Vec2(1200, rand),r_monsterType);
 		gameLayer->addChild(mon);

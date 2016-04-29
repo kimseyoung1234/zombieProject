@@ -2,21 +2,45 @@
 #include "HelloWorldScene.h"
 #include <GLES-Render.h>
 #include "DataSingleTon.h"
-
+#include "MonsterInfoSingleTon.h"
 USING_NS_CC;
 
 // 생성자 변수 초기화와 공용 변수 불러오기
 Monster::Monster(Vec2 position,int monsterType)
-	:hp(100),
-	xSpeed(0.05)
 {
-	this->position = position;
-	this->monsterType = monsterType;
-
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 
+	this->position = position;
+	this->monsterType = monsterType;
+	
+	if (monsterType == BrainZombie)
+	{
+		int direction = random(0, 1);
+		if (direction == 0)
+		{
+			direction = -1;
+		}
+
+		this->hp = MonsterInfoSingleTon::getInstance()->brainZombie_HP;
+		this->xSpeed = MonsterInfoSingleTon::getInstance()->brainZombie_xSpeed;
+		this->ySpeed = MonsterInfoSingleTon::getInstance()->brainZomie_ySpeed * direction;
+	}
+	else if (monsterType == FatZombie)
+	{
+
+		this->hp = MonsterInfoSingleTon::getInstance()->fatZombie_HP;
+		this->xSpeed = MonsterInfoSingleTon::getInstance()->fatZombie_xSpeed;
+		this->ySpeed = MonsterInfoSingleTon::getInstance()->superZomie_ySpeed;
+	}
+	else if (monsterType == SuperZombie)
+	{
+		this->hp = MonsterInfoSingleTon::getInstance()->superZombie_HP;
+		this->xSpeed = MonsterInfoSingleTon::getInstance()->superZombie_xSpeed;
+		this->ySpeed = MonsterInfoSingleTon::getInstance()->superZomie_ySpeed;
+	}
 	body = addNewSprite(position, Size(30, 40), b2_dynamicBody, 0);
+
 	this->schedule(schedule_selector(Monster::moving));
 }
 
@@ -41,13 +65,13 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	}
 	else if (monsterType == FatZombie)
 	{
-		auto sprite = Sprite::create("FatZombie_Move.png");
+		auto sprite = Sprite::create("fatZombie_Move.png");
 		texture = sprite->getTexture();
 		for (int i = 0; i < 14; i++)
 		{
 			animation->addSpriteFrameWithTexture(texture, Rect(i * 40, 0, 40, 45));
 		}
-		zombie = Sprite::create("FatZombie_Move.png", Rect(0, 0, 40, 45));
+		zombie = Sprite::create("fatZombie_Move.png", Rect(0, 0, 40, 45));
 	}
 	else if (monsterType == SuperZombie)
 	{
@@ -61,6 +85,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	}
 
 	zombie->setTag(MONSTER);
+	//zombie->setScale(2.0f);
 	gameLayer->addChild(zombie);
 
 	auto animate = Animate::create(animation);
@@ -126,10 +151,17 @@ Monster::~Monster()
 
 void Monster::moving(float dt)
 {
+	yTurnTime = yTurnTime + dt;
 	// HP에 따른 HP바 크기
 	hpBar->setScaleX(hp / 100.0f);
 	// 바디 이동
-	body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed,body->GetPosition().y), 0);
+	body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed,body->GetPosition().y - ySpeed), 0);
+	
+	if (yTurnTime >= 2.0)
+	{
+		this->ySpeed = this->ySpeed * -1;
+		yTurnTime = 0;
+	}
 }
 
 void Monster::onEnter()

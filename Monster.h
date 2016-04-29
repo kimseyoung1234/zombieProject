@@ -29,8 +29,9 @@ private:
 	b2World * _world;
 	cocos2d::Vec2 position;
 	float xSpeed;
-
+	float ySpeed;
 	int monsterType;
+	float yTurnTime = 0;
 	
 };
 
