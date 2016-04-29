@@ -85,7 +85,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	}
 
 	zombie->setTag(MONSTER);
-	//zombie->setScale(2.0f);
+	zombie->setScale(1.5f);
 	gameLayer->addChild(zombie);
 
 	auto animate = Animate::create(animation);
@@ -125,7 +125,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	fixtureDef.restitution = 1.0;
 
 	// 같은 몬스터끼리는 충돌하지 않는다
-	fixtureDef.filter.groupIndex = -10;
+	//fixtureDef.filter.groupIndex = -10;
 
 	body->SetLinearDamping(2.0);
 	body->CreateFixture(&fixtureDef);

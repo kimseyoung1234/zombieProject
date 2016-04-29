@@ -41,9 +41,14 @@ bool HelloWorld::init()
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
 	
+	//배경
+	auto background = Sprite::create("background.png");
+	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	this->addChild(background);
+
 
 	//월드 생성
-	if (this->createBox2dWorld(true))
+	if (this->createBox2dWorld(false))
 	{
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
