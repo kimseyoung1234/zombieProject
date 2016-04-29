@@ -6,11 +6,13 @@
 USING_NS_CC;
 
 // 생성자 변수 초기화와 공용 변수 불러오기
-Monster::Monster(Vec2 position)
+Monster::Monster(Vec2 position,int monsterType)
 	:hp(100),
 	xSpeed(0.05)
 {
 	this->position = position;
+	this->monsterType = monsterType;
+
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 
@@ -23,21 +25,41 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	//바디데프를 만들고 속성들을 지정한다.
 	b2BodyDef bodyDef;
 	bodyDef.type = bodytype;
-
-
-	auto sprite = Sprite::create("brainZombie_Move.png");
-	auto texture = sprite->getTexture();
-
 	auto animation = Animation::create();
 	animation->setDelayPerUnit(0.05f);
-
-	for (int i = 0; i < 15; i++)
+	Texture2D* texture;
+	Sprite* zombie;
+	if(monsterType == BrainZombie)
 	{
-		animation->addSpriteFrameWithTexture(texture, Rect(i* 40, 0, 40, 45));
+		auto sprite = Sprite::create("brainZombie_Move.png");
+		texture = sprite->getTexture();
+		for (int i = 0; i < 15; i++)
+		{
+			animation->addSpriteFrameWithTexture(texture, Rect(i * 40, 0, 40, 45));
+		}
+		zombie = Sprite::create("brainZombie_Move.png", Rect(0, 0, 40, 45));
+	}
+	else if (monsterType == FatZombie)
+	{
+		auto sprite = Sprite::create("FatZombie_Move.png");
+		texture = sprite->getTexture();
+		for (int i = 0; i < 14; i++)
+		{
+			animation->addSpriteFrameWithTexture(texture, Rect(i * 40, 0, 40, 45));
+		}
+		zombie = Sprite::create("FatZombie_Move.png", Rect(0, 0, 40, 45));
+	}
+	else if (monsterType == SuperZombie)
+	{
+		auto sprite = Sprite::create("superZombie_Move.png");
+		texture = sprite->getTexture();
+		for (int i = 0; i < 12; i++)
+		{
+			animation->addSpriteFrameWithTexture(texture, Rect(i * 50, 0, 50, 45));
+		}
+		zombie = Sprite::create("superZombie_Move.png", Rect(0, 0, 50, 45));
 	}
 
-
-	auto zombie = Sprite::create("FatZombie_Move.png",Rect(0, 0, 40, 45));
 	zombie->setTag(MONSTER);
 	gameLayer->addChild(zombie);
 

@@ -36,7 +36,6 @@ void ContactListener::BeginContact(b2Contact *contact)
 				}
 			}
 			if (isPushBullet) {
-				log("컨텍스 불렛 : %d", removeBullets->size());
 				removeBullets->push_back(bodyB);
 			}
 
@@ -47,7 +46,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 				if (m_body == bodyA)
 				{
 					log("몬스터 HP : %d", monsters->at(i)->hp);
-					monsters->at(i)->hp = monsters->at(i)->hp - 50;
+					monsters->at(i)->hp = monsters->at(i)->hp - 20;
 					log("몬스터 HP : %d", monsters->at(i)->hp);
 				}
 			}

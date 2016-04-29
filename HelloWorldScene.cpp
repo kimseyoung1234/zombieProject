@@ -3,6 +3,15 @@
 #include <algorithm>
 USING_NS_CC;
 
+// 몬스터 Y축 값에 따른 벡터 정렬
+bool comp(const Monster *a, const Monster *b)
+{
+	float a_y, b_y;
+	a_y = (float)a->body->GetPosition().y;
+	b_y = (float)b->body->GetPosition().y;
+	return a_y < b_y;
+}
+
 Scene* HelloWorld::createScene()
 {
 	auto scene = Scene::create();
@@ -44,12 +53,14 @@ bool HelloWorld::init()
 	gameLayer->addChild(player);
 
 	for (int i = 0; i < 10; i++) {
-		int rand = random(1, 5);
-		Monster * mon = new Monster(Vec2(1200, 120*rand));
+		int rand = random(100, 680);
+		int r_monsterType = random(1, 3);
+		Monster * mon = new Monster(Vec2(1200, rand),r_monsterType);
 		gameLayer->addChild(mon);
 		monsters->push_back(mon);
 	}
 	
+
 	return true;
 }
 
@@ -182,6 +193,8 @@ void HelloWorld::onExit()
 	Layer::onExit();
 }
 
+
+
 void HelloWorld::tick(float dt)
 {
 	int velocityIterations = 8;
@@ -189,6 +202,19 @@ void HelloWorld::tick(float dt)
 
 	_world->Step(dt, velocityIterations, positionIterations);
 
+	// Z_order 재설정하기 위해 몬스터 Y축 기준으로 벡터의 오름차순 정렬
+	sort(monsters->begin(), monsters->end(),comp);
+
+	// 몬스터 Y축 값에 따른 Z_order 재설정
+	for (int i = 0; i < monsters->size(); i++)
+	{
+		auto mon = (Monster*)monsters->at(i);
+		auto sprite = (Sprite*)mon->body->GetUserData();
+		sprite->setZOrder(i + 100);
+		mon->hpBar->setZOrder(i + 100);
+	}
+
+	// 오브젝트 제거
 	removeObject();
 	
 	//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
