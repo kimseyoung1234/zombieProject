@@ -52,7 +52,7 @@ bool HelloWorld::init()
 		winSize.height / 2));
 	gameLayer->addChild(player);
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 20; i++) {
 		int rand = random(100, 680);
 		int r_monsterType = random(1, 3);
 		Monster * mon = new Monster(Vec2(1200, rand),r_monsterType);

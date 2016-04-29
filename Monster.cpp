@@ -67,13 +67,13 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	auto rep = RepeatForever::create(animate);
 	zombie->runAction(rep);
 
-
+	
 
 	bodyDef.position.Set(point.x / PTM_RATIO, point.y / PTM_RATIO);
 	bodyDef.userData = zombie;
 
 	bodyDef.fixedRotation = true;
-
+	
 	// 월드에 바디데프의 정보로 바디를 만든다
 	b2Body *body = _world->CreateBody(&bodyDef);
 	//바디에 적용할 물리 속석용 바디의 모양을 만든다
@@ -98,6 +98,9 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	fixtureDef.friction = 1.0f;
 	//반발력 - 물체가 다른 물체에 닿았을 때 튕기는 값
 	fixtureDef.restitution = 1.0;
+
+	// 같은 몬스터끼리는 충돌하지 않는다
+	fixtureDef.filter.groupIndex = -10;
 
 	body->SetLinearDamping(2.0);
 	body->CreateFixture(&fixtureDef);
