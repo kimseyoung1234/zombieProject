@@ -14,6 +14,7 @@ private:
 	std::vector<Monster*>* monsters;
 	std::vector<b2Body*>* removeBullets;
 	cocos2d::LayerColor* gameLayer;
+	cocos2d::LayerColor* menuLayer;
 	cocos2d::Size winSize;
 	b2Body * groundBody;
 public:
@@ -23,6 +24,7 @@ public:
 	std::vector<Monster*>* getMonsters();
 	std::vector<b2Body*>* getRemoveBullets();
 	cocos2d::LayerColor* getGameLayer();
+	cocos2d::LayerColor* getMenuLayer();
 
 
 };

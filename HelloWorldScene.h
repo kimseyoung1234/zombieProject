@@ -31,6 +31,8 @@ public:
 	std::vector<b2Body * >* removeBullets;
 	b2Body * body;
 	cocos2d::LayerColor* gameLayer;
+	cocos2d::LayerColor* menuLayer;
+	cocos2d::Label * levelLabel;
 	ContactListener* myContactListener;
 
 	cocos2d::Size winSize;

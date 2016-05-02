@@ -12,6 +12,7 @@ DataSingleTon::DataSingleTon() {
 	removeBullets = new std::vector<b2Body*>;
 	winSize = Director::getInstance()->getWinSize();
 	gameLayer = LayerColor::create(Color4B(0, 0, 0, 0),winSize.width,winSize.height);
+	menuLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
 }
 
 DataSingleTon * DataSingleTon::getInstance()
@@ -42,4 +43,8 @@ std::vector<b2Body*>* DataSingleTon::getRemoveBullets()
 LayerColor* DataSingleTon::getGameLayer()
 {
 	return gameLayer;
+}
+LayerColor* DataSingleTon::getMenuLayer()
+{
+	return menuLayer;
 }

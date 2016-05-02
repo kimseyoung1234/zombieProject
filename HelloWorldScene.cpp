@@ -34,6 +34,7 @@ bool HelloWorld::init()
 	////////////////////////////////////
 	//공용변수들 가져오기
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
+	menuLayer = DataSingleTon::getInstance()->getMenuLayer();
 	_world = DataSingleTon::getInstance()->get_world();
 	monsters = DataSingleTon::getInstance()->getMonsters();
 	removeBullets = DataSingleTon::getInstance()->getRemoveBullets();
@@ -41,24 +42,12 @@ bool HelloWorld::init()
 	
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
-	
+	this->addChild(menuLayer, 5);
+
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(background);
-
-
-	//월드 생성
-	if (this->createBox2dWorld(true))
-	{
-		this->schedule(schedule_selector(HelloWorld::tick));
-	}
-	player = Sprite::create("turret.png");
-	player->setPosition(Vec2(player->getContentSize().width / 2 + 80,
-		winSize.height / 2));
-	gameLayer->addChild(player);
-
-
 
 	// 시작 버튼
 
@@ -69,8 +58,24 @@ bool HelloWorld::init()
 
 	auto pMenu = Menu::create(pMenuItem, nullptr);
 	pMenu->setPosition(Vec2(winSize.width-100,winSize.height-50)); 
-	this->addChild(pMenu);
+	menuLayer->addChild(pMenu);
 
+	// 현재 레벨
+
+	levelLabel = Label::create("Level : 1", "Arial", 34);
+	levelLabel->setPosition(Vec2(100, winSize.height - 50));
+	levelLabel->setColor(Color3B::RED);
+	menuLayer->addChild(levelLabel);
+
+	//월드 생성
+	if (this->createBox2dWorld(true))
+	{
+		this->schedule(schedule_selector(HelloWorld::tick));
+	}
+	player = Sprite::create("turret.png");
+	player->setPosition(Vec2(player->getContentSize().width / 2 + 80,
+		winSize.height / 2));
+	gameLayer->addChild(player);
 
 	return true;
 }
@@ -291,7 +296,7 @@ void HelloWorld::tick(float dt)
 	{
 		log("클리어!");
 		MonsterInfoSingleTon::getInstance()->level_up();
-		log("level : %d", MonsterInfoSingleTon::getInstance()->level);
+		levelLabel->setString((String::createWithFormat("Level : %d", MonsterInfoSingleTon::getInstance()->level)->getCString()));
 		isWave = false;
 	}
 }
@@ -300,8 +305,6 @@ void HelloWorld::tick(float dt)
 // 총알이나 몬스터 제거
 void HelloWorld::removeObject()
 {
-	//log("불렛 : %d", removeBullets->size());
-
 	// 총알 제거
 	for (int k = removeBullets->size() - 1; k >= 0; k--)
 	{
