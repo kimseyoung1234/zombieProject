@@ -5,7 +5,7 @@ ContactListener::ContactListener() {
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	monsters = DataSingleTon::getInstance()->getMonsters();
-	removeBullets = DataSingleTon::getInstance()->getRemoveBullets();
+	bullets = DataSingleTon::getInstance()->getBullets();
 }
 
 ContactListener::~ContactListener() {}
@@ -27,46 +27,41 @@ void ContactListener::BeginContact(b2Contact *contact)
 	if (spriteA != nullptr && spriteB != nullptr) {
 		if (spriteA->getTag() == MONSTER && spriteB->getTag() == BULLET) {
 
-			// 같은 총알이 벡터에 중복되지 않게 하기 위함
-			for (int i = 0; i<removeBullets->size(); i++)
-			{
-				if (bodyB == removeBullets->at(i))
-				{
-					isPushBullet = false;
-				}
-			}
-			if (isPushBullet) {
-				removeBullets->push_back(bodyB);
-			}
-
 			//  총알과 몬스터 충돌 시 HP 감소 처리
 			for (int i = 0; i < monsters->size(); i++)
 			{
 				b2Body * m_body = (b2Body* )monsters->at(i)->body;
 				if (m_body == bodyA)
 				{
-					log("몬스터 HP : %d", monsters->at(i)->hp);
-					monsters->at(i)->hp = monsters->at(i)->hp - 50;
-					log("몬스터 HP : %d", monsters->at(i)->hp);
+					for (int k = 0; k < bullets->size(); k++)
+					{
+						b2Body * b_body = (b2Body*)bullets->at(k)->body;
+							if (b_body == bodyB)
+							{
+								log("몬스터 HP : %d", monsters->at(i)->hp);
+								monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;
+								bullets->at(k)->isRemove = true;
+								log("몬스터 HP : %d", monsters->at(i)->hp);
+								break;
+							}
+					}
 				}
 			}
 		}
-
 	}
 
 	if (spriteA != nullptr && spriteB != nullptr) {
 		// 총알과 월드 벽 충돌 시 총알 제거 
 		if (spriteA->getTag() == WORLD && spriteB->getTag() == BULLET)
 		{
-			for (int i = 0; i < removeBullets->size(); i++)
+			for (int k = 0; k < bullets->size(); k++)
 			{
-				if (bodyB == removeBullets->at(i))
+				b2Body * b_body = (b2Body*)bullets->at(k)->body;
+				if (b_body == bodyB)
 				{
-					isPushBullet = false;
+					bullets->at(k)->isRemove = true;
+					break;
 				}
-			}
-			if (isPushBullet) {
-				removeBullets->push_back(bodyB);
 			}
 		}
 	}

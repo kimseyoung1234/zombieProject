@@ -22,8 +22,8 @@ public:
 	b2Body* body;
 	int hp;
 	cocos2d::Sprite* hpBar;
-	virtual void onEnter();
-	virtual void onExit();
+	//virtual void onEnter();
+	//virtual void onExit();
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;

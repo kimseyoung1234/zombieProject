@@ -5,6 +5,7 @@
 #include "Box2D/Box2D.h"
 #include <GLES-Render.h>
 #include "Monster.h"
+#include "Bullet.h"
 #include "ContactListener.h"
 
 
@@ -26,9 +27,8 @@ public:
 
 	// 변수
 	cocos2d::Sprite * player;
-	std::vector<b2Body * > bullet;
 	std::vector<Monster * >* monsters;
-	std::vector<b2Body * >* removeBullets;
+	std::vector<Bullet * >* bullets;
 	b2Body * body;
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;

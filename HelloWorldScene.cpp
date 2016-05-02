@@ -37,7 +37,7 @@ bool HelloWorld::init()
 	menuLayer = DataSingleTon::getInstance()->getMenuLayer();
 	_world = DataSingleTon::getInstance()->get_world();
 	monsters = DataSingleTon::getInstance()->getMonsters();
-	removeBullets = DataSingleTon::getInstance()->getRemoveBullets();
+	bullets = DataSingleTon::getInstance()->getBullets();
 	winSize = Director::getInstance()->getWinSize();
 	
 	// 게임레이어 추가
@@ -264,7 +264,7 @@ void HelloWorld::tick(float dt)
 
 	// 오브젝트 제거
 	removeObject();
-	
+	log("총알사이즈 : %d", bullets->size());
 	//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
 	//만들어진 객체만큼 루프를 돌리면서 바디에 붙인 스프라이트를 여기서 제어한다
 	for (b2Body *b = _world->GetBodyList(); b; b = b->GetNext())
@@ -285,9 +285,10 @@ void HelloWorld::tick(float dt)
 		Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
 		Vec2 nPos2 = player->convertToWorldSpace(nPos1);
 		if (attackDelayTime >= 0.2) {
-			attackDelayTime = 0;
-			body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
-			body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
+			attackDelayTime = 0;	
+			Bullet * bullet = new Bullet(nPos2, 1);
+			bullets->push_back(bullet);
+			bullet->body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
 		}
 	}
 
@@ -306,14 +307,18 @@ void HelloWorld::tick(float dt)
 void HelloWorld::removeObject()
 {
 	// 총알 제거
-	for (int k = removeBullets->size() - 1; k >= 0; k--)
+	for (int k = bullets->size() - 1; k >= 0; k--)
 	{
-		b2Body * r_body = (b2Body*)removeBullets->at(k);
-		auto sprite = (Sprite*)r_body->GetUserData();
-		if (sprite != nullptr) {
-			gameLayer->removeChild(sprite);
-			removeBullets->erase(removeBullets->begin() + k);
-			_world->DestroyBody(r_body);
+		Bullet * bullet = (Bullet *)bullets->at(k);
+		if (bullet->isRemove == true) {
+			auto sprite = (Sprite*)bullet->body->GetUserData();
+			if (sprite != nullptr) {
+				gameLayer->removeChild(sprite);
+				gameLayer->removeChild(bullet);
+				bullets->erase(bullets->begin() + k);
+				_world->DestroyBody(bullet->body);
+				delete bullet;
+			}
 		}
 	}
 
@@ -337,7 +342,7 @@ void HelloWorld::removeObject()
 
 
 // 총알 생성
-b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type)
+/*b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type)
 {
 	//바디데프를 만들고 속성들을 지정한다.
 	b2BodyDef bodyDef;
@@ -385,7 +390,7 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int
 
 	return body;
 }
-
+*/
 bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();
@@ -402,8 +407,9 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	if (attackDelayTime >= 0.2) {
 		isAttack = true;
 		attackDelayTime = 0;
-		body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
-		body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+		Bullet * bullet = new Bullet(nPos2, 1);
+		bullets->push_back(bullet);
+		bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 	}
 	return true;
 }

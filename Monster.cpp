@@ -163,7 +163,7 @@ void Monster::moving(float dt)
 		yTurnTime = 0;
 	}
 }
-
+/*
 void Monster::onEnter()
 {
 	Node::onEnter();
@@ -172,4 +172,4 @@ void Monster::onEnter()
 void Monster::onExit()
 {
 	Node::onExit();
-}
+}*/

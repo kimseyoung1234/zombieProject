@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "Monster.h"
+#include "Bullet.h"
 using namespace cocos2d;
 
 class ContactListener : public b2ContactListener
@@ -21,7 +22,7 @@ public:
 	b2World* _world;
 	cocos2d::LayerColor* gameLayer;
 	std::vector<Monster*>* monsters;
-	std::vector<b2Body *>* removeBullets;
+	std::vector<Bullet *>* bullets;
 protected:
 	
 };
