@@ -46,7 +46,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 				if (m_body == bodyA)
 				{
 					log("몬스터 HP : %d", monsters->at(i)->hp);
-					monsters->at(i)->hp = monsters->at(i)->hp - 20;
+					monsters->at(i)->hp = monsters->at(i)->hp - 50;
 					log("몬스터 HP : %d", monsters->at(i)->hp);
 				}
 			}
@@ -54,18 +54,20 @@ void ContactListener::BeginContact(b2Contact *contact)
 
 	}
 
-	// 총알과 월드 벽 충돌 시 총알 제거 
-	if (spriteA->getTag() == WORLD && spriteB->getTag() == BULLET)
-	{
-		for (int i = 0; i <removeBullets->size(); i++)
+	if (spriteA != nullptr && spriteB != nullptr) {
+		// 총알과 월드 벽 충돌 시 총알 제거 
+		if (spriteA->getTag() == WORLD && spriteB->getTag() == BULLET)
 		{
-			if (bodyB == removeBullets->at(i))
+			for (int i = 0; i < removeBullets->size(); i++)
 			{
-				isPushBullet = false;
+				if (bodyB == removeBullets->at(i))
+				{
+					isPushBullet = false;
+				}
 			}
-		}
-		if (isPushBullet) {
-			removeBullets->push_back(bodyB);
+			if (isPushBullet) {
+				removeBullets->push_back(bodyB);
+			}
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿#include "HelloWorldScene.h"
 #include "DataSingleTon.h"
+#include "MonsterInfoSingleTon.h"
 #include <algorithm>
 USING_NS_CC;
 
@@ -48,7 +49,7 @@ bool HelloWorld::init()
 
 
 	//월드 생성
-	if (this->createBox2dWorld(false))
+	if (this->createBox2dWorld(true))
 	{
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
@@ -57,18 +58,37 @@ bool HelloWorld::init()
 		winSize.height / 2));
 	gameLayer->addChild(player);
 
-	for (int i = 0; i < 20; i++) {
-	    int rand = random(50, 700);
-		int r_monsterType = random(1, 3);
-		Monster * mon = new Monster(Vec2(1200, rand),r_monsterType);
-		gameLayer->addChild(mon);
-		monsters->push_back(mon);
-	}
-	
+
+
+	// 시작 버튼
+
+	auto pMenuItem = MenuItemImage::create(
+		"btn-play-normal.png",
+		"btn-play-normal.png",
+		CC_CALLBACK_1(HelloWorld::waveStart, this));
+
+	auto pMenu = Menu::create(pMenuItem, nullptr);
+	pMenu->setPosition(Vec2(winSize.width-100,winSize.height-50)); 
+	this->addChild(pMenu);
+
 
 	return true;
 }
 
+void HelloWorld::waveStart(Ref* pSender)
+{
+	if (isWave == false) {
+		int maxMonster = MonsterInfoSingleTon::getInstance()->maxMonster;
+		for (int i = 0; i < maxMonster; i++) {
+			int rand = random(50, 600);
+			int r_monsterType = random(1, 3);
+			Monster * mon = new Monster(Vec2(1200, rand), r_monsterType);
+			gameLayer->addChild(mon);
+			monsters->push_back(mon);
+		}
+	}
+	isWave = true;
+}
 void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 {
 	Layer::draw(renderer, transform, flags);
@@ -143,7 +163,7 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	//그리고 바디(groundBody)에 모양(groundEdge)을 고정시킨다.
 
 	//아래
-	groundEdge.Set(b2Vec2(0, 0), b2Vec2(winSize.width / PTM_RATIO, 0));
+	groundEdge.Set(b2Vec2(0, 1), b2Vec2(winSize.width / PTM_RATIO, 1));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//왼쪽
@@ -151,14 +171,32 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//위쪽
-	groundEdge.Set(b2Vec2(0, winSize.height / PTM_RATIO), b2Vec2(winSize.width / PTM_RATIO, winSize.height / PTM_RATIO));
+	groundEdge.Set(b2Vec2(0, (winSize.height-100) / PTM_RATIO), b2Vec2(winSize.width / PTM_RATIO, (winSize.height-100) / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//오른쪽
 	groundEdge.Set(b2Vec2(winSize.width / PTM_RATIO, winSize.height / PTM_RATIO), b2Vec2(winSize.width / PTM_RATIO, 0));
 	groundBody->CreateFixture(&boxShapeDef);
+	
 
 	//월드생성 끝 -------------------------------------
+
+	// 바리게이트 
+
+	b2BodyDef barricadeBodyDef;
+	barricadeBodyDef.position.Set(0, 0);
+	barricadeBodyDef.type = b2_staticBody;
+
+	b2Body* barricade = _world->CreateBody(&barricadeBodyDef);
+
+	b2FixtureDef EdgeShapeDef;
+	b2EdgeShape barricadeEdge;
+	EdgeShapeDef.shape = &barricadeEdge;
+	EdgeShapeDef.filter.groupIndex = -10;
+
+	barricadeEdge.Set(b2Vec2((winSize.width/2 - 280)/PTM_RATIO, 0), b2Vec2((winSize.width / 2 - 280) / PTM_RATIO, winSize.width / PTM_RATIO));
+
+	barricade->CreateFixture(&EdgeShapeDef);
 
 
 	myContactListener = new ContactListener();
@@ -244,10 +282,20 @@ void HelloWorld::tick(float dt)
 		if (attackDelayTime >= 0.2) {
 			attackDelayTime = 0;
 			body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
-			body->SetLinearVelocity(b2Vec2(attackVector.x * 20, attackVector.y * 20));
+			body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
 		}
 	}
+
+	// 스테이지 클리어 체크
+	if (monsters->size() == 0 && isWave == true)
+	{
+		log("클리어!");
+		MonsterInfoSingleTon::getInstance()->level_up();
+		log("level : %d", MonsterInfoSingleTon::getInstance()->level);
+		isWave = false;
+	}
 }
+
 
 // 총알이나 몬스터 제거
 void HelloWorld::removeObject()
@@ -291,9 +339,8 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int
 	//바디데프를 만들고 속성들을 지정한다.
 	b2BodyDef bodyDef;
 
-	auto sprite = Sprite::create("mole_1.png");
+	auto sprite = Sprite::create("bullet1.png");
 	sprite->setTag(BULLET);
-	sprite->setScale(0.1f);
 	gameLayer->addChild(sprite);
 
 	bodyDef.type = bodytype;
@@ -322,6 +369,7 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int
 		fixtureDef.shape = &circle;
 	}
 
+	fixtureDef.filter.groupIndex = -10;
 	//Define the dynamic body fixture.
 	//밀도
 	fixtureDef.density = 5.0f;
@@ -352,7 +400,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		isAttack = true;
 		attackDelayTime = 0;
 		body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
-		body->SetLinearVelocity(b2Vec2(shootVector.x * 20, shootVector.y * 20));
+		body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 	}
 	return true;
 }

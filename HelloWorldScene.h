@@ -55,7 +55,8 @@ public:
 
 	void tick(float dt);
 	
-
+	bool isWave = false;
+	void waveStart(Ref* pSender);
 	void removeObject();
 	b2Body * addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
 	

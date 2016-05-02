@@ -122,12 +122,12 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	// 마찰력 - 0 ~ 1
 	fixtureDef.friction = 1.0f;
 	//반발력 - 물체가 다른 물체에 닿았을 때 튕기는 값
-	fixtureDef.restitution = 1.0;
+	fixtureDef.restitution = 0.1;
 
 	// 같은 몬스터끼리는 충돌하지 않는다
 	//fixtureDef.filter.groupIndex = -10;
 
-	body->SetLinearDamping(2.0);
+	body->SetLinearDamping(5.0f);
 	body->CreateFixture(&fixtureDef);
 
 	// HP바 스프라이트
