@@ -67,6 +67,15 @@ bool HelloWorld::init()
 	levelLabel->setColor(Color3B::RED);
 	menuLayer->addChild(levelLabel);
 
+	// 웨이브 진행 상황
+
+	waveProgress = Sprite::create("white-512x512.png");
+	waveProgress->setTextureRect(Rect(0, 0, 300,10));
+	waveProgress->setColor(Color3B::BLUE);
+	waveProgress->setAnchorPoint(Vec2(0, 0.5));
+	waveProgress->setPosition(Vec2(winSize.width / 2 - 150, winSize.height - 50));
+	menuLayer->addChild(waveProgress);
+
 	//월드 생성
 	if (this->createBox2dWorld(true))
 	{
@@ -245,6 +254,9 @@ void HelloWorld::onExit()
 
 void HelloWorld::tick(float dt)
 {
+	// 진행상황 갱신
+	waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
+	
 	int velocityIterations = 8;
 	int positionIterations = 3;
 
@@ -264,14 +276,13 @@ void HelloWorld::tick(float dt)
 
 	// 오브젝트 제거
 	removeObject();
-	log("총알사이즈 : %d", bullets->size());
+
 	//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
 	//만들어진 객체만큼 루프를 돌리면서 바디에 붙인 스프라이트를 여기서 제어한다
 	for (b2Body *b = _world->GetBodyList(); b; b = b->GetNext())
 	{
 		if (b->GetUserData() != nullptr)
 		{
-			
 			Sprite* spriteData = (Sprite *)b->GetUserData();
 			spriteData->setPosition(Vec2(b->GetPosition().x * PTM_RATIO,
 				b->GetPosition().y *PTM_RATIO));
@@ -340,57 +351,6 @@ void HelloWorld::removeObject()
 	}
 }
 
-
-// 총알 생성
-/*b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type)
-{
-	//바디데프를 만들고 속성들을 지정한다.
-	b2BodyDef bodyDef;
-
-	auto sprite = Sprite::create("bullet1.png");
-	sprite->setTag(BULLET);
-	gameLayer->addChild(sprite);
-
-	bodyDef.type = bodytype;
-	bodyDef.position.Set(point.x / PTM_RATIO, point.y / PTM_RATIO);
-	bodyDef.userData = sprite;
-	bodyDef.bullet = true;
-	bodyDef.fixedRotation = true;
-
-	//bodyDef.linearDamping = 0.5;
-	// 월드에 바디데프의 정보로 바디를 만든다
-	b2Body *body = _world->CreateBody(&bodyDef);
-
-	//바디에 적용할 물리 속석용 바디의 모양을 만든다
-	b2FixtureDef fixtureDef;
-	b2PolygonShape dynamicBox;
-	b2CircleShape circle;
-
-	if(type == 0)
-	{ 
-		dynamicBox.SetAsBox(size.width / 2 / PTM_RATIO, size.height / 2 / PTM_RATIO);
-		fixtureDef.shape = &dynamicBox;
-	}
-	else
-	{
-		circle.m_radius = (size.width / 2) / PTM_RATIO;
-		fixtureDef.shape = &circle;
-	}
-
-	fixtureDef.filter.groupIndex = -10;
-	//Define the dynamic body fixture.
-	//밀도
-	fixtureDef.density = 5.0f;
-	// 마찰력 - 0 ~ 1
-	fixtureDef.friction = 0.0f;
-	//반발력 - 물체가 다른 물체에 닿았을 때 튕기는 값
-	fixtureDef.restitution = 0.0;
-
-	body->CreateFixture(&fixtureDef);
-
-	return body;
-}
-*/
 bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();

@@ -33,6 +33,7 @@ public:
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::Label * levelLabel;
+	cocos2d::Sprite * waveProgress;
 	ContactListener* myContactListener;
 
 	cocos2d::Size winSize;
@@ -60,8 +61,6 @@ public:
 	bool isWave = false;
 	void waveStart(Ref* pSender);
 	void removeObject();
-	b2Body * addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
-	
 
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
