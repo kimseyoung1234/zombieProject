@@ -40,6 +40,7 @@ bool HelloWorld::init()
 	monsters = DataSingleTon::getInstance()->getMonsters();
 	bullets = DataSingleTon::getInstance()->getBullets();
 	winSize = Director::getInstance()->getWinSize();
+	barricade = DataSingleTon::getInstance()->getBarricade();
 	
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
@@ -210,7 +211,6 @@ bool HelloWorld::createBox2dWorld(bool debug)
 
 	barricade = _world->CreateBody(&barricadeBodyDef);
 
-
 	b2FixtureDef EdgeShapeDef;
 	b2EdgeShape barricadeEdge;
 	EdgeShapeDef.shape = &barricadeEdge;
@@ -219,7 +219,6 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	barricadeEdge.Set(b2Vec2((winSize.width/2 - 280)/PTM_RATIO, 0), b2Vec2((winSize.width / 2 - 280) / PTM_RATIO, winSize.width / PTM_RATIO));
 
 	barricade->CreateFixture(&EdgeShapeDef);
-
 
 	myContactListener = new ContactListener();
 	_world->SetContactListener((b2ContactListener *)myContactListener);

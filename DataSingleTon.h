@@ -18,9 +18,9 @@ private:
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::Size winSize;
 	b2Body * groundBody;
-	b2Body * barricade;
 public:
 	
+	b2Body * barricade;
 	static DataSingleTon *getInstance();
 	b2World* get_world();
 	std::vector<Monster*>* getMonsters();

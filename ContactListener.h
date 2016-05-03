@@ -20,6 +20,7 @@ public:
 
 
 	b2World* _world;
+	b2Body* barricade;
 	cocos2d::LayerColor* gameLayer;
 	std::vector<Monster*>* monsters;
 	std::vector<Bullet *>* bullets;

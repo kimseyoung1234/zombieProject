@@ -1,0 +1,18 @@
+diff a/ContactListener.cpp b/ContactListener.cpp	(rejected hunks)
+@@ -117,12 +117,12 @@
+ 
+ 	auto spriteA = (Sprite*)bodyA->GetUserData();
+ 	auto spriteB = (Sprite*)bodyB->GetUserData();
+-	
+-	if (spriteA != nullptr && spriteB != nullptr) {
+-		//���Ϳ� �ٸ�����Ʈ �浹
++	log("������ sprite A = %d , sprite B = %d", spriteA->getTag(), spriteB->getTag());
+ 
++			//���Ϳ� �ٸ�����Ʈ �浹
++	
+ 		bool isDead = true;
+-		// �������� �ٵ� ���� �������� �ƴ��� üũ�Ѵ�
++		// �������� �ٵ� ���� �������� �ƴ��� üũ�Ѵ�.
+ 		for (int i = 0; i < monsters->size(); i++)
+ 		{
+ 			b2Body * m_body = (b2Body*)monsters->at(i)->body;

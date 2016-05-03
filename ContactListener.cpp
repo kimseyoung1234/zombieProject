@@ -8,6 +8,7 @@ ContactListener::ContactListener() {
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	monsters = DataSingleTon::getInstance()->getMonsters();
 	bullets = DataSingleTon::getInstance()->getBullets();
+	barricade = DataSingleTon::getInstance()->getBarricade();
 }
 
 ContactListener::~ContactListener() {}
@@ -114,38 +115,24 @@ void ContactListener::EndContact(b2Contact *contact)
 
 	b2Body *bodyA = fixA->GetBody();
 	b2Body *bodyB = fixB->GetBody();
-
+	//log("타입 A %d", barricade->GetType());
+	log("타입 B %d", bodyB->GetType());
 	auto spriteA = (Sprite*)bodyA->GetUserData();
 	auto spriteB = (Sprite*)bodyB->GetUserData();
+	auto spriteC = (Sprite*)barricade->GetUserData();
+	//몬스터와 바리게이트 충돌
 	
-	if (spriteA != nullptr && spriteB != nullptr) {
-		//몬스터와 바리게이트 충돌
-
-		bool isDead = true;
-		// 떨어지는 바디가 죽은 몬스터인지 아닌지 체크한다
+	if (barricade == bodyA){
+		log("바디에이");
 		for (int i = 0; i < monsters->size(); i++)
 		{
 			b2Body * m_body = (b2Body*)monsters->at(i)->body;
 			if (m_body == bodyB)
 			{
-				isDead = false;
-			}
-		}
-		// 죽지 않았다면 몬스터의 공격중 여부를 false로 바꿈
-		if (!isDead) {
-			if (spriteA->getTag() == BARRICADE && spriteB->getTag() == MONSTER)
-			{
-				for (int i = 0; i < monsters->size(); i++)
-				{
-					b2Body * m_body = (b2Body*)monsters->at(i)->body;
-					if (m_body == bodyB)
-					{
-						monsters->at(i)->isAttack = false;
-						break;
-					}
-				}
+				log("들오지");
+				monsters->at(i)->isAttack = false;
+				break;
 			}
 		}
 	}
-
 }

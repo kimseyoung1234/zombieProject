@@ -16,7 +16,7 @@ public:
 	~Bullet();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
 	b2Body* body;
-	int damage = 100;
+	int damage = 10;
 	bool isRemove = false;
 private:
 	cocos2d::LayerColor* gameLayer;

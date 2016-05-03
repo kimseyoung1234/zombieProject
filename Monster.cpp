@@ -129,7 +129,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	fixtureDef.restitution = 0.1;
 
 	// 같은 몬스터끼리는 충돌하지 않는다
-	//fixtureDef.filter.groupIndex = -10;
+	//fixtureDef.filter.groupIndex = -20;
 
 	body->SetLinearDamping(5.0f);
 	body->CreateFixture(&fixtureDef);
