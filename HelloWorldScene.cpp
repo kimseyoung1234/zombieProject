@@ -1,6 +1,7 @@
 ﻿#include "HelloWorldScene.h"
 #include "DataSingleTon.h"
 #include "MonsterInfoSingleTon.h"
+#include "PlayerInfoSingleTon.h"
 #include <algorithm>
 USING_NS_CC;
 

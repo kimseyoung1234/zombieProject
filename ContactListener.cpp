@@ -1,6 +1,8 @@
 #include "ContactListener.h"
 #include "HelloWorldScene.h"
 #include "DataSingleTon.h"
+#include "PlayerInfoSingleTon.h"
+
 ContactListener::ContactListener() {
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
@@ -72,7 +74,16 @@ void ContactListener::BeginContact(b2Contact *contact)
 		//몬스터와 바리게이트 충돌
 		if (spriteA->getTag() == BARRICADE && spriteB->getTag() == MONSTER)
 		{
-			log("으악");
+			for (int i = 0; i < monsters->size(); i++)
+			{
+				b2Body * m_body = (b2Body*)monsters->at(i)->body;
+				if (m_body == bodyB)
+				{
+					PlayerInfoSingleTon::getInstance()->hp = PlayerInfoSingleTon::getInstance()->hp - monsters->at(i)->damage;
+					log("플레이어 hp : %d", PlayerInfoSingleTon::getInstance()->hp);
+					break;
+				}
+			}
 		}
 	}
 }

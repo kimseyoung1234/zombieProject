@@ -18,12 +18,12 @@ public:
 	Monster(Vec2 position,int monsterType);
 	~Monster();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
-	void moving(float dt);
 	b2Body* body;
-	int hp;
 	cocos2d::Sprite* hpBar;
-	//virtual void onEnter();
-	//virtual void onExit();
+
+
+	int hp;
+	int damage;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
@@ -32,6 +32,7 @@ private:
 	float ySpeed;
 	int monsterType;
 	float yTurnTime = 0;
+	void moving(float dt);
 	
 };
 

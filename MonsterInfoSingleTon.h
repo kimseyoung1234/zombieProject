@@ -3,7 +3,7 @@
 #include "cocos2d.h"
 
 
-// 모든 클래스에서 사용하기 위한 싱글톤 클래스
+// 현재 레벨과 몬스터들의 정보를 가지고 있는 싱글톤 클래스
 class MonsterInfoSingleTon {
 private:
 	static MonsterInfoSingleTon *m_pInstance;
@@ -16,14 +16,17 @@ public:
 	int maxMonster = 1;
 
 	int fatZombie_HP = 150;
+	int fatZombie_damage = 5;
 	float fatZombie_xSpeed = 0.05;
 	float fatZomie_ySpeed=0;
 
 	int brainZombie_HP = 100;
+	int brainZombie_damage = 2;
 	float brainZombie_xSpeed = 0.06;
 	float brainZomie_ySpeed = 0.03;
 
 	int superZombie_HP = 120;
+	int superZombie_damage = 3;
 	float superZombie_xSpeed = 0.07;
 	float superZomie_ySpeed = 0;
 

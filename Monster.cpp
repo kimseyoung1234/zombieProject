@@ -23,6 +23,7 @@ Monster::Monster(Vec2 position,int monsterType)
 		}
 
 		this->hp = MonsterInfoSingleTon::getInstance()->brainZombie_HP;
+		this->damage = MonsterInfoSingleTon::getInstance()->brainZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->brainZombie_xSpeed;
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->brainZomie_ySpeed * direction;
 	}
@@ -30,12 +31,14 @@ Monster::Monster(Vec2 position,int monsterType)
 	{
 
 		this->hp = MonsterInfoSingleTon::getInstance()->fatZombie_HP;
+		this->damage = MonsterInfoSingleTon::getInstance()->fatZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->fatZombie_xSpeed;
-		this->ySpeed = MonsterInfoSingleTon::getInstance()->superZomie_ySpeed;
+		this->ySpeed = MonsterInfoSingleTon::getInstance()->fatZomie_ySpeed;
 	}
 	else if (monsterType == SuperZombie)
 	{
 		this->hp = MonsterInfoSingleTon::getInstance()->superZombie_HP;
+		this->damage = MonsterInfoSingleTon::getInstance()->superZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->superZombie_xSpeed;
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->superZomie_ySpeed;
 	}
