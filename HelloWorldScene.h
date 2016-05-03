@@ -14,6 +14,7 @@
 #define BULLET 100
 #define MONSTER 200
 #define WORLD 300
+#define BARRICADE 400
 using namespace cocos2d;
 
 class HelloWorld : public cocos2d::Layer
@@ -30,6 +31,7 @@ public:
 	std::vector<Monster * >* monsters;
 	std::vector<Bullet * >* bullets;
 	b2Body * body;
+	b2Body* barricade;
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::Label * levelLabel;

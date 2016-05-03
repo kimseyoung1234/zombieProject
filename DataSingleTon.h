@@ -18,6 +18,7 @@ private:
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::Size winSize;
 	b2Body * groundBody;
+	b2Body * barricade;
 public:
 	
 	static DataSingleTon *getInstance();
@@ -26,8 +27,7 @@ public:
 	std::vector<Bullet*>* getBullets();
 	cocos2d::LayerColor* getGameLayer();
 	cocos2d::LayerColor* getMenuLayer();
-
-
+	b2Body* getBarricade();
 };
 
 #endif

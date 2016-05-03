@@ -23,6 +23,8 @@ void ContactListener::BeginContact(b2Contact *contact)
 
 	auto spriteA = (Sprite*)bodyA->GetUserData();
 	auto spriteB = (Sprite*)bodyB->GetUserData();
+
+	//log("sprite A = %d , sprite B = %d", spriteA->getTag(), spriteB->getTag());
 	// 총일과 몬스터 충돌 시 
 	if (spriteA != nullptr && spriteB != nullptr) {
 		if (spriteA->getTag() == MONSTER && spriteB->getTag() == BULLET) {
@@ -38,10 +40,10 @@ void ContactListener::BeginContact(b2Contact *contact)
 						b2Body * b_body = (b2Body*)bullets->at(k)->body;
 							if (b_body == bodyB)
 							{
-								log("몬스터 HP : %d", monsters->at(i)->hp);
+								//log("몬스터 HP : %d", monsters->at(i)->hp);
 								monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;
 								bullets->at(k)->isRemove = true;
-								log("몬스터 HP : %d", monsters->at(i)->hp);
+								//log("몬스터 HP : %d", monsters->at(i)->hp);
 								break;
 							}
 					}
@@ -63,6 +65,14 @@ void ContactListener::BeginContact(b2Contact *contact)
 					break;
 				}
 			}
+		}
+	}
+
+	if (spriteA != nullptr && spriteB != nullptr) {
+		//몬스터와 바리게이트 충돌
+		if (spriteA->getTag() == BARRICADE && spriteB->getTag() == MONSTER)
+		{
+			log("으악");
 		}
 	}
 }

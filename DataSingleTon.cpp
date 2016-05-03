@@ -48,3 +48,8 @@ LayerColor* DataSingleTon::getMenuLayer()
 {
 	return menuLayer;
 }
+
+b2Body* DataSingleTon::getBarricade()
+{
+	return barricade;
+}

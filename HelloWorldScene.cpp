@@ -197,11 +197,18 @@ bool HelloWorld::createBox2dWorld(bool debug)
 
 	// 바리게이트 
 
+	auto b_sprite = Sprite::create("white-512x512.png");
+	b_sprite->setTextureRect(Rect(0, 0, 0, 0));
+	b_sprite->setTag(BARRICADE);
+	gameLayer->addChild(b_sprite);
+
 	b2BodyDef barricadeBodyDef;
 	barricadeBodyDef.position.Set(0, 0);
 	barricadeBodyDef.type = b2_staticBody;
+	barricadeBodyDef.userData = b_sprite;
 
-	b2Body* barricade = _world->CreateBody(&barricadeBodyDef);
+	barricade = _world->CreateBody(&barricadeBodyDef);
+
 
 	b2FixtureDef EdgeShapeDef;
 	b2EdgeShape barricadeEdge;
