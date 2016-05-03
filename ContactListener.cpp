@@ -16,7 +16,6 @@ void ContactListener::BeginContact(b2Contact *contact)
 {
 //	log("Contact:Begin");
 
-	bool isPushBullet = true;
 	b2Fixture *fixA = contact->GetFixtureA();
 	b2Fixture *fixB = contact->GetFixtureB();
 
@@ -72,6 +71,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 
 	if (spriteA != nullptr && spriteB != nullptr) {
 		//몬스터와 바리게이트 충돌
+		//충돌했으면 몬스터의 공격중 여부를 true로 바꿈
 		if (spriteA->getTag() == BARRICADE && spriteB->getTag() == MONSTER)
 		{
 			for (int i = 0; i < monsters->size(); i++)
@@ -79,8 +79,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 				b2Body * m_body = (b2Body*)monsters->at(i)->body;
 				if (m_body == bodyB)
 				{
-					PlayerInfoSingleTon::getInstance()->hp = PlayerInfoSingleTon::getInstance()->hp - monsters->at(i)->damage;
-					log("플레이어 hp : %d", PlayerInfoSingleTon::getInstance()->hp);
+					monsters->at(i)->isAttack = true;
 					break;
 				}
 			}
@@ -110,5 +109,43 @@ void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impu
 
 void ContactListener::EndContact(b2Contact *contact)
 {
+	b2Fixture *fixA = contact->GetFixtureA();
+	b2Fixture *fixB = contact->GetFixtureB();
+
+	b2Body *bodyA = fixA->GetBody();
+	b2Body *bodyB = fixB->GetBody();
+
+	auto spriteA = (Sprite*)bodyA->GetUserData();
+	auto spriteB = (Sprite*)bodyB->GetUserData();
+	
+	if (spriteA != nullptr && spriteB != nullptr) {
+		//몬스터와 바리게이트 충돌
+
+		bool isDead = true;
+		// 떨어지는 바디가 죽은 몬스터인지 아닌지 체크한다
+		for (int i = 0; i < monsters->size(); i++)
+		{
+			b2Body * m_body = (b2Body*)monsters->at(i)->body;
+			if (m_body == bodyB)
+			{
+				isDead = false;
+			}
+		}
+		// 죽지 않았다면 몬스터의 공격중 여부를 false로 바꿈
+		if (!isDead) {
+			if (spriteA->getTag() == BARRICADE && spriteB->getTag() == MONSTER)
+			{
+				for (int i = 0; i < monsters->size(); i++)
+				{
+					b2Body * m_body = (b2Body*)monsters->at(i)->body;
+					if (m_body == bodyB)
+					{
+						monsters->at(i)->isAttack = false;
+						break;
+					}
+				}
+			}
+		}
+	}
 
 }

@@ -21,9 +21,10 @@ public:
 	b2Body* body;
 	cocos2d::Sprite* hpBar;
 
-
 	int hp;
 	int damage;
+	bool isAttack = false;
+	float attackDelay = 1.0;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
@@ -32,6 +33,7 @@ private:
 	float ySpeed;
 	int monsterType;
 	float yTurnTime = 0;
+	
 	void moving(float dt);
 	
 };

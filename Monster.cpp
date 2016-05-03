@@ -3,6 +3,7 @@
 #include <GLES-Render.h>
 #include "DataSingleTon.h"
 #include "MonsterInfoSingleTon.h"
+#include "PlayerInfoSingleTon.h"
 USING_NS_CC;
 
 // 생성자 변수 초기화와 공용 변수 불러오기
@@ -155,6 +156,7 @@ Monster::~Monster()
 void Monster::moving(float dt)
 {
 	yTurnTime = yTurnTime + dt;
+	attackDelay = attackDelay + dt;
 	// HP에 따른 HP바 크기
 	hpBar->setScaleX(hp / 100.0f);
 	// 바디 이동
@@ -165,14 +167,12 @@ void Monster::moving(float dt)
 		this->ySpeed = this->ySpeed * -1;
 		yTurnTime = 0;
 	}
+
+	// 바리게이트와 충돌 시 2초마다 공격
+	if (isAttack == true && attackDelay >= 2.0)
+	{
+		PlayerInfoSingleTon::getInstance()->hp = PlayerInfoSingleTon::getInstance()->hp - damage;
+		log("플레이어 hp : %d", PlayerInfoSingleTon::getInstance()->hp);
+		attackDelay = 0;
+	}
 }
-/*
-void Monster::onEnter()
-{
-	Node::onEnter();
-	
-}
-void Monster::onExit()
-{
-	Node::onExit();
-}*/
