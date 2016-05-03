@@ -12,22 +12,25 @@ private:
 	DataSingleTon();
 
 	b2World* _world;
+	std::vector<b2Body*> * barricade;
 	std::vector<Monster*>* monsters;
 	std::vector<Bullet*>* bullets;
+
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::Size winSize;
 	b2Body * groundBody;
 public:
-	
-	b2Body * barricade;
+
 	static DataSingleTon *getInstance();
 	b2World* get_world();
+
+	std::vector<b2Body*> * getBarricade();
 	std::vector<Monster*>* getMonsters();
 	std::vector<Bullet*>* getBullets();
 	cocos2d::LayerColor* getGameLayer();
 	cocos2d::LayerColor* getMenuLayer();
-	b2Body* getBarricade();
+	//b2Body* getBarricade();
 };
 
 #endif

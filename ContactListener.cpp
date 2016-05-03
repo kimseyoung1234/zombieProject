@@ -115,14 +115,14 @@ void ContactListener::EndContact(b2Contact *contact)
 
 	b2Body *bodyA = fixA->GetBody();
 	b2Body *bodyB = fixB->GetBody();
-	//log("타입 A %d", barricade->GetType());
-	log("타입 B %d", bodyB->GetType());
+	
 	auto spriteA = (Sprite*)bodyA->GetUserData();
 	auto spriteB = (Sprite*)bodyB->GetUserData();
-	auto spriteC = (Sprite*)barricade->GetUserData();
+
 	//몬스터와 바리게이트 충돌
 	
-	if (barricade == bodyA){
+	auto _barricade = (b2Body*)barricade->at(0);
+	if (_barricade == bodyA){
 		log("바디에이");
 		for (int i = 0; i < monsters->size(); i++)
 		{

@@ -30,8 +30,9 @@ public:
 	cocos2d::Sprite * player;
 	std::vector<Monster * >* monsters;
 	std::vector<Bullet * >* bullets;
+	std::vector<b2Body * >* barricade;
 	b2Body * body;
-	b2Body* barricade;
+	//b2Body* barricade;
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::Label * levelLabel;

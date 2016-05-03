@@ -209,7 +209,7 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	barricadeBodyDef.type = b2_staticBody;
 	barricadeBodyDef.userData = b_sprite;
 
-	barricade = _world->CreateBody(&barricadeBodyDef);
+	auto _barricade = _world->CreateBody(&barricadeBodyDef);
 
 	b2FixtureDef EdgeShapeDef;
 	b2EdgeShape barricadeEdge;
@@ -218,7 +218,9 @@ bool HelloWorld::createBox2dWorld(bool debug)
 
 	barricadeEdge.Set(b2Vec2((winSize.width/2 - 280)/PTM_RATIO, 0), b2Vec2((winSize.width / 2 - 280) / PTM_RATIO, winSize.width / PTM_RATIO));
 
-	barricade->CreateFixture(&EdgeShapeDef);
+	_barricade->CreateFixture(&EdgeShapeDef);
+
+	barricade->push_back(_barricade);
 
 	myContactListener = new ContactListener();
 	_world->SetContactListener((b2ContactListener *)myContactListener);

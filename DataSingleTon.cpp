@@ -10,6 +10,7 @@ DataSingleTon::DataSingleTon() {
 	_world = new b2World(gravity);
 	monsters = new std::vector<Monster *>;
 	bullets = new std::vector<Bullet*>;
+	barricade = new std::vector<b2Body*>;
 	winSize = Director::getInstance()->getWinSize();
 	gameLayer = LayerColor::create(Color4B(0, 0, 0, 0),winSize.width,winSize.height);
 	menuLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
@@ -49,7 +50,7 @@ LayerColor* DataSingleTon::getMenuLayer()
 	return menuLayer;
 }
 
-b2Body* DataSingleTon::getBarricade()
+std::vector<b2Body*>* DataSingleTon::getBarricade()
 {
 	return barricade;
 }
