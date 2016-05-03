@@ -263,8 +263,16 @@ void HelloWorld::onExit()
 
 void HelloWorld::tick(float dt)
 {
+	//게임오버 체크
+
+	if (PlayerInfoSingleTon::getInstance()->hp <= 0)
+	{
+		gameOver();
+	}
+
 	// 진행상황 갱신
 	waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
+
 	
 	int velocityIterations = 8;
 	int positionIterations = 3;
@@ -360,6 +368,11 @@ void HelloWorld::removeObject()
 	}
 }
 
+
+void HelloWorld::gameOver()
+{
+	log("게임 오버!");
+}
 bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();

@@ -119,17 +119,15 @@ void ContactListener::EndContact(b2Contact *contact)
 	auto spriteA = (Sprite*)bodyA->GetUserData();
 	auto spriteB = (Sprite*)bodyB->GetUserData();
 
-	//몬스터와 바리게이트 충돌
+	//몬스터와 바리게이트 충돌 떨어졌을 때
 	
 	auto _barricade = (b2Body*)barricade->at(0);
 	if (_barricade == bodyA){
-		log("바디에이");
 		for (int i = 0; i < monsters->size(); i++)
 		{
 			b2Body * m_body = (b2Body*)monsters->at(i)->body;
 			if (m_body == bodyB)
 			{
-				log("들오지");
 				monsters->at(i)->isAttack = false;
 				break;
 			}

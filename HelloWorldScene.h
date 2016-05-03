@@ -64,6 +64,7 @@ public:
 	bool isWave = false;
 	void waveStart(Ref* pSender);
 	void removeObject();
+	void gameOver();
 
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
