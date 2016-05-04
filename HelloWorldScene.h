@@ -68,7 +68,7 @@ public:
 	void removeObject();
 	void gameOver();
 	void shopOpen(Ref * pSender);
-
+	void addMenu();
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 	cocos2d::CustomCommand _customCommand;

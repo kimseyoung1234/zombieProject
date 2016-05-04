@@ -50,8 +50,51 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	this->addChild(background);
+	//this->addChild(background);
 
+	// 사용자 UI 추가
+	addMenu();
+
+	// 실험용 폭탄 추가
+	auto bomb = Sprite::create("bomb.png");
+	bomb->setPosition(winSize.width / 2, winSize.height/2);
+	gameLayer->addChild(bomb);
+
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_staticBody;
+	bodyDef.position.Set(winSize.width / 2 / PTM_RATIO, winSize.height / 2 / PTM_RATIO);
+	bodyDef.userData = bomb;
+	 
+	b2Body *body = _world->CreateBody(&bodyDef);
+
+	b2FixtureDef fixtureDef;
+	b2CircleShape circle;
+
+	circle.m_radius = 1;
+	fixtureDef.shape = &circle;
+
+	fixtureDef.density = 0.5f;
+	fixtureDef.friction = 1.0f;
+	fixtureDef.restitution = 0.1;
+	body->CreateFixture(&fixtureDef);
+	
+
+
+	//월드 생성
+	if (this->createBox2dWorld(true))
+	{
+		this->schedule(schedule_selector(HelloWorld::tick));
+	}
+	player = Sprite::create("turret.png");
+	player->setPosition(Vec2(player->getContentSize().width / 2 + 80,
+		winSize.height / 2));
+	gameLayer->addChild(player);
+
+	return true;
+}
+
+void HelloWorld::addMenu()
+{
 	// 시작 버튼
 
 	auto pMenuItem = MenuItemImage::create(
@@ -60,7 +103,7 @@ bool HelloWorld::init()
 		CC_CALLBACK_1(HelloWorld::waveStart, this));
 
 	auto pMenu = Menu::create(pMenuItem, nullptr);
-	pMenu->setPosition(Vec2(winSize.width-100,winSize.height-50)); 
+	pMenu->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
 	menuLayer->addChild(pMenu);
 
 	// 현재 레벨
@@ -73,19 +116,19 @@ bool HelloWorld::init()
 	// 웨이브 진행 상황
 
 	waveProgress = Sprite::create("white-512x512.png");
-	waveProgress->setTextureRect(Rect(0, 0, 300,10));
+	waveProgress->setTextureRect(Rect(0, 0, 300, 10));
 	waveProgress->setColor(Color3B::BLUE);
 	waveProgress->setAnchorPoint(Vec2(0, 0.5));
 	waveProgress->setPosition(Vec2(winSize.width / 2 - 150, winSize.height - 50));
 	menuLayer->addChild(waveProgress);
-	
+
 	// 플레이어 HP
 
 	playerHpBar = Sprite::create("white-512x512.png");
 	playerHpBar->setTextureRect(Rect(0, 0, 200, 10));
 	playerHpBar->setColor(Color3B::RED);
 	playerHpBar->setAnchorPoint(Vec2(0, 0.5));
-	playerHpBar->setPosition(Vec2(200, winSize.height-50));
+	playerHpBar->setPosition(Vec2(200, winSize.height - 50));
 	menuLayer->addChild(playerHpBar);
 
 	// 상점 메뉴
@@ -97,18 +140,6 @@ bool HelloWorld::init()
 
 	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
 	menuLayer->addChild(shopMenu);
-
-	//월드 생성
-	if (this->createBox2dWorld(false))
-	{
-		this->schedule(schedule_selector(HelloWorld::tick));
-	}
-	player = Sprite::create("turret.png");
-	player->setPosition(Vec2(player->getContentSize().width / 2 + 80,
-		winSize.height / 2));
-	gameLayer->addChild(player);
-
-	return true;
 }
 
 void HelloWorld::shopOpen(Ref * pSender)

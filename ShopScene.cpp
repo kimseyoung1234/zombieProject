@@ -38,9 +38,24 @@ bool ShopScene::init()
 	// 레이어에 메뉴 객체 추가
 	this->addChild(exitMenu);
 
+
+	/*auto weaponItem1 = MenuItemImage::create(
+		"gun.png",
+		"gun.png",
+		CC_CALLBACK_1(ShopScene::weapon1Selected, this));
+
+	auto weaponItem2 = MenuItemImage::create(
+		"gun2.png",
+		"gun2.png",
+		CC_CALLBACK_1(ShopScene::weapon2Selected, this));
+
+	auto weaponMenu = Menu::create(weaponItem1, nullptr);
+	pMenu->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
+	menuLayer->addChild(pMenu);*/
 	return true;
 }
 
+//void ShopScene::weapon1Selected
 
 void ShopScene::shopClose(Ref * pSender)
 {
