@@ -64,11 +64,13 @@ public:
 
 	void tick(float dt);
 	
+	void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
 	void waveStart(Ref* pSender);
 	void removeObject();
 	void gameOver();
 	void shopOpen(Ref * pSender);
 	void addMenu();
+	void HelloWorld::exp(Ref * pSender);
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 	cocos2d::CustomCommand _customCommand;

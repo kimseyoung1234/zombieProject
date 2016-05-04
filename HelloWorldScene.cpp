@@ -4,6 +4,7 @@
 #include "MonsterInfoSingleTon.h"
 #include "PlayerInfoSingleTon.h"
 #include <algorithm>
+#include "MyQueryCallback.h"
 USING_NS_CC;
 
 // 몬스터 Y축 값에 따른 벡터 정렬
@@ -69,7 +70,7 @@ bool HelloWorld::init()
 
 	b2FixtureDef fixtureDef;
 	b2CircleShape circle;
-
+	
 	circle.m_radius = 1;
 	fixtureDef.shape = &circle;
 
@@ -77,7 +78,6 @@ bool HelloWorld::init()
 	fixtureDef.friction = 1.0f;
 	fixtureDef.restitution = 0.1;
 	body->CreateFixture(&fixtureDef);
-	
 
 
 	//월드 생성
@@ -89,65 +89,7 @@ bool HelloWorld::init()
 	player->setPosition(Vec2(player->getContentSize().width / 2 + 80,
 		winSize.height / 2));
 	gameLayer->addChild(player);
-
 	return true;
-}
-
-void HelloWorld::addMenu()
-{
-	// 시작 버튼
-
-	auto pMenuItem = MenuItemImage::create(
-		"btn-play-normal.png",
-		"btn-play-normal.png",
-		CC_CALLBACK_1(HelloWorld::waveStart, this));
-
-	auto pMenu = Menu::create(pMenuItem, nullptr);
-	pMenu->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
-	menuLayer->addChild(pMenu);
-
-	// 현재 레벨
-
-	levelLabel = Label::create("Level : 1", "Arial", 34);
-	levelLabel->setPosition(Vec2(100, winSize.height - 50));
-	levelLabel->setColor(Color3B::RED);
-	menuLayer->addChild(levelLabel);
-
-	// 웨이브 진행 상황
-
-	waveProgress = Sprite::create("white-512x512.png");
-	waveProgress->setTextureRect(Rect(0, 0, 300, 10));
-	waveProgress->setColor(Color3B::BLUE);
-	waveProgress->setAnchorPoint(Vec2(0, 0.5));
-	waveProgress->setPosition(Vec2(winSize.width / 2 - 150, winSize.height - 50));
-	menuLayer->addChild(waveProgress);
-
-	// 플레이어 HP
-
-	playerHpBar = Sprite::create("white-512x512.png");
-	playerHpBar->setTextureRect(Rect(0, 0, 200, 10));
-	playerHpBar->setColor(Color3B::RED);
-	playerHpBar->setAnchorPoint(Vec2(0, 0.5));
-	playerHpBar->setPosition(Vec2(200, winSize.height - 50));
-	menuLayer->addChild(playerHpBar);
-
-	// 상점 메뉴
-	auto shop = MenuItemFont::create(
-		"상점",
-		CC_CALLBACK_1(HelloWorld::shopOpen, this));
-	shop->setColor(Color3B::RED);
-	auto shopMenu = Menu::create(shop, nullptr);
-
-	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
-	menuLayer->addChild(shopMenu);
-}
-
-void HelloWorld::shopOpen(Ref * pSender)
-{
-	if (isWave == false) {
-		auto pScene = ShopScene::createScene();
-		Director::getInstance()->pushScene(pScene);
-	}
 }
 
 // 웨이브 시작 (나중에 조정)
@@ -164,29 +106,6 @@ void HelloWorld::waveStart(Ref* pSender)
 		}
 	}
 	isWave = true;
-}
-void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
-{
-	Layer::draw(renderer, transform, flags);
-
-	_customCommand.init(_globalZOrder, transform, flags);
-	_customCommand.func = CC_CALLBACK_0(HelloWorld::onDraw, this, transform, flags);
-	renderer->addCommand(&_customCommand);
-}
-
-void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
-{
-	Director* director = Director::getInstance();
-	CCASSERT(nullptr != director, "Director is null when seting matrix stack");
-	director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
-
-	GL::enableVertexAttribs(cocos2d::GL::VERTEX_ATTRIB_FLAG_POSITION);
-	_world->DrawDebugData();
-	
-	CHECK_GL_ERROR_DEBUG();
-
-	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
 }
 
 bool HelloWorld::createBox2dWorld(bool debug)
@@ -287,43 +206,21 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	return true;
 
 }
-HelloWorld::~HelloWorld()
+
+void HelloWorld::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower)
 {
-	//월드를 c++의 new로 생성했으므로 여기서 지워준다
-	delete _world;
-	_world = nullptr;
+	b2Vec2 blastDir = applyPoint - blastCenter;
+	float distance = blastDir.Normalize();
+	//ignore bodies exactly at the blast point - blast direction is undefined
+	if (distance == 0)
+		return;
+	float invDistance = 1 / distance;
+	float impulseMag = blastPower * invDistance * invDistance;
+	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint,true);
 }
- 
-void HelloWorld::onEnter()
-{
-	Layer::onEnter();
-
-	//싱글 터치 모드로 터치 리스너 등록
-	auto listener = EventListenerTouchOneByOne::create();
-	//Swallow touches only available in OneByOne mode.
-	//핸들링된 터치 이벤트를 터치 이벤트 array에서 지우겠다는 의미다.
-	listener->setSwallowTouches(true);
-
-	listener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
-	listener->onTouchMoved = CC_CALLBACK_2(HelloWorld::onTouchMoved, this);
-	listener->onTouchEnded = CC_CALLBACK_2(HelloWorld::onTouchEnded, this);
-
-	// The prioriry of the touch listener is based on the draw order of sprite
-	// 터치 리스너의 우선순위를 (노드가) 화면에 그려진 순서대로 한다
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-}
-void HelloWorld::onExit()
-{
-	//_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
-
-	Layer::onExit();
-}
-
-
 
 void HelloWorld::tick(float dt)
 {
-
 	if (!isgameOver) {
 
 		//게임오버 체크
@@ -332,7 +229,6 @@ void HelloWorld::tick(float dt)
 			PlayerInfoSingleTon::getInstance()->hp = 0;
 			gameOver();
 		}
-
 		// 웨이브 진행상황 갱신
 		waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
 
@@ -397,7 +293,6 @@ void HelloWorld::tick(float dt)
 	}
 }
 
-
 // 총알이나 몬스터 제거
 void HelloWorld::removeObject()
 {
@@ -432,6 +327,108 @@ void HelloWorld::removeObject()
 				delete mon;
 			}
 		}
+	}
+}
+
+void HelloWorld::addMenu()
+{
+	// 시작 버튼
+
+	auto pMenuItem = MenuItemImage::create(
+		"btn-play-normal.png",
+		"btn-play-normal.png",
+		CC_CALLBACK_1(HelloWorld::waveStart, this));
+
+	auto pMenu = Menu::create(pMenuItem, nullptr);
+	pMenu->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
+	menuLayer->addChild(pMenu);
+
+	// 현재 레벨
+
+	levelLabel = Label::create("Level : 1", "Arial", 34);
+	levelLabel->setPosition(Vec2(100, winSize.height - 50));
+	levelLabel->setColor(Color3B::RED);
+	menuLayer->addChild(levelLabel);
+
+	// 웨이브 진행 상황
+
+	waveProgress = Sprite::create("white-512x512.png");
+	waveProgress->setTextureRect(Rect(0, 0, 300, 10));
+	waveProgress->setColor(Color3B::BLUE);
+	waveProgress->setAnchorPoint(Vec2(0, 0.5));
+	waveProgress->setPosition(Vec2(winSize.width / 2 - 150, winSize.height - 50));
+	menuLayer->addChild(waveProgress);
+
+	// 플레이어 HP
+
+	playerHpBar = Sprite::create("white-512x512.png");
+	playerHpBar->setTextureRect(Rect(0, 0, 200, 10));
+	playerHpBar->setColor(Color3B::RED);
+	playerHpBar->setAnchorPoint(Vec2(0, 0.5));
+	playerHpBar->setPosition(Vec2(200, winSize.height - 50));
+	menuLayer->addChild(playerHpBar);
+
+	// 상점 메뉴
+	auto shop = MenuItemFont::create(
+		"상점",
+		CC_CALLBACK_1(HelloWorld::shopOpen, this));
+	shop->setColor(Color3B::RED);
+	auto shopMenu = Menu::create(shop, nullptr);
+
+	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
+	menuLayer->addChild(shopMenu);
+
+
+	// 폭파 실험용 
+	auto exp = MenuItemFont::create(
+		"폭파",
+		CC_CALLBACK_1(HelloWorld::exp, this));
+	shop->setColor(Color3B::RED);
+	auto expMenu = Menu::create(exp, nullptr);
+
+	expMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 700));
+	menuLayer->addChild(expMenu);
+
+}
+void HelloWorld::exp(Ref * pSender)
+{
+	log("폭파");
+	MyQueryCallback queryCallback; //see "World querying topic"
+	b2AABB aabb;
+	b2Vec2 center = b2Vec2(winSize.width / 2 / PTM_RATIO, winSize.height / 2 / PTM_RATIO);
+	float blastRadius = 5;
+
+	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
+	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
+	_world->QueryAABB(&queryCallback, aabb);
+
+	//check which of these bodies have their center of mass within the blast radius
+	for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
+		b2Body* body = queryCallback.foundBodies[i];
+		b2Vec2 bodyCom = body->GetWorldCenter();
+
+		//ignore bodies outside the blast range
+		if ((bodyCom - center).Length() >= blastRadius)
+		{
+			log("야아마");
+			continue;
+		}
+		applyBlastImpulse(body, center, bodyCom, 100);
+	}
+	glPointSize(6);
+	glBegin(GL_POINTS);
+	for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
+		b2Vec2 pos = queryCallback.foundBodies[i]->GetPosition();
+		glVertex2f(pos.x, pos.y);
+	}
+	glEnd();
+}
+
+void HelloWorld::shopOpen(Ref * pSender)
+{
+	if (isWave == false) {
+		auto pScene = ShopScene::createScene();
+		Director::getInstance()->pushScene(pScene);
 	}
 }
 
@@ -486,5 +483,58 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 	isAttack = false;
 }
 
+HelloWorld::~HelloWorld()
+{
+	//월드를 c++의 new로 생성했으므로 여기서 지워준다
+	delete _world;
+	_world = nullptr;
+}
 
+void HelloWorld::onEnter()
+{
+	Layer::onEnter();
 
+	//싱글 터치 모드로 터치 리스너 등록
+	auto listener = EventListenerTouchOneByOne::create();
+	//Swallow touches only available in OneByOne mode.
+	//핸들링된 터치 이벤트를 터치 이벤트 array에서 지우겠다는 의미다.
+	listener->setSwallowTouches(true);
+
+	listener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
+	listener->onTouchMoved = CC_CALLBACK_2(HelloWorld::onTouchMoved, this);
+	listener->onTouchEnded = CC_CALLBACK_2(HelloWorld::onTouchEnded, this);
+
+	// The prioriry of the touch listener is based on the draw order of sprite
+	// 터치 리스너의 우선순위를 (노드가) 화면에 그려진 순서대로 한다
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+}
+void HelloWorld::onExit()
+{
+	//_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
+
+	Layer::onExit();
+}
+
+void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+{
+	Layer::draw(renderer, transform, flags);
+
+	_customCommand.init(_globalZOrder, transform, flags);
+	_customCommand.func = CC_CALLBACK_0(HelloWorld::onDraw, this, transform, flags);
+	renderer->addCommand(&_customCommand);
+}
+
+void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
+{
+	Director* director = Director::getInstance();
+	CCASSERT(nullptr != director, "Director is null when seting matrix stack");
+	director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
+
+	GL::enableVertexAttribs(cocos2d::GL::VERTEX_ATTRIB_FLAG_POSITION);
+	_world->DrawDebugData();
+
+	CHECK_GL_ERROR_DEBUG();
+
+	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+}
