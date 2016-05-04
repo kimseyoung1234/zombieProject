@@ -37,6 +37,7 @@ public:
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::Label * levelLabel;
 	cocos2d::Sprite * waveProgress;
+	cocos2d::Sprite * playerHpBar;
 	ContactListener* myContactListener;
 
 	cocos2d::Size winSize;
@@ -62,6 +63,7 @@ public:
 	void tick(float dt);
 	
 	bool isWave = false;
+	bool isgameOver = false;
 	void waveStart(Ref* pSender);
 	void removeObject();
 	void gameOver();

@@ -169,6 +169,7 @@ void Monster::moving(float dt)
 		yTurnTime = 0;
 	}
 
+	// 몬스터 피격스 3초동안만 hpBar가 보임
 	if (hpBarShowTime >= 3.0)
 	{
 		hpBar->setVisible(false);

@@ -20,6 +20,7 @@ MonsterInfoSingleTon * MonsterInfoSingleTon::getInstance()
 }
 
 
+// 스테이지 클리어하면 레벨업
 void MonsterInfoSingleTon::level_up()
 {
 	this->level++;

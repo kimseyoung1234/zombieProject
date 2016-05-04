@@ -77,6 +77,15 @@ bool HelloWorld::init()
 	waveProgress->setAnchorPoint(Vec2(0, 0.5));
 	waveProgress->setPosition(Vec2(winSize.width / 2 - 150, winSize.height - 50));
 	menuLayer->addChild(waveProgress);
+	
+	// 플레이어 HP
+
+	playerHpBar = Sprite::create("white-512x512.png");
+	playerHpBar->setTextureRect(Rect(0, 0, 200, 10));
+	playerHpBar->setColor(Color3B::RED);
+	playerHpBar->setAnchorPoint(Vec2(0, 0.5));
+	playerHpBar->setPosition(Vec2(200, winSize.height-50));
+	menuLayer->addChild(playerHpBar);
 
 	//월드 생성
 	if (this->createBox2dWorld(true))
@@ -91,6 +100,7 @@ bool HelloWorld::init()
 	return true;
 }
 
+// 웨이브 시작 (나중에 조정)
 void HelloWorld::waveStart(Ref* pSender)
 {
 	if (isWave == false) {
@@ -263,70 +273,77 @@ void HelloWorld::onExit()
 
 void HelloWorld::tick(float dt)
 {
-	//게임오버 체크
 
-	if (PlayerInfoSingleTon::getInstance()->hp <= 0)
-	{
-		gameOver();
-	}
+	if (!isgameOver) {
 
-	// 진행상황 갱신
-	waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
-
-	
-	int velocityIterations = 8;
-	int positionIterations = 3;
-
-	_world->Step(dt, velocityIterations, positionIterations);
-
-	// Z_order 재설정하기 위해 몬스터 Y축 기준으로 벡터의 오름차순 정렬
-	sort(monsters->begin(), monsters->end(),comp);
-
-	// 몬스터 Y축 값에 따른 Z_order 재설정
-	for (int i = 0; i < monsters->size(); i++)
-	{
-		auto mon = (Monster*)monsters->at(i);
-		auto sprite = (Sprite*)mon->body->GetUserData();
-		sprite->setZOrder(i + 100);
-		mon->hpBar->setZOrder(i + 100);
-	}
-
-	// 오브젝트 제거
-	removeObject();
-
-	//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
-	//만들어진 객체만큼 루프를 돌리면서 바디에 붙인 스프라이트를 여기서 제어한다
-	for (b2Body *b = _world->GetBodyList(); b; b = b->GetNext())
-	{
-		if (b->GetUserData() != nullptr)
+		//게임오버 체크
+		if (PlayerInfoSingleTon::getInstance()->hp <= 0)
 		{
-			Sprite* spriteData = (Sprite *)b->GetUserData();
-			spriteData->setPosition(Vec2(b->GetPosition().x * PTM_RATIO,
-				b->GetPosition().y *PTM_RATIO));
-			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
+			PlayerInfoSingleTon::getInstance()->hp = 0;
+			gameOver();
 		}
-	}
 
-	// 터치 누르고 있을 시 자동 공격
-	attackDelayTime = attackDelayTime + dt;
-	if (isAttack) {
-		Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
-		Vec2 nPos2 = player->convertToWorldSpace(nPos1);
-		if (attackDelayTime >= 0.2) {
-			attackDelayTime = 0;	
-			Bullet * bullet = new Bullet(nPos2, 1);
-			bullets->push_back(bullet);
-			bullet->body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
+		// 웨이브 진행상황 갱신
+		waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
+
+		// 플레이어 HP바 갱신
+		playerHpBar->setScaleX(PlayerInfoSingleTon::getInstance()->hp / 100.0f);
+
+		int velocityIterations = 8;
+		int positionIterations = 3;
+
+		_world->Step(dt, velocityIterations, positionIterations);
+
+		// Z_order 재설정하기 위해 몬스터 Y축 기준으로 벡터의 오름차순 정렬
+		sort(monsters->begin(), monsters->end(), comp);
+
+		// 몬스터 Y축 값에 따른 Z_order 재설정
+		for (int i = 0; i < monsters->size(); i++)
+		{
+			auto mon = (Monster*)monsters->at(i);
+			auto sprite = (Sprite*)mon->body->GetUserData();
+			sprite->setZOrder(i + 100);
+			mon->hpBar->setZOrder(i + 100);
 		}
-	}
 
-	// 스테이지 클리어 체크
-	if (monsters->size() == 0 && isWave == true)
-	{
-		log("클리어!");
-		MonsterInfoSingleTon::getInstance()->level_up();
-		levelLabel->setString((String::createWithFormat("Level : %d", MonsterInfoSingleTon::getInstance()->level)->getCString()));
-		isWave = false;
+		// 오브젝트 제거
+		removeObject();
+
+		//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
+		//만들어진 객체만큼 루프를 돌리면서 바디에 붙인 스프라이트를 여기서 제어한다
+		for (b2Body *b = _world->GetBodyList(); b; b = b->GetNext())
+		{
+			if (b->GetUserData() != nullptr)
+			{
+				Sprite* spriteData = (Sprite *)b->GetUserData();
+				spriteData->setPosition(Vec2(b->GetPosition().x * PTM_RATIO,
+					b->GetPosition().y *PTM_RATIO));
+				spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
+			}
+		}
+
+		// 터치 누르고 있을 시 자동 공격
+		attackDelayTime = attackDelayTime + dt;
+		if (isAttack) {
+			Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
+			Vec2 nPos2 = player->convertToWorldSpace(nPos1);
+			if (attackDelayTime >= 0.2) {
+				attackDelayTime = 0;
+				Bullet * bullet = new Bullet(nPos2, 1);
+				bullets->push_back(bullet);
+				bullet->body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
+			}
+		}
+
+		// 스테이지 클리어 체크
+		if (monsters->size() == 0 && isWave == true)
+		{
+			log("클리어!");
+			MonsterInfoSingleTon::getInstance()->level_up();
+			PlayerInfoSingleTon::getInstance()->hp = 100;
+			levelLabel->setString((String::createWithFormat("Level : %d", MonsterInfoSingleTon::getInstance()->level)->getCString()));
+			isWave = false;
+		}
 	}
 }
 
@@ -371,8 +388,10 @@ void HelloWorld::removeObject()
 
 void HelloWorld::gameOver()
 {
+	isgameOver = true;
 	log("게임 오버!");
 }
+
 bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();
