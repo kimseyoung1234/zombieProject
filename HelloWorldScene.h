@@ -32,7 +32,6 @@ public:
 	std::vector<Bullet * >* bullets;
 	std::vector<b2Body * >* barricade;
 	b2Body * body;
-	//b2Body* barricade;
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::Label * levelLabel;
@@ -49,7 +48,10 @@ public:
 	b2Vec2 attackVector;
 	float attackDelayTime = 0.3;
 	bool isAttack = false;
-	////////////////////////물리
+	bool isWave = false;
+	bool isgameOver = false;
+
+	////////////////////////
 
 	bool createBox2dWorld(bool debug);
 	~HelloWorld();
@@ -62,11 +64,10 @@ public:
 
 	void tick(float dt);
 	
-	bool isWave = false;
-	bool isgameOver = false;
 	void waveStart(Ref* pSender);
 	void removeObject();
 	void gameOver();
+	void shopOpen(Ref * pSender);
 
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

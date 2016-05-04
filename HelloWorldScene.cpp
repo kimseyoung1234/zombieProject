@@ -1,4 +1,5 @@
 ﻿#include "HelloWorldScene.h"
+#include "ShopScene.h"
 #include "DataSingleTon.h"
 #include "MonsterInfoSingleTon.h"
 #include "PlayerInfoSingleTon.h"
@@ -87,6 +88,16 @@ bool HelloWorld::init()
 	playerHpBar->setPosition(Vec2(200, winSize.height-50));
 	menuLayer->addChild(playerHpBar);
 
+	// 상점 메뉴
+	auto shop = MenuItemFont::create(
+		"상점",
+		CC_CALLBACK_1(HelloWorld::shopOpen, this));
+	shop->setColor(Color3B::RED);
+	auto shopMenu = Menu::create(shop, nullptr);
+
+	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
+	menuLayer->addChild(shopMenu);
+
 	//월드 생성
 	if (this->createBox2dWorld(false))
 	{
@@ -98,6 +109,14 @@ bool HelloWorld::init()
 	gameLayer->addChild(player);
 
 	return true;
+}
+
+void HelloWorld::shopOpen(Ref * pSender)
+{
+	if (isWave == false) {
+		auto pScene = ShopScene::createScene();
+		Director::getInstance()->pushScene(pScene);
+	}
 }
 
 // 웨이브 시작 (나중에 조정)
@@ -264,7 +283,7 @@ void HelloWorld::onEnter()
 }
 void HelloWorld::onExit()
 {
-	_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
+	//_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
 
 	Layer::onExit();
 }
