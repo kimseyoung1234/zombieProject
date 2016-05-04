@@ -61,7 +61,7 @@ bool HelloWorld::init()
 	bomb->setPosition(winSize.width / 2, winSize.height/2);
 	gameLayer->addChild(bomb);
 
-	b2BodyDef bodyDef;
+	/*b2BodyDef bodyDef;
 	bodyDef.type = b2_staticBody;
 	bodyDef.position.Set(winSize.width / 2 / PTM_RATIO, winSize.height / 2 / PTM_RATIO);
 	bodyDef.userData = bomb;
@@ -78,7 +78,7 @@ bool HelloWorld::init()
 	fixtureDef.friction = 1.0f;
 	fixtureDef.restitution = 0.1;
 	body->CreateFixture(&fixtureDef);
-
+	*/
 
 	//월드 생성
 	if (this->createBox2dWorld(true))
@@ -395,9 +395,11 @@ void HelloWorld::exp(Ref * pSender)
 	log("폭파");
 	MyQueryCallback queryCallback; //see "World querying topic"
 	b2AABB aabb;
+	// center : 폭탄 중심 위치
 	b2Vec2 center = b2Vec2(winSize.width / 2 / PTM_RATIO, winSize.height / 2 / PTM_RATIO);
+	// 폭발 범위
 	float blastRadius = 5;
-
+	// 폭발 바운딩박스 위치와 크기 
 	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
 	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
 	_world->QueryAABB(&queryCallback, aabb);
@@ -410,18 +412,25 @@ void HelloWorld::exp(Ref * pSender)
 		//ignore bodies outside the blast range
 		if ((bodyCom - center).Length() >= blastRadius)
 		{
-			log("야아마");
 			continue;
 		}
-		applyBlastImpulse(body, center, bodyCom, 100);
+		for (int k = 0; k < monsters->size(); k++)
+		{
+			b2Body * m_body = (b2Body*)monsters->at(k)->body;
+			if (body == m_body)
+			{
+				monsters->at(k)->hp = monsters->at(k)->hp - 10;
+				monsters->at(k)->hpBar->setVisible(true);
+				monsters->at(k)->hpBarShowTime = 0;
+				applyBlastImpulse(body, center, bodyCom, 100);
+				break;
+			}
+		}
 	}
-	glPointSize(6);
-	glBegin(GL_POINTS);
-	for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
+	// 드로우노드 할라다가 일단 안함	
+	/*for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
 		b2Vec2 pos = queryCallback.foundBodies[i]->GetPosition();
-		glVertex2f(pos.x, pos.y);
-	}
-	glEnd();
+	}*/
 }
 
 void HelloWorld::shopOpen(Ref * pSender)
@@ -435,7 +444,7 @@ void HelloWorld::shopOpen(Ref * pSender)
 
 void HelloWorld::gameOver()
 {
-	isgameOver = true;
+	//isgameOver = true;
 	log("게임 오버!");
 }
 

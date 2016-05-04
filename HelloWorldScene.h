@@ -70,7 +70,10 @@ public:
 	void gameOver();
 	void shopOpen(Ref * pSender);
 	void addMenu();
+
+	//실험
 	void HelloWorld::exp(Ref * pSender);
+	DrawNode * draw_node;
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 	cocos2d::CustomCommand _customCommand;

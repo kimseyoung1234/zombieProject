@@ -5,6 +5,6 @@ bool MyQueryCallback::ReportFixture(b2Fixture* fixture) {
 
 	foundBodies.push_back(fixture->GetBody());
 
-	log("범위안에있다");
+//	log("범위안에있다");
 	return true;
 }
