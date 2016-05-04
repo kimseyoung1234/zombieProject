@@ -138,7 +138,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	hpBar = Sprite::create("white-512x512.png");
 	hpBar->setTextureRect(Rect(0, 0, 25, 5));
 	hpBar->setColor(Color3B::RED);
-
+	hpBar->setVisible(false);
 	Size parentSize;
 	parentSize = zombie->getContentSize();
 	hpBar->setPosition(Vec2(parentSize.width / 2.0, parentSize.height + 10));
@@ -157,6 +157,7 @@ void Monster::moving(float dt)
 {
 	yTurnTime = yTurnTime + dt;
 	attackDelay = attackDelay + dt;
+	hpBarShowTime = hpBarShowTime + dt;
 	// HP에 따른 HP바 크기
 	hpBar->setScaleX(hp / 100.0f);
 	// 바디 이동
@@ -166,6 +167,11 @@ void Monster::moving(float dt)
 	{
 		this->ySpeed = this->ySpeed * -1;
 		yTurnTime = 0;
+	}
+
+	if (hpBarShowTime >= 3.0)
+	{
+		hpBar->setVisible(false);
 	}
 
 	// 바리게이트와 충돌 시 2초마다 공격

@@ -25,6 +25,7 @@ public:
 	int damage;
 	bool isAttack = false;
 	float attackDelay = 1.0;
+	float hpBarShowTime = 0;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;

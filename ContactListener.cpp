@@ -44,6 +44,8 @@ void ContactListener::BeginContact(b2Contact *contact)
 							{
 								//log("몬스터 HP : %d", monsters->at(i)->hp);
 								monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;
+								monsters->at(i)->hpBar->setVisible(true);
+								monsters->at(i)->hpBarShowTime = 0;
 								bullets->at(k)->isRemove = true;
 								//log("몬스터 HP : %d", monsters->at(i)->hp);
 								break;
