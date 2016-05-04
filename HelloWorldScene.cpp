@@ -88,7 +88,7 @@ bool HelloWorld::init()
 	menuLayer->addChild(playerHpBar);
 
 	//월드 생성
-	if (this->createBox2dWorld(true))
+	if (this->createBox2dWorld(false))
 	{
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
@@ -215,20 +215,20 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	gameLayer->addChild(b_sprite);
 
 	b2BodyDef barricadeBodyDef;
-	barricadeBodyDef.position.Set(0, 0);
+	barricadeBodyDef.position.Set((winSize.width/2- 360) /PTM_RATIO, winSize.height / 2 / PTM_RATIO);
 	barricadeBodyDef.type = b2_staticBody;
 	barricadeBodyDef.userData = b_sprite;
 
 	auto _barricade = _world->CreateBody(&barricadeBodyDef);
 
-	b2FixtureDef EdgeShapeDef;
-	b2EdgeShape barricadeEdge;
-	EdgeShapeDef.shape = &barricadeEdge;
-	EdgeShapeDef.filter.groupIndex = -10;
+	b2FixtureDef BoxShapeDef;
+	b2PolygonShape barricadeBox;
+	BoxShapeDef.shape = &barricadeBox;
+	BoxShapeDef.filter.groupIndex = -10;
 
-	barricadeEdge.Set(b2Vec2((winSize.width/2 - 280)/PTM_RATIO, 0), b2Vec2((winSize.width / 2 - 280) / PTM_RATIO, winSize.width / PTM_RATIO));
+	barricadeBox.SetAsBox(100 / PTM_RATIO, winSize.height / PTM_RATIO);
 
-	_barricade->CreateFixture(&EdgeShapeDef);
+	_barricade->CreateFixture(&BoxShapeDef);
 
 	barricade->push_back(_barricade);
 
