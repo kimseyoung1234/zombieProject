@@ -5,6 +5,7 @@
 #include "PlayerInfoSingleTon.h"
 #include <algorithm>
 #include "MyQueryCallback.h"
+
 USING_NS_CC;
 
 // 몬스터 Y축 값에 따른 벡터 정렬
@@ -43,6 +44,7 @@ bool HelloWorld::init()
 	bullets = DataSingleTon::getInstance()->getBullets();
 	winSize = Director::getInstance()->getWinSize();
 	barricade = DataSingleTon::getInstance()->getBarricade();
+	traps = DataSingleTon::getInstance()->getTraps();
 	
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
@@ -56,30 +58,17 @@ bool HelloWorld::init()
 	// 사용자 UI 추가
 	addMenu();
 
+	//////////////////
 	// 실험용 폭탄 추가
-	auto bomb = Sprite::create("bomb.png");
-	bomb->setPosition(winSize.width / 2, winSize.height/2);
-	gameLayer->addChild(bomb);
+	auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2),1);
+	gameLayer->addChild(trap);
+	traps->push_back(trap);
 
-	/*b2BodyDef bodyDef;
-	bodyDef.type = b2_staticBody;
-	bodyDef.position.Set(winSize.width / 2 / PTM_RATIO, winSize.height / 2 / PTM_RATIO);
-	bodyDef.userData = bomb;
-	 
-	b2Body *body = _world->CreateBody(&bodyDef);
+	auto trap2 = new Trap(Vec2(winSize.width / 2 - 200, winSize.height / 2), 1);
+	gameLayer->addChild(trap2);
+	traps->push_back(trap2);
 
-	b2FixtureDef fixtureDef;
-	b2CircleShape circle;
-	
-	circle.m_radius = 1;
-	fixtureDef.shape = &circle;
-
-	fixtureDef.density = 0.5f;
-	fixtureDef.friction = 1.0f;
-	fixtureDef.restitution = 0.1;
-	body->CreateFixture(&fixtureDef);
-	*/
-
+	///////////////////////
 	//월드 생성
 	if (this->createBox2dWorld(true))
 	{
@@ -204,25 +193,11 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	myContactListener = new ContactListener();
 	_world->SetContactListener((b2ContactListener *)myContactListener);
 	return true;
-
-}
-
-void HelloWorld::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower)
-{
-	b2Vec2 blastDir = applyPoint - blastCenter;
-	float distance = blastDir.Normalize();
-	//ignore bodies exactly at the blast point - blast direction is undefined
-	if (distance == 0)
-		return;
-	float invDistance = 1 / distance;
-	float impulseMag = blastPower * invDistance * invDistance;
-	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint,true);
 }
 
 void HelloWorld::tick(float dt)
 {
 	if (!isgameOver) {
-
 		//게임오버 체크
 		if (PlayerInfoSingleTon::getInstance()->hp <= 0)
 		{
@@ -330,6 +305,122 @@ void HelloWorld::removeObject()
 	}
 }
 
+
+void HelloWorld::trigger(Trap* trap)
+{
+	MyQueryCallback queryCallback; //see "World querying topic"
+	b2AABB aabb;
+	// center : 폭탄 중심 위치
+	b2Vec2 center = b2Vec2(trap->position.x / PTM_RATIO, trap->position.y / PTM_RATIO);
+	// 폭발 범위
+	float blastRadius = 5;
+	// 폭발 바운딩박스 위치와 크기 
+	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
+	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
+	_world->QueryAABB(&queryCallback, aabb);
+
+	//check which of these bodies have their center of mass within the blast radius
+	for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
+		b2Body* body = queryCallback.foundBodies[i];
+		b2Vec2 bodyCom = body->GetWorldCenter();
+
+		//ignore bodies outside the blast range
+		if ((bodyCom - center).Length() >= blastRadius)
+		{
+			continue;
+		}
+		for (int k = 0; k < monsters->size(); k++)
+		{
+			b2Body * m_body = (b2Body*)monsters->at(k)->body;
+			if (body == m_body)
+			{
+				monsters->at(k)->hp = monsters->at(k)->hp - 10;
+				monsters->at(k)->hpBar->setVisible(true);
+				monsters->at(k)->hpBarShowTime = 0;
+				applyBlastImpulse(body, center, bodyCom, 100);
+				break;
+			}
+		}
+	}
+}
+
+void HelloWorld::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower)
+{
+	b2Vec2 blastDir = applyPoint - blastCenter;
+	float distance = blastDir.Normalize();
+	//ignore bodies exactly at the blast point - blast direction is undefined
+	if (distance == 0)
+		return;
+	float invDistance = 1 / distance;
+	float impulseMag = blastPower * invDistance * invDistance;
+	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
+}
+
+bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
+{
+	auto touchPoint = touch->getLocation();
+
+	for (int i = traps->size() - 1; i >= 0; i--)
+	{
+		auto trap = (Trap*)traps->at(i);
+		// 트랩이 눌렸다면
+		if (trap->sprite->getBoundingBox().containsPoint(touchPoint))
+		{
+			trigger(trap);
+			// 효과 적용 후 삭제
+			gameLayer->removeChild(trap->sprite);
+			gameLayer->removeChild(trap);
+			traps->erase(traps->begin() + i);
+			//delete trap;
+			return true;
+		}
+	}
+
+	// 플레이어 기준으로 터치지점 방향벡터 구하기
+	Vec2 shootVector = touchPoint - player->getPosition();
+	Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
+	Vec2 nPos2 = player->convertToWorldSpace(nPos1);
+	shootVector.normalize();
+
+	attackVector = b2Vec2(shootVector.x, shootVector.y);
+
+	// 누르고 공격가능 하면 총알 생성
+	if (attackDelayTime >= 0.2) {
+		isAttack = true;
+		attackDelayTime = 0;
+		Bullet * bullet = new Bullet(nPos2, 1);
+		bullets->push_back(bullet);
+		bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+	}
+	return true;
+}
+
+
+void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
+{
+	auto touchPoint = touch->getLocation();
+
+	Vec2 shootVector = touchPoint - player->getPosition();
+	shootVector.normalize();
+	attackVector = b2Vec2(shootVector.x, shootVector.y);
+
+	if (attackDelayTime >= 0.2)
+	{
+		isAttack = true;
+	}
+}
+
+void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
+{
+	isAttack = false;
+}
+
+
+void HelloWorld::gameOver()
+{
+	//isgameOver = true;
+	log("게임 오버!");
+}
 void HelloWorld::addMenu()
 {
 	// 시작 버튼
@@ -378,118 +469,13 @@ void HelloWorld::addMenu()
 	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
 	menuLayer->addChild(shopMenu);
 
-
-	// 폭파 실험용 
-	auto exp = MenuItemFont::create(
-		"폭파",
-		CC_CALLBACK_1(HelloWorld::exp, this));
-	shop->setColor(Color3B::RED);
-	auto expMenu = Menu::create(exp, nullptr);
-
-	expMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 700));
-	menuLayer->addChild(expMenu);
-
 }
-void HelloWorld::exp(Ref * pSender)
-{
-	log("폭파");
-	MyQueryCallback queryCallback; //see "World querying topic"
-	b2AABB aabb;
-	// center : 폭탄 중심 위치
-	b2Vec2 center = b2Vec2(winSize.width / 2 / PTM_RATIO, winSize.height / 2 / PTM_RATIO);
-	// 폭발 범위
-	float blastRadius = 5;
-	// 폭발 바운딩박스 위치와 크기 
-	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
-	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
-	_world->QueryAABB(&queryCallback, aabb);
-
-	//check which of these bodies have their center of mass within the blast radius
-	for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
-		b2Body* body = queryCallback.foundBodies[i];
-		b2Vec2 bodyCom = body->GetWorldCenter();
-
-		//ignore bodies outside the blast range
-		if ((bodyCom - center).Length() >= blastRadius)
-		{
-			continue;
-		}
-		for (int k = 0; k < monsters->size(); k++)
-		{
-			b2Body * m_body = (b2Body*)monsters->at(k)->body;
-			if (body == m_body)
-			{
-				monsters->at(k)->hp = monsters->at(k)->hp - 10;
-				monsters->at(k)->hpBar->setVisible(true);
-				monsters->at(k)->hpBarShowTime = 0;
-				applyBlastImpulse(body, center, bodyCom, 100);
-				break;
-			}
-		}
-	}
-	// 드로우노드 할라다가 일단 안함	
-	/*for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
-		b2Vec2 pos = queryCallback.foundBodies[i]->GetPosition();
-	}*/
-}
-
 void HelloWorld::shopOpen(Ref * pSender)
 {
 	if (isWave == false) {
 		auto pScene = ShopScene::createScene();
 		Director::getInstance()->pushScene(pScene);
 	}
-}
-
-
-void HelloWorld::gameOver()
-{
-	//isgameOver = true;
-	log("게임 오버!");
-}
-
-bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
-{
-	auto touchPoint = touch->getLocation();
-
-	// 플레이어 기준으로 터치지점 방향벡터 구하기
-	Vec2 shootVector = touchPoint - player->getPosition();
-	Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
-	Vec2 nPos2 = player->convertToWorldSpace(nPos1);
-	shootVector.normalize();
-
-	attackVector = b2Vec2(shootVector.x, shootVector.y);
-
-	// 누르고 공격가능 하면 총알 생성
-	if (attackDelayTime >= 0.2) {
-		isAttack = true;
-		attackDelayTime = 0;
-		Bullet * bullet = new Bullet(nPos2, 1);
-		bullets->push_back(bullet);
-		bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
-	}
-	return true;
-}
-
-
-void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
-{
-	auto touchPoint = touch->getLocation();
-
-	Vec2 shootVector = touchPoint - player->getPosition();
-	shootVector.normalize();
-	attackVector = b2Vec2(shootVector.x, shootVector.y);
-
-	if (attackDelayTime >= 0.2)
-	{
-		isAttack = true;
-	}
-}
-
-// 손가락을 화면에서 떼는 순간 호출된다
-void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
-{
-	isAttack = false;
 }
 
 HelloWorld::~HelloWorld()
@@ -523,7 +509,6 @@ void HelloWorld::onExit()
 
 	Layer::onExit();
 }
-
 void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 {
 	Layer::draw(renderer, transform, flags);
@@ -532,7 +517,6 @@ void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 	_customCommand.func = CC_CALLBACK_0(HelloWorld::onDraw, this, transform, flags);
 	renderer->addCommand(&_customCommand);
 }
-
 void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
 {
 	Director* director = Director::getInstance();

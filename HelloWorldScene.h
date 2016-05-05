@@ -7,7 +7,7 @@
 #include "Monster.h"
 #include "Bullet.h"
 #include "ContactListener.h"
-
+#include "Trap.h"
 
 #define PTM_RATIO 32
 
@@ -31,6 +31,7 @@ public:
 	std::vector<Monster * >* monsters;
 	std::vector<Bullet * >* bullets;
 	std::vector<b2Body * >* barricade;
+	std::vector<Trap *>* traps;
 	b2Body * body;
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
@@ -72,7 +73,7 @@ public:
 	void addMenu();
 
 	//실험
-	void HelloWorld::exp(Ref * pSender);
+	void trigger(Trap* trap);
 	DrawNode * draw_node;
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

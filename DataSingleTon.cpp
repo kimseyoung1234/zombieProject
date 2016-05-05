@@ -11,6 +11,7 @@ DataSingleTon::DataSingleTon() {
 	monsters = new std::vector<Monster *>;
 	bullets = new std::vector<Bullet*>;
 	barricade = new std::vector<b2Body*>;
+	traps = new std::vector<Trap*>;
 	winSize = Director::getInstance()->getWinSize();
 	gameLayer = LayerColor::create(Color4B(0, 0, 0, 0),winSize.width,winSize.height);
 	menuLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
@@ -41,6 +42,10 @@ std::vector<Bullet*>* DataSingleTon::getBullets()
 	return bullets;
 }
 
+std::vector<Trap*>* DataSingleTon::getTraps()
+{
+	return traps;
+}
 LayerColor* DataSingleTon::getGameLayer()
 {
 	return gameLayer;

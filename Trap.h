@@ -6,16 +6,15 @@
 class Trap : public cocos2d::Sprite {
 public:
 
-	Trap(cocos2d::Vec2 position);
+	Trap(cocos2d::Vec2 position,int type);
 
 	cocos2d::Vec2 position;
 	cocos2d::Sprite * sprite;
+	int type;
+	cocos2d::LayerColor* gameLayer;
 
 	virtual void onEnter();
 	virtual void onExit();
-	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
-	virtual void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
-	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
 
 };
 
