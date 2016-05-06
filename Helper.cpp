@@ -22,7 +22,6 @@ Helper::Helper(Vec2 position, int type)
 
 	this->sprite = sprite;
 
-	this->schedule(schedule_selector(Helper::autoAttack));
 }
 
 void Helper::autoAttack(float dt)
@@ -50,7 +49,7 @@ void Helper::autoAttack(float dt)
 void Helper::onEnter()
 {
 	Sprite::onEnter();
-
+	this->schedule(schedule_selector(Helper::autoAttack));
 }
 
 void Helper::onExit()

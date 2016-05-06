@@ -1,32 +1,25 @@
-#ifndef __SHOP_SCENE_H__
-#define __SHOP_SCENE_H__
+#ifndef __TableViewLayer_H__
+#define __TableViewLayer_H__
 
 #include "cocos2d.h"
 #include "extensions\/cocos-ext.h"
 #include "CustomTableViewCell.h"
-#include "TableViewLayer.h"
+
 using namespace cocos2d;
 using namespace cocos2d::extension;
 
-class ShopScene : public cocos2d::LayerColor
+class TableViewLayer : public cocos2d::LayerColor
 	, public cocos2d::extension::TableViewDataSource
 	, public cocos2d::extension::TableViewDelegate
 {
 public:
-	static cocos2d::Scene* createScene();
-
-	virtual bool init();
-
-	CREATE_FUNC(ShopScene);
-
 
 	Size winSize;
 
-	int count = 0;
+	TableViewLayer();
 
-	void shopClose(Ref * pSender);
-	void upgrade(Ref * pSender);
-	void buy(Ref * pSender);
+	virtual bool init();
+	CREATE_FUNC(TableViewLayer);
 
 	virtual void scrollViewDidScroll(ScrollView *view);
 	virtual void scrollViewDidZoom(ScrollView *view);

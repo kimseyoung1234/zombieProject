@@ -503,8 +503,8 @@ void HelloWorld::addMenu()
 
 	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
 	menuLayer->addChild(shopMenu);
-
 }
+
 void HelloWorld::shopOpen(Ref * pSender)
 {
 	if (isWave == false) {
