@@ -11,10 +11,12 @@ public:
 
 	cocos2d::Sprite * sprite;
 	int type;
+	float attackDelayTime = 0;
 
 	cocos2d::LayerColor* gameLayer;
 	std::vector<Monster *>* monsters;
 	std::vector<Bullet *>* bullets;
+
 
 	void autoAttack(float dt);
 	virtual void onEnter();

@@ -87,7 +87,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 		}
 		zombie = Sprite::create("superZombie_Move.png", Rect(0, 0, 50, 45));
 	}
-
+	this->sprite = zombie;
 	zombie->setTag(MONSTER);
 	zombie->setScale(1.5f);
 	gameLayer->addChild(zombie);

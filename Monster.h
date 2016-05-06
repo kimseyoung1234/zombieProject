@@ -19,6 +19,7 @@ public:
 	~Monster();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
 	b2Body* body;
+	cocos2d::Sprite* sprite;
 	cocos2d::Sprite* hpBar;
 
 	int hp;
