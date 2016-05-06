@@ -63,7 +63,7 @@ bool HelloWorld::init()
 	auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2),1);
 	gameLayer->addChild(trap);
 	traps->push_back(trap);
-
+	log("winsize : %f x %f", winSize.width, winSize.height);
 	auto trap2 = new Trap(Vec2(winSize.width / 2 - 200, winSize.height / 2), 1);
 	gameLayer->addChild(trap2);
 	traps->push_back(trap2);
@@ -313,7 +313,7 @@ void HelloWorld::trigger(Trap* trap)
 	// center : 폭탄 중심 위치
 	b2Vec2 center = b2Vec2(trap->sprite->getPosition().x / PTM_RATIO, trap->sprite->getPosition().y / PTM_RATIO);
 	// 폭발 범위
-	float blastRadius = 5;
+	float blastRadius = 5.0;
 	// 폭발 바운딩박스 위치와 크기 
 	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
 	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
