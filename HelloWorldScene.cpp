@@ -311,7 +311,7 @@ void HelloWorld::trigger(Trap* trap)
 	MyQueryCallback queryCallback; //see "World querying topic"
 	b2AABB aabb;
 	// center : 폭탄 중심 위치
-	b2Vec2 center = b2Vec2(trap->position.x / PTM_RATIO, trap->position.y / PTM_RATIO);
+	b2Vec2 center = b2Vec2(trap->sprite->getPosition().x / PTM_RATIO, trap->sprite->getPosition().y / PTM_RATIO);
 	// 폭발 범위
 	float blastRadius = 5;
 	// 폭발 바운딩박스 위치와 크기 
@@ -334,7 +334,7 @@ void HelloWorld::trigger(Trap* trap)
 			b2Body * m_body = (b2Body*)monsters->at(k)->body;
 			if (body == m_body)
 			{
-				monsters->at(k)->hp = monsters->at(k)->hp - 10;
+				monsters->at(k)->hp = monsters->at(k)->hp - 50;
 				monsters->at(k)->hpBar->setVisible(true);
 				monsters->at(k)->hpBarShowTime = 0;
 				applyBlastImpulse(body, center, bodyCom, 100);
@@ -359,20 +359,37 @@ void HelloWorld::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 appl
 bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();
-
-	for (int i = traps->size() - 1; i >= 0; i--)
-	{
-		auto trap = (Trap*)traps->at(i);
-		// 트랩이 눌렸다면
-		if (trap->sprite->getBoundingBox().containsPoint(touchPoint))
+	 
+	// 웨이브 도중 트랩 누르면 폭발
+	if (isWave) {
+		for (int i = traps->size() - 1; i >= 0; i--)
 		{
-			trigger(trap);
-			// 효과 적용 후 삭제
-			gameLayer->removeChild(trap->sprite);
-			gameLayer->removeChild(trap);
-			traps->erase(traps->begin() + i);
-			//delete trap;
-			return true;
+			auto trap = (Trap*)traps->at(i);
+			// 트랩이 눌렸다면
+			if (trap->sprite->getBoundingBox().containsPoint(touchPoint))
+			{
+				trigger(trap);
+				// 효과 적용 후 삭제
+				gameLayer->removeChild(trap->sprite);
+				gameLayer->removeChild(trap);
+				traps->erase(traps->begin() + i);
+				return true;
+			}
+		}
+	}
+	// 준비시간때 트랩 드래그앤 드롭으로 옮기기 위해 selectedTrap값 갱신
+	else
+	{
+		for (int i = traps->size() - 1; i >= 0; i--)
+		{
+			auto trap = (Trap*)traps->at(i);
+			// 트랩이 눌렸다면
+			if (trap->sprite->getBoundingBox().containsPoint(touchPoint))
+			{
+				selectedTrap = trap->sprite;
+				isSelectedTrap = true;
+				return true;
+			}
 		}
 	}
 
@@ -395,24 +412,35 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	return true;
 }
 
-
 void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();
 
-	Vec2 shootVector = touchPoint - player->getPosition();
-	shootVector.normalize();
-	attackVector = b2Vec2(shootVector.x, shootVector.y);
+	// 트랩 옮기는 중이라면
+	if (isSelectedTrap) {
+		
+		auto target = static_cast<Sprite*>(selectedTrap);
+		target->setPosition(target->getPosition() + touch->getDelta());
+	}
+	// 아니라면 공격
+	else {
+		Vec2 shootVector = touchPoint - player->getPosition();
+		shootVector.normalize();
+		attackVector = b2Vec2(shootVector.x, shootVector.y);
 
-	if (attackDelayTime >= 0.2)
-	{
-		isAttack = true;
+		if (attackDelayTime >= 0.2)
+		{
+			isAttack = true;
+		}
 	}
 }
 
 void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 {
+	selectedTrap = nullptr;
+	isSelectedTrap = false;
 	isAttack = false;
+
 }
 
 
