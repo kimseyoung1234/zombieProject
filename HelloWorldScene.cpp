@@ -53,7 +53,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//this->addChild(background);
+	this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -68,12 +68,19 @@ bool HelloWorld::init()
 	gameLayer->addChild(trap2);
 	traps->push_back(trap2);
 
+	//실험용 도우미
+
+	auto helper = new Helper(Vec2(50, 200),1);
+	gameLayer->addChild(helper);
+
 	///////////////////////
 	//월드 생성
 	if (this->createBox2dWorld(true))
 	{
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
+	// 플레이어 생성
+
 	player = Sprite::create("turret.png");
 	player->setPosition(Vec2(player->getContentSize().width / 2 + 80,
 		winSize.height / 2));

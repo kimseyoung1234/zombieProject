@@ -8,6 +8,7 @@
 #include "Bullet.h"
 #include "ContactListener.h"
 #include "Trap.h"
+#include "Helper.h"
 
 #define PTM_RATIO 32
 
