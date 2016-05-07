@@ -46,10 +46,12 @@ bool HelloWorld::init()
 	barricade = DataSingleTon::getInstance()->getBarricade();
 	traps = DataSingleTon::getInstance()->getTraps();
 	
+//	shopLayer = DataSingleTon::getInstance()->getShopLayer();
+
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
 	this->addChild(menuLayer, 5);
-
+	//this->addChild(shopLayer, 6);
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));

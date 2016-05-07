@@ -55,6 +55,7 @@ public:
 	bool isgameOver = false;
 	bool isSelectedTrap = false;
 
+	//cocos2d::LayerColor* shopLayer;
 	////////////////////////
 
 	bool createBox2dWorld(bool debug);

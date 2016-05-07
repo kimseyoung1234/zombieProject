@@ -15,6 +15,7 @@ DataSingleTon::DataSingleTon() {
 	winSize = Director::getInstance()->getWinSize();
 	gameLayer = LayerColor::create(Color4B(0, 0, 0, 0),winSize.width,winSize.height);
 	menuLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
+	shopLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
 }
 
 DataSingleTon * DataSingleTon::getInstance()
@@ -53,6 +54,10 @@ LayerColor* DataSingleTon::getGameLayer()
 LayerColor* DataSingleTon::getMenuLayer()
 {
 	return menuLayer;
+}
+LayerColor* DataSingleTon::getShopLayer()
+{
+	return shopLayer;
 }
 
 std::vector<b2Body*>* DataSingleTon::getBarricade()

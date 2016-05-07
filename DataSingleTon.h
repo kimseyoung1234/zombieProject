@@ -19,6 +19,7 @@ private:
 
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
+	cocos2d::LayerColor* shopLayer;
 	cocos2d::Size winSize;
 	b2Body * groundBody;
 public:
@@ -32,6 +33,7 @@ public:
 	std::vector<Trap*>* getTraps();
 	cocos2d::LayerColor* getGameLayer();
 	cocos2d::LayerColor* getMenuLayer();
+	cocos2d::LayerColor* getShopLayer();
 	//b2Body* getBarricade();
 };
 

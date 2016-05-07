@@ -1,7 +1,5 @@
 #include "ShopScene.h"
 #include "DataSingleTon.h"
-#include "MonsterInfoSingleTon.h"
-#include "PlayerInfoSingleTon.h"
 
 USING_NS_CC;
 
@@ -12,7 +10,7 @@ Scene* ShopScene::createScene()
 	auto layer = ShopScene::create();
 
 	scene->addChild(layer);
-
+	//log("새로운씬");
 	return scene;
 }
 
@@ -26,10 +24,22 @@ bool ShopScene::init()
 	////////////////////////////////////
 
 	winSize = Director::getInstance()->getWinSize();
+	
+	auto shopLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
 
-	//auto ta = new TableViewLayer();
-	auto tl = TableViewLayer::create();
-	this->addChild(tl);
+	this->addChild(shopLayer);
+
+	auto weapon_tableLayer = new TableViewLayer(Vec2(300,480),4);
+	auto weapon_view = weapon_tableLayer->getTableView();
+	shopLayer->addChild(weapon_view);
+
+	auto trap_tableLayer = new TableViewLayer(Vec2(300, 300), 2);
+	auto trap_view = trap_tableLayer->getTableView();
+	shopLayer->addChild(trap_view);
+
+	auto helper_tableLayer = new TableViewLayer(Vec2(300, 120), 3);
+	auto helper_view = helper_tableLayer->getTableView();
+	shopLayer->addChild(helper_view);
 
 
 	auto buy = MenuItemFont::create(
@@ -55,7 +65,7 @@ bool ShopScene::init()
 	menu->alignItemsHorizontallyWithPadding(50.0f);
 	menu->setPosition(Vec2(winSize.width/2, 50));
 	// 레이어에 메뉴 객체 추가
-	this->addChild(menu);
+	shopLayer->addChild(menu);
 	
 	// 무기 테이블뷰
 	/*TableView* tableView1 = TableView::create(this, Size(500, 60));
@@ -105,66 +115,4 @@ void ShopScene::upgrade(Ref * pSender)
 void ShopScene::buy(Ref * pSender)
 {
 	log("구입!");
-}
-
-void ShopScene::scrollViewDidScroll(ScrollView *view)
-{
-
-}
-void ShopScene::scrollViewDidZoom(ScrollView *view)
-{
-
-}
-void ShopScene::tableCellTouched(TableView* table, TableViewCell* cell)
-{
-	log("Tag : %d\nCell touched at index : %ld", table->getTag(), cell->getIdx());
-}
-Size ShopScene::tableCellSizeForIndex(TableView *table, ssize_t idx)
-{
-/*	if (idx == 2)
-	{
-		return Size(100, 100);
-	}*/
-	return Size(100, 100);
-}
-
-TableViewCell* ShopScene::tableCellAtIndex(TableView *table, ssize_t idx)
-{
-	auto str = String::createWithFormat("gun%02d.png", idx + 1);
-	auto sprite = Sprite::create(str->getCString());
-
-	auto string = String::createWithFormat("%ld", idx);
-
-	TableViewCell *cell = table->dequeueCell();
-	if (!cell)
-	{
-		cell = new CustomTableViewCell();
-		cell->autorelease();
-		auto sprite = Sprite::create(str->getCString());
-		sprite->setAnchorPoint(Vec2::ZERO);
-		sprite->setPosition(Vec2(0, 0));
-		sprite->setTag(150);
-		cell->addChild(sprite);
-
-		auto label = LabelTTF::create(string->getCString(), "Helvetica", 20.0);
-		label->setPosition(Vec2::ZERO);
-		label->setAnchorPoint(Vec2::ZERO);
-		label->setTag(123);
-		cell->addChild(label);
-	}
-	else
-	{
-		auto sprite1 = (Sprite*)(cell->getChildByTag(150));
-		sprite1->setTexture(str->getCString());
-		sprite1->setPosition(Vec2(0, 0));
-
-		log("index2 %d", idx);
-		auto label = (LabelTTF*)cell->getChildByTag(123);
-		label->setString(string->getCString());
-	}
-	return cell;
-}
-ssize_t ShopScene::numberOfCellsInTableView(TableView *table)
-{
-	return 2;
 }

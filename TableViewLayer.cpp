@@ -1,35 +1,24 @@
 #include "TableViewLayer.h"
-
+#include "DataSingleTon.h"
 USING_NS_CC;
 
 
-TableViewLayer::TableViewLayer()
+TableViewLayer::TableViewLayer(Vec2 position,int cellcount)
 {
-	log("레이어추가");
-	//LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
-	//TableViewLayer::create();
+	this->cellCount = cellcount;
+	tableView = TableView::create(this, Size(500, 60));
+	tableView->setDirection(ScrollView::Direction::HORIZONTAL);
+	tableView->setPosition(position);
+	tableView->setDelegate(this);
+	tableView->setTag(100);
+	//shopLayer->addChild(tableView);
+	tableView->reloadData();
+
 }
 
-bool TableViewLayer::init()
+TableView* TableViewLayer::getTableView()
 {
-
-	if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255)))
-	{
-		return false;
-	}
-	////////////////////////////////////
-	//공용변수들 가져오기
-	log("테이블뷰드러옴");
-	TableView* tableView1 = TableView::create(this, Size(500, 60));
-	tableView1->setDirection(ScrollView::Direction::HORIZONTAL);
-	tableView1->setPosition(Vec2(600, 480));
-
-	tableView1->setDelegate(this);
-	tableView1->setTag(100);
-	this->addChild(tableView1);
-	tableView1->reloadData();
-
-	return true;
+	return tableView;
 }
 
 void TableViewLayer::scrollViewDidScroll(ScrollView *view)
@@ -55,7 +44,8 @@ Size TableViewLayer::tableCellSizeForIndex(TableView *table, ssize_t idx)
 
 TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 {
-	auto str = String::createWithFormat("gun%02d.png", idx + 1);
+	//auto str = String::createWithFormat("gun%02d.png", idx + 1);
+	auto str = String::createWithFormat("gun01.png", idx + 1);
 	auto sprite = Sprite::create(str->getCString());
 
 	auto string = String::createWithFormat("%ld", idx);
@@ -91,5 +81,5 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 }
 ssize_t TableViewLayer::numberOfCellsInTableView(TableView *table)
 {
-	return 2;
+	return cellCount;
 }

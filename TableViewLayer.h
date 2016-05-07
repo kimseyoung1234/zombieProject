@@ -4,7 +4,6 @@
 #include "cocos2d.h"
 #include "extensions\/cocos-ext.h"
 #include "CustomTableViewCell.h"
-
 using namespace cocos2d;
 using namespace cocos2d::extension;
 
@@ -13,13 +12,15 @@ class TableViewLayer : public cocos2d::LayerColor
 	, public cocos2d::extension::TableViewDelegate
 {
 public:
+	TableViewLayer(Vec2 position, int cellcount);
 
+	int cellCount;
+	TableView * tableView;
 	Size winSize;
 
-	TableViewLayer();
 
-	virtual bool init();
-	CREATE_FUNC(TableViewLayer);
+	TableView* getTableView();
+
 
 	virtual void scrollViewDidScroll(ScrollView *view);
 	virtual void scrollViewDidZoom(ScrollView *view);
