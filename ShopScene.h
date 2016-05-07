@@ -20,6 +20,8 @@ public:
 
 	Size winSize;
 
+
+
 	void shopClose(Ref * pSender);
 	void upgrade(Ref * pSender);
 	void buy(Ref * pSender);

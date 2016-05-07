@@ -65,7 +65,7 @@ bool HelloWorld::init()
 	auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2),1);
 	gameLayer->addChild(trap);
 	traps->push_back(trap);
-	log("winsize : %f x %f", winSize.width, winSize.height);
+	
 	auto trap2 = new Trap(Vec2(winSize.width / 2 - 200, winSize.height / 2), 1);
 	gameLayer->addChild(trap2);
 	traps->push_back(trap2);

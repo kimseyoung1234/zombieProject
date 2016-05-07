@@ -29,15 +29,15 @@ bool ShopScene::init()
 
 	this->addChild(shopLayer);
 
-	auto weapon_tableLayer = new TableViewLayer(Vec2(300,480),4);
+	auto weapon_tableLayer = new TableViewLayer(Vec2(300,480),4,WEAPON);
 	auto weapon_view = weapon_tableLayer->getTableView();
 	shopLayer->addChild(weapon_view);
 
-	auto trap_tableLayer = new TableViewLayer(Vec2(300, 300), 2);
+	auto trap_tableLayer = new TableViewLayer(Vec2(300, 300), 2,TRAP);
 	auto trap_view = trap_tableLayer->getTableView();
 	shopLayer->addChild(trap_view);
 
-	auto helper_tableLayer = new TableViewLayer(Vec2(300, 120), 3);
+	auto helper_tableLayer = new TableViewLayer(Vec2(300, 120), 3,HELPER);
 	auto helper_view = helper_tableLayer->getTableView();
 	shopLayer->addChild(helper_view);
 

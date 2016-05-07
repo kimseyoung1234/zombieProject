@@ -3,14 +3,19 @@
 USING_NS_CC;
 
 
-TableViewLayer::TableViewLayer(Vec2 position,int cellcount)
+TableViewLayer::TableViewLayer(Vec2 position,int cellcount,int tag)
 {
+	traps = DataSingleTon::getInstance()->getTraps();
+	gameLayer = DataSingleTon::getInstance()->getGameLayer();
+	winSize = Director::getInstance()->getWinSize();
+
 	this->cellCount = cellcount;
+	this->tag = tag;
 	tableView = TableView::create(this, Size(500, 60));
 	tableView->setDirection(ScrollView::Direction::HORIZONTAL);
 	tableView->setPosition(position);
 	tableView->setDelegate(this);
-	tableView->setTag(100);
+	tableView->setTag(tag);
 	//shopLayer->addChild(tableView);
 	tableView->reloadData();
 
@@ -32,6 +37,13 @@ void TableViewLayer::scrollViewDidZoom(ScrollView *view)
 void TableViewLayer::tableCellTouched(TableView* table, TableViewCell* cell)
 {
 	log("Tag : %d\nCell touched at index : %ld", table->getTag(), cell->getIdx());
+
+	//스프라이트 변경
+	/*auto c = (Sprite * )cell->getChildByTag(150);
+	c->setTexture("gun02.png");*/
+	auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2), 1);
+	gameLayer->addChild(trap);
+	traps->push_back(trap);
 }
 Size TableViewLayer::tableCellSizeForIndex(TableView *table, ssize_t idx)
 {
