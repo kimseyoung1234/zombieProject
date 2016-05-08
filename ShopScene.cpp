@@ -1,6 +1,6 @@
 #include "ShopScene.h"
 #include "DataSingleTon.h"
-
+#include "PlayerInfoSingleTon.h"
 USING_NS_CC;
 
 Scene* ShopScene::createScene()
@@ -24,6 +24,8 @@ bool ShopScene::init()
 	////////////////////////////////////
 
 	winSize = Director::getInstance()->getWinSize();
+	gameLayer = DataSingleTon::getInstance()->getGameLayer();
+	traps = DataSingleTon::getInstance()->getTraps();
 	
 	auto shopLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
 
@@ -66,39 +68,6 @@ bool ShopScene::init()
 	menu->setPosition(Vec2(winSize.width/2, 50));
 	// 레이어에 메뉴 객체 추가
 	shopLayer->addChild(menu);
-	
-	// 무기 테이블뷰
-	/*TableView* tableView1 = TableView::create(this, Size(500, 60));
-	tableView1->setDirection(ScrollView::Direction::HORIZONTAL);
-	tableView1->setPosition(Vec2(600, 480));
-	
-	tableView1->setDelegate(this);
-	tableView1->setTag(100);
-	this->addChild(tableView1);
-	tableView1->reloadData();
-	count++;
-	*/
-	// 트랩 테이블 뷰
-/*	TableView* tableView2 = TableView::create(this, Size(500, 60));
-	tableView2->setDirection(ScrollView::Direction::HORIZONTAL);
-	tableView2->setPosition(Vec2(600, 360));
-
-	tableView2->setDelegate(this);
-	tableView2->setTag(200);
-	this->addChild(tableView2);
-	tableView2->reloadData();
-	count++;
-
-	// 도우미 테이블 뷰
-	TableView* tableView3 = TableView::create(this, Size(500, 60));
-	tableView3->setDirection(ScrollView::Direction::HORIZONTAL);
-	tableView3->setPosition(Vec2(600, 240));
-
-	tableView3->setDelegate(this);
-	tableView3->setTag(300);
-	this->addChild(tableView3);
-	tableView3->reloadData();
-	*/
 
 	return true;
 }
@@ -114,5 +83,22 @@ void ShopScene::upgrade(Ref * pSender)
 }
 void ShopScene::buy(Ref * pSender)
 {
-	log("구입!");
+	//트랩에서 선택된거 있으면
+	if (PlayerInfoSingleTon::getInstance()->trapSeleted > -1)
+	{
+		log("트랩 구입햇다");
+		auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2), 1);
+		gameLayer->addChild(trap);
+		traps->push_back(trap);
+	}
+	// 도우미에서 선택된거 있으면
+	else if (PlayerInfoSingleTon::getInstance()->helperSeleted > -1)
+	{
+		log("도우미 구입햇다");
+	}
+	// 선택된 것이 아무 것도 없으면
+	else
+	{
+		log("살 거 선택해");
+	}
 }

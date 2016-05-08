@@ -14,6 +14,11 @@ public:
 
 	int hp = 100;
 
+	// 상점에서 선택된 것
+	int weaponSeleted = -1;
+	int trapSeleted = -1;
+	int helperSeleted = -1;
+
 };
 
 #endif

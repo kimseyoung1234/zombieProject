@@ -1,5 +1,6 @@
 #include "TableViewLayer.h"
 #include "DataSingleTon.h"
+#include "PlayerInfoSingleTon.h"
 USING_NS_CC;
 
 
@@ -37,13 +38,33 @@ void TableViewLayer::scrollViewDidZoom(ScrollView *view)
 void TableViewLayer::tableCellTouched(TableView* table, TableViewCell* cell)
 {
 	log("Tag : %d\nCell touched at index : %ld", table->getTag(), cell->getIdx());
-
+	int cellIdx = cell->getIdx();
 	//스프라이트 변경
 	/*auto c = (Sprite * )cell->getChildByTag(150);
 	c->setTexture("gun02.png");*/
+
+	if (tag == WEAPON)
+	{
+		PlayerInfoSingleTon::getInstance()->weaponSeleted = cellIdx;
+	
+	}
+	else if (tag == TRAP)
+	{
+		PlayerInfoSingleTon::getInstance()->trapSeleted = cellIdx;
+		PlayerInfoSingleTon::getInstance()->helperSeleted = -1;
+	
+	}
+	else if (tag == HELPER)
+	{
+		PlayerInfoSingleTon::getInstance()->helperSeleted = cellIdx;
+		PlayerInfoSingleTon::getInstance()->trapSeleted = -1;
+	
+	}
+	/*
 	auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2), 1);
 	gameLayer->addChild(trap);
 	traps->push_back(trap);
+	*/
 }
 Size TableViewLayer::tableCellSizeForIndex(TableView *table, ssize_t idx)
 {

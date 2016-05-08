@@ -20,6 +20,8 @@ public:
 
 	Size winSize;
 
+	cocos2d::LayerColor* gameLayer;
+	std::vector<Trap *>* traps;
 
 
 	void shopClose(Ref * pSender);
