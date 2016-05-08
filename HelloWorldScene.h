@@ -55,6 +55,7 @@ public:
 	bool isgameOver = false;
 	bool isSelectedTrap = false;
 
+	float attackRate = 0;
 	//cocos2d::LayerColor* shopLayer;
 	////////////////////////
 

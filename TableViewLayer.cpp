@@ -77,8 +77,21 @@ Size TableViewLayer::tableCellSizeForIndex(TableView *table, ssize_t idx)
 
 TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 {
+	cocos2d::String *str;
+	if (tag == WEAPON)
+	{
+		 str = String::createWithFormat("gun%02d.png", idx + 1);
+	}
+	else if (tag == TRAP)
+	{
+		 str = String::createWithFormat("bomb.png", idx + 1);
+	}
+	else if (tag == HELPER)
+	{
+		 str = String::createWithFormat("turret.png", idx + 1);
+	}
 	//auto str = String::createWithFormat("gun%02d.png", idx + 1);
-	auto str = String::createWithFormat("gun01.png", idx + 1);
+	//auto str = String::createWithFormat("gun01.png", idx + 1);
 	auto sprite = Sprite::create(str->getCString());
 
 	auto string = String::createWithFormat("%ld", idx);

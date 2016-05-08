@@ -2,7 +2,7 @@
 #include "HelloWorldScene.h"
 #include <GLES-Render.h>
 #include "DataSingleTon.h"
-
+#include "PlayerInfoSingleTon.h"
 USING_NS_CC;
 
 // 생성자 변수 초기화와 공용 변수 불러오기
@@ -12,7 +12,7 @@ Bullet::Bullet(Vec2 nPos2, int bulletType)
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 
 	this->bulletType = bulletType;
-
+	this->damage = PlayerInfoSingleTon::getInstance()->pistol_Damage;
 	body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
 
 }

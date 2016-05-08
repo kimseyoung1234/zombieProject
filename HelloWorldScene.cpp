@@ -213,6 +213,16 @@ void HelloWorld::tick(float dt)
 			PlayerInfoSingleTon::getInstance()->hp = 0;
 			gameOver();
 		}
+		// 현재 장착된 무기 공격속도 적용
+		int equipWeapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
+		if (equipWeapon == 0)
+		{
+			attackRate = PlayerInfoSingleTon::getInstance()->plstol_Rate;
+		}
+		else if (equipWeapon == 1)
+		{
+			attackRate = PlayerInfoSingleTon::getInstance()->ak_Rate;
+		}
 		// 웨이브 진행상황 갱신
 		waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
 
@@ -257,7 +267,7 @@ void HelloWorld::tick(float dt)
 		if (isAttack) {
 			Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
 			Vec2 nPos2 = player->convertToWorldSpace(nPos1);
-			if (attackDelayTime >= 0.2) {
+			if (attackDelayTime >= attackRate) {
 				attackDelayTime = 0;
 				Bullet * bullet = new Bullet(nPos2, 1);
 				bullets->push_back(bullet);
@@ -411,7 +421,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	attackVector = b2Vec2(shootVector.x, shootVector.y);
 
 	// 누르고 공격가능 하면 총알 생성
-	if (attackDelayTime >= 0.2) {
+	if (attackDelayTime >= attackRate) {
 		isAttack = true;
 		attackDelayTime = 0;
 		Bullet * bullet = new Bullet(nPos2, 1);
