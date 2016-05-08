@@ -60,20 +60,10 @@ bool HelloWorld::init()
 	// 사용자 UI 추가
 	addMenu();
 
-	//////////////////
-	// 실험용 폭탄 추가
-	auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2),1);
-	gameLayer->addChild(trap);
-	traps->push_back(trap);
 	
-	auto trap2 = new Trap(Vec2(winSize.width / 2 - 200, winSize.height / 2), 1);
-	gameLayer->addChild(trap2);
-	traps->push_back(trap2);
-
 	//실험용 도우미
 
-	auto helper = new Helper(Vec2(50, 200),1);
-	gameLayer->addChild(helper);
+
 
 	///////////////////////
 	//월드 생성

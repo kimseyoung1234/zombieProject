@@ -26,6 +26,7 @@ bool ShopScene::init()
 	winSize = Director::getInstance()->getWinSize();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	traps = DataSingleTon::getInstance()->getTraps();
+	helpers = DataSingleTon::getInstance()->getHelpers();
 	
 	auto shopLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
 
@@ -86,15 +87,16 @@ void ShopScene::buy(Ref * pSender)
 	//트랩에서 선택된거 있으면
 	if (PlayerInfoSingleTon::getInstance()->trapSeleted > -1)
 	{
-		log("트랩 구입햇다");
-		auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2), 1);
+		auto trap = new Trap(Vec2(70, 70), 1);
 		gameLayer->addChild(trap);
 		traps->push_back(trap);
 	}
 	// 도우미에서 선택된거 있으면
 	else if (PlayerInfoSingleTon::getInstance()->helperSeleted > -1)
 	{
-		log("도우미 구입햇다");
+		auto helper = new Helper(Vec2(50, 200), 1);
+		gameLayer->addChild(helper);
+		helpers->push_back(helper);
 	}
 	// 선택된 것이 아무 것도 없으면
 	else

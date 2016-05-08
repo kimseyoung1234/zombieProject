@@ -5,6 +5,7 @@
 #include "Monster.h"
 #include "Bullet.h"
 #include "Trap.h"
+#include "Helper.h"
 // 모든 클래스에서 사용하기 위한 싱글톤 클래스
 class DataSingleTon {
 private:
@@ -16,6 +17,7 @@ private:
 	std::vector<Monster*>* monsters;
 	std::vector<Bullet*>* bullets;
 	std::vector<Trap *>* traps;
+	std::vector<Helper *>* helpers;
 
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
@@ -30,6 +32,7 @@ public:
 	std::vector<b2Body*> * getBarricade();
 	std::vector<Monster*>* getMonsters();
 	std::vector<Bullet*>* getBullets();
+	std::vector<Helper*>* getHelpers();
 	std::vector<Trap*>* getTraps();
 	cocos2d::LayerColor* getGameLayer();
 	cocos2d::LayerColor* getMenuLayer();

@@ -5,6 +5,7 @@
 #include "extensions\/cocos-ext.h"
 #include "CustomTableViewCell.h"
 #include "TableViewLayer.h"
+#include "Helper.h"
 using namespace cocos2d;
 using namespace cocos2d::extension;
 
@@ -22,6 +23,7 @@ public:
 
 	cocos2d::LayerColor* gameLayer;
 	std::vector<Trap *>* traps;
+	std::vector<Helper *>* helpers;
 
 
 	void shopClose(Ref * pSender);
