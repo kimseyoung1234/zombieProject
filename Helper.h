@@ -18,6 +18,8 @@ public:
 	std::vector<Bullet *>* bullets;
 
 
+	void re_Idle();
+	
 	void autoAttack(float dt);
 	virtual void onEnter();
 	virtual void onExit();

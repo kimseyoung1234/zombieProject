@@ -88,7 +88,7 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 	}
 	else if (tag == HELPER)
 	{
-		 str = String::createWithFormat("turret.png", idx + 1);
+		 str = String::createWithFormat("helper1.png", idx + 1);
 	}
 	//auto str = String::createWithFormat("gun%02d.png", idx + 1);
 	//auto str = String::createWithFormat("gun01.png", idx + 1);

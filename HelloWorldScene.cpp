@@ -436,7 +436,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		bullets->push_back(bullet);
 		bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 
-	//	bullet->body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
+
 
 		// 공격 애니메이션 
 		player->stopAllActions();
