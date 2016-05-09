@@ -72,11 +72,28 @@ bool HelloWorld::init()
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
 	// 플레이어 생성
+	
+	auto sprite = Sprite::create("player_idle.png");
+	auto texture = sprite->getTexture();
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
 
-	player = Sprite::create("turret.png");
-	player->setPosition(Vec2(player->getContentSize().width / 2 + 80,
-		winSize.height / 2));
+	for (int i = 0; i < 6; i++)
+	{
+		int column = i % 4;
+		int row = i / 4;
+		animation->addSpriteFrameWithTexture(texture, Rect(column * 136, row * 72, 136, 72));
+	}
+	player = Sprite::create("player_idle.png", Rect(0, 0, 136, 72));
+	player->setScale(1.5f);
+	player->setAnchorPoint(Vec2(0, 0));
+	player->setPosition(Vec2(player->getContentSize().width / 2 + 30,
+		winSize.height / 2 + 43));
 	gameLayer->addChild(player);
+
+	auto animate = Animate::create(animation);
+	auto rep = RepeatForever::create(animate);
+	player->runAction(rep);
 	return true;
 }
 
@@ -255,7 +272,7 @@ void HelloWorld::tick(float dt)
 		// 터치 누르고 있을 시 자동 공격
 		attackDelayTime = attackDelayTime + dt;
 		if (isAttack) {
-			Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
+			Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
 			Vec2 nPos2 = player->convertToWorldSpace(nPos1);
 			if (attackDelayTime >= attackRate) {
 				attackDelayTime = 0;
@@ -404,7 +421,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 	// 플레이어 기준으로 터치지점 방향벡터 구하기
 	Vec2 shootVector = touchPoint - player->getPosition();
-	Vec2 nPos1 = Vec2(player->getContentSize().width, player->getContentSize().height / 2);
+	Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
 	Vec2 nPos2 = player->convertToWorldSpace(nPos1);
 	shootVector.normalize();
 
@@ -417,6 +434,27 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		Bullet * bullet = new Bullet(nPos2, 1);
 		bullets->push_back(bullet);
 		bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+
+	//	bullet->body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
+
+		// 공격 애니메이션 
+		player->stopAllActions();
+		auto sprite = Sprite::create("player_attack.png");
+		auto texture = sprite->getTexture();
+		auto animation = Animation::create();
+		animation->setDelayPerUnit(0.05f);
+
+		for (int i = 0; i < 8; i++)
+		{
+			int column = i % 4;
+			int row = i / 4;
+			animation->addSpriteFrameWithTexture(texture, Rect(column * 136, row * 72, 136, 72));
+		}
+
+
+		auto animate = Animate::create(animation);
+		auto rep = RepeatForever::create(animate);
+		player->runAction(rep);
 	}
 	return true;
 }
@@ -446,6 +484,24 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 
 void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 {
+	player->stopAllActions();
+	auto sprite = Sprite::create("player_idle.png");
+	auto texture = sprite->getTexture();
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
+
+	// Idle 애니메이션 다시 시작
+	for (int i = 0; i < 6; i++)
+	{
+		int column = i % 4;
+		int row = i / 4;
+		animation->addSpriteFrameWithTexture(texture, Rect(column * 136, row * 72, 136, 72));
+	}
+
+	auto animate = Animate::create(animation);
+	auto rep = RepeatForever::create(animate);
+	player->runAction(rep);
+	
 	selectedTrap = nullptr;
 	isSelectedTrap = false;
 	isAttack = false;
