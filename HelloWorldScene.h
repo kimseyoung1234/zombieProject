@@ -49,6 +49,7 @@ public:
 
 	cocos2d::Sprite * selectedTrap;
 	b2Vec2 attackVector;
+	b2Vec2 applyPoint;
 	float attackDelayTime = 0.3;
 	bool isAttack = false;
 	bool isWave = false;

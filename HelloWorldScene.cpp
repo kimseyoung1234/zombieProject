@@ -420,9 +420,10 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	}
 
 	// 플레이어 기준으로 터치지점 방향벡터 구하기
-	Vec2 shootVector = touchPoint - player->getPosition();
+	
 	Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
 	Vec2 nPos2 = player->convertToWorldSpace(nPos1);
+	Vec2 shootVector = touchPoint - nPos2;
 	shootVector.normalize();
 
 	attackVector = b2Vec2(shootVector.x, shootVector.y);
@@ -471,7 +472,9 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 	}
 	// 아니라면 공격
 	else {
-		Vec2 shootVector = touchPoint - player->getPosition();
+		Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
+		Vec2 nPos2 = player->convertToWorldSpace(nPos1);
+		Vec2 shootVector = touchPoint - nPos2;
 		shootVector.normalize();
 		attackVector = b2Vec2(shootVector.x, shootVector.y);
 

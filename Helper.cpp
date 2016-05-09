@@ -33,9 +33,9 @@ void Helper::autoAttack(float dt)
 			int monsterSize = monsters->size() - 1;
 			int selected_monster = random(0, monsterSize);
 
-			Vec2 shootVector = monsters->at(selected_monster)->sprite->getPosition() - sprite->getPosition();
 			Vec2 nPos1 = Vec2(sprite->getContentSize().width, sprite->getContentSize().height / 2);
 			Vec2 nPos2 = sprite->convertToWorldSpace(nPos1);
+			Vec2 shootVector = monsters->at(selected_monster)->sprite->getPosition() - nPos2;
 			shootVector.normalize();
 
 			Bullet * bullet = new Bullet(nPos2, 1);
