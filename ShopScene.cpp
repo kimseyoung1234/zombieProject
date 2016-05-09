@@ -70,6 +70,7 @@ bool ShopScene::init()
 	// 레이어에 메뉴 객체 추가
 	shopLayer->addChild(menu);
 
+
 	return true;
 }
 
