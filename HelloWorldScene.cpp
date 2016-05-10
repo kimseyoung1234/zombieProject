@@ -437,7 +437,6 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 
 
-
 		// 공격 애니메이션 
 		player->stopAllActions();
 		auto sprite = Sprite::create("player_attack.png");

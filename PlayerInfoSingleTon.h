@@ -27,6 +27,7 @@ public:
 	int ak_Damage = 100;
 	float ak_Rate = 0.5;
 
+
 };
 
 #endif

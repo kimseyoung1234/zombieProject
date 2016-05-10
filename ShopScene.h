@@ -25,10 +25,17 @@ public:
 	std::vector<Trap *>* traps;
 	std::vector<Helper *>* helpers;
 
+	TableViewLayer * weapon_tableLayer;
+	TableViewLayer * trap_tableLayer;
+	TableViewLayer * helper_tableLayer;
+
 
 	void shopClose(Ref * pSender);
 	void upgrade(Ref * pSender);
 	void buy(Ref * pSender);
+	void tick(float dt);
+	void onEnter();
+	void onExit();
 
 
 };

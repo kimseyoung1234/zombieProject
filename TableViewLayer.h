@@ -30,14 +30,12 @@ public:
 
 	TableView* getTableView();
 
-
 	virtual void scrollViewDidScroll(ScrollView *view);
 	virtual void scrollViewDidZoom(ScrollView *view);
 	virtual void tableCellTouched(TableView* table, TableViewCell* cell);
 	virtual Size tableCellSizeForIndex(TableView *table, ssize_t idx);
 	virtual TableViewCell* tableCellAtIndex(TableView *table, ssize_t idx);
 	virtual ssize_t numberOfCellsInTableView(TableView *table);
-
 
 };
 

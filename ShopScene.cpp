@@ -32,15 +32,15 @@ bool ShopScene::init()
 
 	this->addChild(shopLayer);
 
-	auto weapon_tableLayer = new TableViewLayer(Vec2(300,550),2,WEAPON);
+	weapon_tableLayer = new TableViewLayer(Vec2(300,550),2,WEAPON);
 	auto weapon_view = weapon_tableLayer->getTableView();
 	shopLayer->addChild(weapon_view);
 
-	auto trap_tableLayer = new TableViewLayer(Vec2(300, 340), 1,TRAP);
+	trap_tableLayer = new TableViewLayer(Vec2(300, 340), 3,TRAP);
 	auto trap_view = trap_tableLayer->getTableView();
 	shopLayer->addChild(trap_view);
 
-	auto helper_tableLayer = new TableViewLayer(Vec2(300, 130), 1,HELPER);
+	helper_tableLayer = new TableViewLayer(Vec2(300, 130), 3,HELPER);
 	auto helper_view = helper_tableLayer->getTableView();
 	shopLayer->addChild(helper_view);
 
@@ -70,6 +70,7 @@ bool ShopScene::init()
 	// 레이어에 메뉴 객체 추가
 	shopLayer->addChild(menu);
 
+	this->schedule(schedule_selector(ShopScene::tick));
 
 	return true;
 }
@@ -104,4 +105,71 @@ void ShopScene::buy(Ref * pSender)
 	{
 		log("살 거 선택해");
 	}
+}
+
+// 트랩과 헬퍼 중에 하나만 체크하도록 확인
+void ShopScene::tick(float dt)
+{
+	int trap_tableCellCount = trap_tableLayer->cellCount;
+	int helper_tableCellCount = helper_tableLayer->cellCount;
+
+	for (int i = 0; i < trap_tableCellCount; i++)
+	{
+		if (PlayerInfoSingleTon::getInstance()->trapSeleted == i)
+		{
+			auto trap_table = trap_tableLayer->getTableView();
+			auto selectedCell = trap_table->cellAtIndex(i);
+			if (selectedCell) {
+				auto check = selectedCell->getChildByTag(123);
+				check->setVisible(true);
+			}
+		}
+		else
+		{
+			log("포문 :%d", i);
+			auto trap_table = trap_tableLayer->getTableView();
+			auto selectedCell = trap_table->cellAtIndex(i);
+			if (selectedCell) {
+				auto check = selectedCell->getChildByTag(123);
+				check->setVisible(false);
+			}
+		}
+	}
+
+	for (int i = 0; i < helper_tableCellCount; i++)
+	{
+		if (PlayerInfoSingleTon::getInstance()->helperSeleted == i)
+		{
+			auto helper_table = helper_tableLayer->getTableView();
+			auto selectedCell = helper_table->cellAtIndex(i);
+			if (selectedCell) {
+				auto check = selectedCell->getChildByTag(123);
+				check->setVisible(true);
+			}
+		}
+		else
+		{
+			auto helper_table = helper_tableLayer->getTableView();
+			auto selectedCell = helper_table->cellAtIndex(i);
+			if (selectedCell) {
+				auto check = selectedCell->getChildByTag(123);
+				check->setVisible(false);
+			}
+		}
+	}
+}
+
+
+void ShopScene::onEnter()
+{
+	Layer::onEnter();
+
+}
+void ShopScene::onExit()
+{
+	this->unschedule(schedule_selector(ShopScene::tick));
+	delete weapon_tableLayer;
+	delete trap_tableLayer;
+	delete helper_tableLayer;
+	Layer::onExit();
 }

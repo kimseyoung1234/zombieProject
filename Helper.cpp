@@ -71,7 +71,6 @@ void Helper::autoAttack(float dt)
 
 			for (int i = 0; i < 12; i++)
 			{
-			
 				int column = i % 4;
 				int row = i / 4;
 				animation->addSpriteFrameWithTexture(texture, Rect(column * 56, row * 64, 56, 64));

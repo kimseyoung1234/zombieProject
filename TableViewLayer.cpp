@@ -6,6 +6,7 @@ USING_NS_CC;
 
 TableViewLayer::TableViewLayer(Vec2 position,int cellcount,int tag)
 {
+
 	traps = DataSingleTon::getInstance()->getTraps();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	winSize = Director::getInstance()->getWinSize();
@@ -64,7 +65,6 @@ void TableViewLayer::tableCellTouched(TableView* table, TableViewCell* cell)
 	}
 	else if (tag == TRAP)
 	{
-
 		PlayerInfoSingleTon::getInstance()->trapSeleted = cellIdx;
 		PlayerInfoSingleTon::getInstance()->helperSeleted = -1;
 	
@@ -125,11 +125,7 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 		auto check = Sprite::create("check.png");
 		check->setAnchorPoint(Vec2::ZERO);
 		check->setTag(123);
-		/*if (idx == 0)
-		{
-			log("¿©±â¿È?");
-			check->setVisible(true);
-		}*/
+
 		check->setVisible(false);
 		cell->addChild(check);
 
