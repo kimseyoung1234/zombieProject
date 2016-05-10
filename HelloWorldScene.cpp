@@ -419,17 +419,26 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		}
 	}
 
-	// 플레이어 기준으로 터치지점 방향벡터 구하기
-	
-	Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
-	Vec2 nPos2 = player->convertToWorldSpace(nPos1);
-	Vec2 shootVector = touchPoint - nPos2;
-	shootVector.normalize();
-
-	attackVector = b2Vec2(shootVector.x, shootVector.y);
+	// 스킬 실험
+	if (skill->getBoundingBox().containsPoint(touchPoint))
+	{
+		isSkill = true;
+		return true;
+	}
 
 	// 누르고 공격가능 하면 총알 생성
 	if (attackDelayTime >= attackRate) {
+
+		// 플레이어 기준으로 터치지점 방향벡터 구하기
+
+		Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
+		Vec2 nPos2 = player->convertToWorldSpace(nPos1);
+		Vec2 shootVector = touchPoint - nPos2;
+		shootVector.normalize();
+
+		attackVector = b2Vec2(shootVector.x, shootVector.y);
+
+
 		isAttack = true;
 		attackDelayTime = 0;
 		Bullet * bullet = new Bullet(nPos2, 1);
@@ -456,6 +465,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		auto rep = RepeatForever::create(animate);
 		player->runAction(rep);
 	}
+
 	return true;
 }
 
@@ -467,6 +477,12 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 	if (isSelectedTrap) {
 		
 		auto target = static_cast<Sprite*>(selectedTrap);
+		target->setPosition(target->getPosition() + touch->getDelta());
+	}
+	else if (isSkill)
+	{
+		auto target = static_cast<Sprite*>(skill->getChildByTag(50));
+		target->setVisible(true);
 		target->setPosition(target->getPosition() + touch->getDelta());
 	}
 	// 아니라면 공격
@@ -508,6 +524,17 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 	isSelectedTrap = false;
 	isAttack = false;
 
+	// 스킬실험
+	if (isSkill) {
+		isSkill = false;
+		auto target = static_cast<Sprite*>(skill->getChildByTag(50));
+		target->setVisible(false);
+		Size parentSize;
+		parentSize = skill->getContentSize();
+		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+
+
+	}
 }
 
 
@@ -565,7 +592,7 @@ void HelloWorld::addMenu()
 	menuLayer->addChild(shopMenu);
 
 	//스킬창
-	auto skill = Sprite::create("skill1.png");
+	skill = Sprite::create("skill1.png");
 	skill->setPosition(Vec2(100, 100));
 	
 	gameLayer->addChild(skill);
@@ -577,7 +604,13 @@ void HelloWorld::addMenu()
 	bomb->setScale(3.0f);
 	skill->addChild(bomb);
 
-	
+	// 실험
+	auto range = Sprite::create("range.png");
+	range->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+	range->setTag(50);
+	range->setVisible(false);
+	skill->addChild(range);
+
 }
 
 void HelloWorld::shopOpen(Ref * pSender)

@@ -126,7 +126,6 @@ void ShopScene::tick(float dt)
 		}
 		else
 		{
-			log("Æ÷¹® :%d", i);
 			auto trap_table = trap_tableLayer->getTableView();
 			auto selectedCell = trap_table->cellAtIndex(i);
 			if (selectedCell) {

@@ -78,6 +78,9 @@ public:
 	void addMenu();
 
 	//실험
+	Sprite* skill;
+	bool isSkill=false;
+
 	void trigger(Trap* trap);
 	DrawNode * draw_node;
 protected:
