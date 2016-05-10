@@ -28,7 +28,6 @@ public:
 	cocos2d::LayerColor* gameLayer;
 	std::vector<Trap *>* traps;
 
-
 	TableView* getTableView();
 
 

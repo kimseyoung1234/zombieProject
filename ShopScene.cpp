@@ -17,7 +17,7 @@ Scene* ShopScene::createScene()
 bool ShopScene::init()
 {
 
-	if (!LayerColor::initWithColor(Color4B(255, 255, 255,255)))
+	if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255)))
 	{
 		return false;
 	}
@@ -32,15 +32,15 @@ bool ShopScene::init()
 
 	this->addChild(shopLayer);
 
-	auto weapon_tableLayer = new TableViewLayer(Vec2(300,480),2,WEAPON);
+	auto weapon_tableLayer = new TableViewLayer(Vec2(300,550),2,WEAPON);
 	auto weapon_view = weapon_tableLayer->getTableView();
 	shopLayer->addChild(weapon_view);
 
-	auto trap_tableLayer = new TableViewLayer(Vec2(300, 300), 1,TRAP);
+	auto trap_tableLayer = new TableViewLayer(Vec2(300, 340), 1,TRAP);
 	auto trap_view = trap_tableLayer->getTableView();
 	shopLayer->addChild(trap_view);
 
-	auto helper_tableLayer = new TableViewLayer(Vec2(300, 120), 1,HELPER);
+	auto helper_tableLayer = new TableViewLayer(Vec2(300, 130), 1,HELPER);
 	auto helper_view = helper_tableLayer->getTableView();
 	shopLayer->addChild(helper_view);
 

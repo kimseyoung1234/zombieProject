@@ -564,6 +564,21 @@ void HelloWorld::addMenu()
 
 	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
 	menuLayer->addChild(shopMenu);
+
+	//스킬창
+	auto skill = Sprite::create("skill1.png");
+	skill->setPosition(Vec2(100, 100));
+	
+	gameLayer->addChild(skill);
+
+	auto bomb = Sprite::create("bomb.png");
+	Size parentSize;
+	parentSize = skill->getContentSize();
+	bomb->setPosition(Vec2(parentSize.width / 2.0, parentSize.height /2.0));
+	bomb->setScale(3.0f);
+	skill->addChild(bomb);
+
+	
 }
 
 void HelloWorld::shopOpen(Ref * pSender)

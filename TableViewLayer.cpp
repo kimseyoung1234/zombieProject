@@ -12,7 +12,7 @@ TableViewLayer::TableViewLayer(Vec2 position,int cellcount,int tag)
 
 	this->cellCount = cellcount;
 	this->tag = tag;
-	tableView = TableView::create(this, Size(500, 60));
+	tableView = TableView::create(this, Size(500, 200));
 	tableView->setDirection(ScrollView::Direction::HORIZONTAL);
 	tableView->setPosition(position);
 	tableView->setDelegate(this);
@@ -45,11 +45,26 @@ void TableViewLayer::tableCellTouched(TableView* table, TableViewCell* cell)
 
 	if (tag == WEAPON)
 	{
-		PlayerInfoSingleTon::getInstance()->weaponSeleted = cellIdx;
+		int preCheckIndex = PlayerInfoSingleTon::getInstance()->weaponSeleted;
+
+		// 전에 선택되었던 체크박스 제거하기 위한 처리
+		auto pre_cell = table->cellAtIndex(preCheckIndex);
+
+		if (pre_cell) {
+			auto pre_check = pre_cell->getChildByTag(123);
+			pre_check->setVisible(false);
+		}
+
+		// 선택되었다면 체크박스 보이게
+		auto check = (Sprite *)cell->getChildByTag(123);
+		check->setVisible(true);
 	
+
+		PlayerInfoSingleTon::getInstance()->weaponSeleted = cellIdx;
 	}
 	else if (tag == TRAP)
 	{
+
 		PlayerInfoSingleTon::getInstance()->trapSeleted = cellIdx;
 		PlayerInfoSingleTon::getInstance()->helperSeleted = -1;
 	
@@ -72,7 +87,7 @@ Size TableViewLayer::tableCellSizeForIndex(TableView *table, ssize_t idx)
 	{
 	return Size(100, 100);
 	}*/
-	return Size(100, 100);
+	return Size(200, 200);
 }
 
 TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
@@ -94,7 +109,7 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 	//auto str = String::createWithFormat("gun01.png", idx + 1);
 	auto sprite = Sprite::create(str->getCString());
 
-	auto string = String::createWithFormat("%ld", idx);
+	auto selected = Sprite::create("check.png");
 
 	TableViewCell *cell = table->dequeueCell();
 	if (!cell)
@@ -107,11 +122,18 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 		sprite->setTag(150);
 		cell->addChild(sprite);
 
-		auto label = LabelTTF::create(string->getCString(), "Helvetica", 20.0);
-		label->setPosition(Vec2::ZERO);
-		label->setAnchorPoint(Vec2::ZERO);
-		label->setTag(123);
-		cell->addChild(label);
+		auto check = Sprite::create("check.png");
+		check->setAnchorPoint(Vec2::ZERO);
+		check->setTag(123);
+		/*if (idx == 0)
+		{
+			log("여기옴?");
+			check->setVisible(true);
+		}*/
+		check->setVisible(false);
+		cell->addChild(check);
+
+		
 	}
 	else
 	{
@@ -119,9 +141,13 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 		sprite1->setTexture(str->getCString());
 		sprite1->setPosition(Vec2(0, 0));
 
-		log("index2 %d", idx);
-		auto label = (LabelTTF*)cell->getChildByTag(123);
-		label->setString(string->getCString());
+		if (tag == WEAPON) {
+			auto check1 = (Sprite*)(cell->getChildByTag(123));
+			if (PlayerInfoSingleTon::getInstance()->weaponSeleted == idx)
+			{
+				check1->setVisible(true);
+			}
+		}
 	}
 	return cell;
 }
