@@ -332,12 +332,13 @@ void HelloWorld::removeObject()
 }
 
 
-void HelloWorld::trigger(Trap* trap)
+void HelloWorld::trigger(Vec2 position)
 {
+	log("x : %f  y : %f", position.x, position.y);
 	MyQueryCallback queryCallback; //see "World querying topic"
 	b2AABB aabb;
 	// center : 폭탄 중심 위치
-	b2Vec2 center = b2Vec2(trap->sprite->getPosition().x / PTM_RATIO, trap->sprite->getPosition().y / PTM_RATIO);
+	b2Vec2 center = b2Vec2(position.x / PTM_RATIO, position.y / PTM_RATIO);
 	// 폭발 범위
 	float blastRadius = 5.0;
 	// 폭발 바운딩박스 위치와 크기 
@@ -394,7 +395,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 			// 트랩이 눌렸다면
 			if (trap->sprite->getBoundingBox().containsPoint(touchPoint))
 			{
-				trigger(trap);
+				trigger(trap->sprite->getPosition());
 				// 효과 적용 후 삭제
 				gameLayer->removeChild(trap->sprite);
 				gameLayer->removeChild(trap);
@@ -531,9 +532,10 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		target->setVisible(false);
 		Size parentSize;
 		parentSize = skill->getContentSize();
+		Vec2 w_position = gameLayer->convertToNodeSpace(target->getPosition());
+		trigger(w_position);
+		//log("x : %f, y : %f", target->getPosition().x, target->getPosition().y);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
-
-
 	}
 }
 

@@ -81,7 +81,7 @@ public:
 	Sprite* skill;
 	bool isSkill=false;
 
-	void trigger(Trap* trap);
+	void trigger(Vec2 position);
 	DrawNode * draw_node;
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

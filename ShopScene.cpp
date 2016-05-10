@@ -89,7 +89,7 @@ void ShopScene::buy(Ref * pSender)
 	//트랩에서 선택된거 있으면
 	if (PlayerInfoSingleTon::getInstance()->trapSeleted > -1)
 	{
-		auto trap = new Trap(Vec2(70, 70), 1);
+		auto trap = new Trap(Vec2(winSize.width/2, winSize.height/2), 1);
 		gameLayer->addChild(trap);
 		traps->push_back(trap);
 	}
