@@ -423,6 +423,9 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	// 스킬 실험
 	if (skill->getBoundingBox().containsPoint(touchPoint))
 	{
+		auto target = static_cast<Sprite*>(skill->getChildByTag(50));
+		target->setVisible(true);
+		target->setPosition(skill->convertToNodeSpace(touchPoint));
 		isSkill = true;
 		return true;
 	}
@@ -483,7 +486,6 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 	else if (isSkill)
 	{
 		auto target = static_cast<Sprite*>(skill->getChildByTag(50));
-		target->setVisible(true);
 		target->setPosition(target->getPosition() + touch->getDelta());
 	}
 	// 아니라면 공격
@@ -532,7 +534,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		target->setVisible(false);
 		Size parentSize;
 		parentSize = skill->getContentSize();
-		Vec2 w_position = gameLayer->convertToNodeSpace(target->getPosition());
+		Vec2 w_position = skill->convertToWorldSpace(target->getPosition());
 		trigger(w_position);
 		//log("x : %f, y : %f", target->getPosition().x, target->getPosition().y);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
@@ -609,6 +611,7 @@ void HelloWorld::addMenu()
 	// 실험
 	auto range = Sprite::create("range.png");
 	range->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+	
 	range->setTag(50);
 	range->setVisible(false);
 	skill->addChild(range);
