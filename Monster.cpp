@@ -14,7 +14,14 @@ Monster::Monster(Vec2 position,int monsterType)
 
 	this->position = position;
 	this->monsterType = monsterType;
-	
+
+
+	Sprite* sprite1;
+	Texture2D* texture1;
+	Sprite* sprite2;
+	Texture2D* texture2;
+	Animation* animation1;
+	Animation* animation2;
 	if (monsterType == BrainZombie)
 	{
 		int direction = random(0, 1);
@@ -64,6 +71,34 @@ Monster::Monster(Vec2 position,int monsterType)
 		this->damage = MonsterInfoSingleTon::getInstance()->fatZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->fatZombie_xSpeed;
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->fatZomie_ySpeed;
+
+		auto sprite1 = Sprite::create("monster/fat_attack.png");
+		auto texture1 = sprite1->getTexture();
+		auto animation1 = Animation::create();
+		animation1->setDelayPerUnit(0.074f);
+
+		for (int i = 0; i < 18; i++)
+		{
+			int column = i % 7;
+			int row = i / 7;
+			animation1->addSpriteFrameWithTexture(texture1, Rect(column * 48, row * 48, 48, 48));
+		}
+
+		attackAnimate = Animate::create(animation1);
+		attackAnimate->retain();
+		auto sprite2 = Sprite::create("monster/fat_move.png");
+		auto texture2 = sprite2->getTexture();
+		auto animation2 = Animation::create();
+		animation2->setDelayPerUnit(0.05f);
+
+		for (int i = 0; i < 14; i++)
+		{
+			int column = i % 7;
+			int row = i / 7;
+			animation2->addSpriteFrameWithTexture(texture2, Rect(column * 48, row * 48, 48, 48));
+		}
+		moveAnimate = Animate::create(animation2);
+		moveAnimate->retain();
 	}
 	else if (monsterType == SuperZombie)
 	{
@@ -94,13 +129,10 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	}
 	else if (monsterType == FatZombie)
 	{
-		auto sprite = Sprite::create("fatZombie_Move.png");
+		auto sprite = Sprite::create("monster/fat_move.png");
 		texture = sprite->getTexture();
-		/*for (int i = 0; i < 14; i++)
-		{
-			animation->addSpriteFrameWithTexture(texture, Rect(i * 40, 0, 40, 45));
-		}*/
-		zombie = Sprite::create("fatZombie_Move.png", Rect(0, 0, 40, 45));
+
+		zombie = Sprite::create("monster/fat_move.png", Rect(0, 0, 48, 48));
 	}
 	else if (monsterType == SuperZombie)
 	{
