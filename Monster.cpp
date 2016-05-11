@@ -16,12 +16,6 @@ Monster::Monster(Vec2 position,int monsterType)
 	this->monsterType = monsterType;
 
 
-	Sprite* sprite1;
-	Texture2D* texture1;
-	Sprite* sprite2;
-	Texture2D* texture2;
-	Animation* animation1;
-	Animation* animation2;
 	if (monsterType == BrainZombie)
 	{
 		int direction = random(0, 1);
@@ -170,7 +164,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	}
 	this->sprite = zombie;
 	zombie->setTag(MONSTER);
-	zombie->setScale(1.5f);
+	zombie->setScale(1.75f);
 	gameLayer->addChild(zombie);
 
 	//auto animate = Animate::create(animation);

@@ -55,7 +55,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	this->addChild(background);
+	//this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -321,6 +321,28 @@ void HelloWorld::removeObject()
 		{
 			auto sprite = (Sprite *)mon->body->GetUserData();
 			if (sprite != nullptr) {
+				//죽을때 애니메이션 실험
+				auto sprite1 = Sprite::create("monster/dead.png");
+				auto texture1 = sprite1->getTexture();
+				auto animation1 = Animation::create();
+				animation1->setDelayPerUnit(0.074f);
+
+				for (int i = 0; i < 15; i++)
+				{
+					int column = i % 15;
+					int row = i / 15;
+					animation1->addSpriteFrameWithTexture(texture1, Rect(column * 104, row * 104, 104, 104));
+				}
+				auto deadAnimate = Animate::create(animation1);
+				
+				auto deadSprite = Sprite::create("monster/brain_move.png", Rect(0, 0, 104, 104));
+				deadSprite->setPosition(sprite->getPosition());
+				gameLayer->addChild(deadSprite,150);
+				auto rep = Sequence::create(deadAnimate,
+					CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, deadSprite)), nullptr);
+				deadSprite->runAction(rep);
+
+
 				gameLayer->removeChild(sprite);
 				gameLayer->removeChild(mon);
 				monsters->erase(monsters->begin() + i);
