@@ -321,7 +321,7 @@ void HelloWorld::removeObject()
 		{
 			auto sprite = (Sprite *)mon->body->GetUserData();
 			if (sprite != nullptr) {
-				//죽을때 애니메이션 실험
+				//죽을때 애니메이션 
 				auto sprite1 = Sprite::create("monster/dead.png");
 				auto texture1 = sprite1->getTexture();
 				auto animation1 = Animation::create();
@@ -341,7 +341,7 @@ void HelloWorld::removeObject()
 				auto rep = Sequence::create(deadAnimate,
 					CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, deadSprite)), nullptr);
 				deadSprite->runAction(rep);
-
+				////
 
 				gameLayer->removeChild(sprite);
 				gameLayer->removeChild(mon);
