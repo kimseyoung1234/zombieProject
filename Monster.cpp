@@ -106,6 +106,35 @@ Monster::Monster(Vec2 position,int monsterType)
 		this->damage = MonsterInfoSingleTon::getInstance()->superZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->superZombie_xSpeed;
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->superZomie_ySpeed;
+
+
+		auto sprite1 = Sprite::create("monster/super_attack.png");
+		auto texture1 = sprite1->getTexture();
+		auto animation1 = Animation::create();
+		animation1->setDelayPerUnit(0.074f);
+
+		for (int i = 0; i < 20; i++)
+		{
+			int column = i % 7;
+			int row = i / 7;
+			animation1->addSpriteFrameWithTexture(texture1, Rect(column * 64, row * 64, 64, 64));
+		}
+
+		attackAnimate = Animate::create(animation1);
+		attackAnimate->retain();
+		auto sprite2 = Sprite::create("monster/super_move.png");
+		auto texture2 = sprite2->getTexture();
+		auto animation2 = Animation::create();
+		animation2->setDelayPerUnit(0.05f);
+
+		for (int i = 0; i < 12; i++)
+		{
+			int column = i % 7;
+			int row = i / 7;
+			animation2->addSpriteFrameWithTexture(texture2, Rect(column * 64, row * 64, 64, 64));
+		}
+		moveAnimate = Animate::create(animation2);
+		moveAnimate->retain();
 	}
 	body = addNewSprite(position, Size(30, 40), b2_dynamicBody, 0);
 
@@ -130,18 +159,13 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	else if (monsterType == FatZombie)
 	{
 		auto sprite = Sprite::create("monster/fat_move.png");
-		texture = sprite->getTexture();
 
 		zombie = Sprite::create("monster/fat_move.png", Rect(0, 0, 48, 48));
 	}
 	else if (monsterType == SuperZombie)
 	{
 		auto sprite = Sprite::create("superZombie_Move.png");
-		texture = sprite->getTexture();
-		/*for (int i = 0; i < 12; i++)
-		{
-			animation->addSpriteFrameWithTexture(texture, Rect(i * 50, 0, 50, 45));
-		}*/
+
 		zombie = Sprite::create("superZombie_Move.png", Rect(0, 0, 50, 45));
 	}
 	this->sprite = zombie;
