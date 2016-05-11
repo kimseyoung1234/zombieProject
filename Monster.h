@@ -31,6 +31,8 @@ public:
 	float attackDelay = 1.0;
 	float hpBarShowTime = 0;
 	int present_ani = MOVE;
+	Animate * moveAnimate;
+	Animate * attackAnimate;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
