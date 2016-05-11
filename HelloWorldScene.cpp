@@ -540,7 +540,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 
 		//폭탄애니메이션 실험
 		auto cache = SpriteFrameCache::getInstance();
-		cache->addSpriteFramesWithFile("explosion/explosion.plist");
+		cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
 
 		Vector<SpriteFrame*> expFrames;
 
