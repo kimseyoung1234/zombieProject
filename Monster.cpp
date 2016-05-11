@@ -59,13 +59,13 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	Sprite* zombie;
 	if(monsterType == BrainZombie)
 	{
-		auto sprite = Sprite::create("brainZombie_Move.png");
+		auto sprite = Sprite::create("monster/brain_move.png");
 		texture = sprite->getTexture();
 		for (int i = 0; i < 15; i++)
 		{
-			animation->addSpriteFrameWithTexture(texture, Rect(i * 40, 0, 40, 45));
+			animation->addSpriteFrameWithTexture(texture, Rect(i * 64, 0, 64, 64));
 		}
-		zombie = Sprite::create("brainZombie_Move.png", Rect(0, 0, 40, 45));
+		zombie = Sprite::create("brainZombie_Move.png", Rect(0, 0, 64, 64));
 	}
 	else if (monsterType == FatZombie)
 	{
@@ -161,7 +161,7 @@ void Monster::moving(float dt)
 	// HP에 따른 HP바 크기
 	hpBar->setScaleX(hp / 100.0f);
 	// 바디 이동
-	body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed,body->GetPosition().y - ySpeed), 0);
+	
 	
 	if (yTurnTime >= 2.0)
 	{
@@ -176,10 +176,55 @@ void Monster::moving(float dt)
 	}
 
 	// 바리게이트와 충돌 시 2초마다 공격
-	if (isAttack == true && attackDelay >= 2.0)
+	if (isAttack)
 	{
-		PlayerInfoSingleTon::getInstance()->hp = PlayerInfoSingleTon::getInstance()->hp - damage;
-		log("플레이어 hp : %d", PlayerInfoSingleTon::getInstance()->hp);
-		attackDelay = 0;
+		if (present_ani != ATTACK) {
+			// 공격 애니메이션
+			sprite->stopAllActions();
+			auto sprite1 = Sprite::create("monster/brain_attack.png");
+			auto texture = sprite1->getTexture();
+			auto animation = Animation::create();
+			animation->setDelayPerUnit(0.074f);
+
+			for (int i = 0; i < 27; i++)
+			{
+				int column = i % 15;
+				int row = i / 15;
+				animation->addSpriteFrameWithTexture(texture, Rect(column * 64, row * 64, 64, 64));
+			}
+
+			auto animate = Animate::create(animation);
+			auto rep = RepeatForever::create(animate);
+			sprite->runAction(rep);
+			present_ani = ATTACK;
+		}
+		if (attackDelay >= 2.0)
+		{
+			PlayerInfoSingleTon::getInstance()->hp = PlayerInfoSingleTon::getInstance()->hp - damage;
+			log("플레이어 hp : %d", PlayerInfoSingleTon::getInstance()->hp);
+			attackDelay = 0;
+		}
+	}
+	else if(!isAttack){
+		if (present_ani != MOVE) {
+			sprite->stopAllActions();
+			auto sprite1 = Sprite::create("monster/brain_move.png");
+			auto texture = sprite1->getTexture();
+			auto animation = Animation::create();
+			animation->setDelayPerUnit(0.15f);
+
+			for (int i = 0; i < 15; i++)
+			{
+				int column = i % 15;
+				int row = i / 15;
+				animation->addSpriteFrameWithTexture(texture, Rect(column * 64, row * 64, 64, 64));
+			}
+			auto animate = Animate::create(animation);
+			auto rep = RepeatForever::create(animate);
+			sprite->runAction(rep);
+			present_ani = MOVE;
+		}
+
+		body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed, body->GetPosition().y - ySpeed), 0);
 	}
 }

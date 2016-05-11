@@ -11,8 +11,11 @@ Bullet::Bullet(Vec2 nPos2, int bulletType)
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 
+	
 	this->bulletType = bulletType;
-	this->damage = PlayerInfoSingleTon::getInstance()->pistol_Damage;
+	if (bulletType == 1) {
+		this->damage = PlayerInfoSingleTon::getInstance()->pistol_Damage;
+	}
 	body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
 
 }

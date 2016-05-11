@@ -1,4 +1,4 @@
-#include "ShopScene.h"
+ï»¿#include "ShopScene.h"
 #include "DataSingleTon.h"
 #include "PlayerInfoSingleTon.h"
 USING_NS_CC;
@@ -10,7 +10,7 @@ Scene* ShopScene::createScene()
 	auto layer = ShopScene::create();
 
 	scene->addChild(layer);
-	//log("»õ·Î¿î¾À");
+	//log("ìƒˆë¡œìš´ì”¬");
 	return scene;
 }
 
@@ -46,28 +46,28 @@ bool ShopScene::init()
 
 
 	auto buy = MenuItemFont::create(
-		"±¸ÀÔ",
+		"êµ¬ìž…",
 		CC_CALLBACK_1(ShopScene::buy, this));
 	buy->setColor(Color3B(0, 0, 0));
 
 	auto upgrade = MenuItemFont::create(
-		"¾÷±×·¹ÀÌµå",
+		"ì—…ê·¸ë ˆì´ë“œ",
 		CC_CALLBACK_1(ShopScene::upgrade, this));
 	upgrade->setColor(Color3B(0, 0, 0));
 
 	auto exit = MenuItemFont::create(
-		"»óÁ¡ ³ª°¡±â",
+		"ìƒì  ë‚˜ê°€ê¸°",
 		CC_CALLBACK_1(ShopScene::shopClose, this));
 	exit->setColor(Color3B(0, 0, 0));
 
-	//¸Þ´º»ý¼º
+	//ë©”ë‰´ìƒì„±
 	auto menu = Menu::create(buy,upgrade,exit, nullptr);
 	
-	//¸Þ´º À§Ä¡
+	//ë©”ë‰´ ìœ„ì¹˜
 	menu->alignItemsHorizontally();
 	menu->alignItemsHorizontallyWithPadding(50.0f);
 	menu->setPosition(Vec2(winSize.width/2, 50));
-	// ·¹ÀÌ¾î¿¡ ¸Þ´º °´Ã¼ Ãß°¡
+	// ë ˆì´ì–´ì— ë©”ë‰´ ê°ì²´ ì¶”ê°€
 	shopLayer->addChild(menu);
 
 	this->schedule(schedule_selector(ShopScene::tick));
@@ -82,32 +82,32 @@ void ShopScene::shopClose(Ref * pSender)
 
 void ShopScene::upgrade(Ref * pSender)
 {
-	log("¾÷±×·¹ÀÌµå");
+	log("ì—…ê·¸ë ˆì´ë“œ");
 }
 void ShopScene::buy(Ref * pSender)
 {
-	//Æ®·¦¿¡¼­ ¼±ÅÃµÈ°Å ÀÖÀ¸¸é
+	//íŠ¸ëž©ì—ì„œ ì„ íƒëœê±° ìžˆìœ¼ë©´
 	if (PlayerInfoSingleTon::getInstance()->trapSeleted > -1)
 	{
 		auto trap = new Trap(Vec2(winSize.width/2, winSize.height/2), 1);
 		gameLayer->addChild(trap);
 		traps->push_back(trap);
 	}
-	// µµ¿ì¹Ì¿¡¼­ ¼±ÅÃµÈ°Å ÀÖÀ¸¸é
+	// ë„ìš°ë¯¸ì—ì„œ ì„ íƒëœê±° ìžˆìœ¼ë©´
 	else if (PlayerInfoSingleTon::getInstance()->helperSeleted > -1)
 	{
 		auto helper = new Helper(Vec2(50, 200), 1);
 		gameLayer->addChild(helper);
 		helpers->push_back(helper);
 	}
-	// ¼±ÅÃµÈ °ÍÀÌ ¾Æ¹« °Íµµ ¾øÀ¸¸é
+	// ì„ íƒëœ ê²ƒì´ ì•„ë¬´ ê²ƒë„ ì—†ìœ¼ë©´
 	else
 	{
-		log("»ì °Å ¼±ÅÃÇØ");
+		log("ì‚´ ê±° ì„ íƒí•´");
 	}
 }
 
-// Æ®·¦°ú ÇïÆÛ Áß¿¡ ÇÏ³ª¸¸ Ã¼Å©ÇÏµµ·Ï È®ÀÎ
+// íŠ¸ëž©ê³¼ í—¬í¼ ì¤‘ì— í•˜ë‚˜ë§Œ ì²´í¬í•˜ë„ë¡ í™•ì¸
 void ShopScene::tick(float dt)
 {
 	int trap_tableCellCount = trap_tableLayer->cellCount;

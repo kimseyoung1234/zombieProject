@@ -105,7 +105,7 @@ void HelloWorld::waveStart(Ref* pSender)
 		for (int i = 0; i < maxMonster; i++) {
 			int rand = random(50, 600);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(1200, rand), r_monsterType);
+			Monster * mon = new Monster(Vec2(1200, rand), 2);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
@@ -536,9 +536,38 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		parentSize = skill->getContentSize();
 		Vec2 w_position = skill->convertToWorldSpace(target->getPosition());
 		trigger(w_position);
-		//log("x : %f, y : %f", target->getPosition().x, target->getPosition().y);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+
+		//폭탄애니메이션 실험
+		auto cache = SpriteFrameCache::getInstance();
+		cache->addSpriteFramesWithFile("explosion/explosion.plist");
+
+		Vector<SpriteFrame*> expFrames;
+
+		char str[100] = { 0 };
+		for (int i = 1; i < 90; i++)
+		{
+			sprintf(str, "explosion_100%02d.png", i + 1);
+			SpriteFrame* frame = cache->getSpriteFrameByName(str);
+			expFrames.pushBack(frame);
+		}
+		auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
+		exp->setPosition(w_position);
+		exp->setScale(2.8f);
+		gameLayer->addChild(exp,200);
+
+		auto animation = Animation::createWithSpriteFrames(expFrames, 0.02f);
+		auto animate = Animate::create(animation);
+		auto rep = Sequence::create(animate,
+			CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this,exp)),nullptr);
+		exp->runAction(rep);
 	}
+}
+
+void HelloWorld::remove_anim(Node* sender)
+{
+	auto sprite = (Sprite*)sender;
+	gameLayer->removeChild(sprite);
 }
 
 
@@ -608,7 +637,7 @@ void HelloWorld::addMenu()
 	bomb->setScale(3.0f);
 	skill->addChild(bomb);
 
-	// 실험
+	// 스킬
 	auto range = Sprite::create("range.png");
 	range->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	

@@ -9,6 +9,9 @@ USING_NS_CC;
 #define BrainZombie 2
 #define SuperZombie 3
 
+#define MOVE 10
+#define ATTACK 20
+#define DIE 30
 //using namespace cocos2d;
 
 class Monster : public cocos2d::Node
@@ -27,6 +30,7 @@ public:
 	bool isAttack = false;
 	float attackDelay = 1.0;
 	float hpBarShowTime = 0;
+	int present_ani = MOVE;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;

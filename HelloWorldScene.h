@@ -76,6 +76,7 @@ public:
 	void gameOver();
 	void shopOpen(Ref * pSender);
 	void addMenu();
+	void remove_anim(Node* sender);
 
 	//실험
 	Sprite* skill;
