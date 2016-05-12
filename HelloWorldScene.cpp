@@ -264,7 +264,8 @@ void HelloWorld::tick(float dt)
 			Vec2 nPos2 = player->convertToWorldSpace(nPos1);
 			if (attackDelayTime >= attackRate) {
 				attackDelayTime = 0;
-				Bullet * bullet = new Bullet(nPos2, 1,cocosAngle);
+				int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
+				Bullet * bullet = new Bullet(nPos2, current_Weapon,cocosAngle);
 				bullets->push_back(bullet);
 				bullet->body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
 			}
@@ -463,11 +464,11 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		isAttack = true;
 		attackDelayTime = 0;
 		int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
-		if (current_Weapon == 0) {
+	//	if (current_Weapon == 0) {
 			Bullet * bullet = new Bullet(nPos2, current_Weapon,cocosAngle);
 			bullets->push_back(bullet);
 			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
-		}
+	//	}
 
 
 		// 공격 애니메이션 

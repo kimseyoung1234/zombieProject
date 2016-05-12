@@ -14,7 +14,7 @@ Bullet::Bullet(Vec2 nPos2, int bulletType,float angle)
 	this->angle = angle;
 	
 	this->bulletType = bulletType;
-	if (bulletType == 1) {
+	if (bulletType == 0) {
 		this->damage = PlayerInfoSingleTon::getInstance()->pistol_Damage;
 	}
 	body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
@@ -29,7 +29,7 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 	auto sprite = Sprite::create("bullet1.png");
 	sprite->setRotation(angle);
 	sprite->setTag(BULLET);
-	sprite->setScaleX(3.0f);
+	//sprite->setScaleX(3.0f);
 	log("angle : %f", angle);
 	
 	gameLayer->addChild(sprite);

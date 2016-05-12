@@ -42,12 +42,13 @@ void ContactListener::BeginContact(b2Contact *contact)
 						b2Body * b_body = (b2Body*)bullets->at(k)->body;
 							if (b_body == bodyB)
 							{
-								//log("몬스터 HP : %d", monsters->at(i)->hp);
+								log("몬스터 HP : %d", monsters->at(i)->hp);
 								monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;
+								log("총알뎀지 : %d", bullets->at(k)->damage);
 								monsters->at(i)->hpBar->setVisible(true);
 								monsters->at(i)->hpBarShowTime = 0;
 								bullets->at(k)->isRemove = true;
-								//log("몬스터 HP : %d", monsters->at(i)->hp);
+								log("몬스터 HP : %d", monsters->at(i)->hp);
 								break;
 							}
 					}
