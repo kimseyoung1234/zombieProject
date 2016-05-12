@@ -12,12 +12,13 @@ class Bullet : public cocos2d::Node
 {
 public:
 
-	Bullet(Vec2 position, int bulletType);
+	Bullet(Vec2 position, int bulletType,float angle);
 	~Bullet();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
 	b2Body* body;
 	int damage=0;
 	bool isRemove = false;
+	float angle;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;

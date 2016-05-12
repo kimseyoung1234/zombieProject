@@ -6,11 +6,12 @@
 USING_NS_CC;
 
 // 생성자 변수 초기화와 공용 변수 불러오기
-Bullet::Bullet(Vec2 nPos2, int bulletType)
+Bullet::Bullet(Vec2 nPos2, int bulletType,float angle)
 {
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 
+	this->angle = angle;
 	
 	this->bulletType = bulletType;
 	if (bulletType == 1) {
@@ -26,7 +27,11 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 	b2BodyDef bodyDef;
 
 	auto sprite = Sprite::create("bullet1.png");
+	sprite->setRotation(angle);
 	sprite->setTag(BULLET);
+	sprite->setScaleX(3.0f);
+	log("angle : %f", angle);
+	
 	gameLayer->addChild(sprite);
 
 	bodyDef.type = bodytype;

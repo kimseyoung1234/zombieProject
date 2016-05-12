@@ -253,7 +253,7 @@ void HelloWorld::tick(float dt)
 				Sprite* spriteData = (Sprite *)b->GetUserData();
 				spriteData->setPosition(Vec2(b->GetPosition().x * PTM_RATIO,
 					b->GetPosition().y *PTM_RATIO));
-				spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
+				spriteData->setRotation(spriteData->getRotation());
 			}
 		}
 
@@ -264,7 +264,7 @@ void HelloWorld::tick(float dt)
 			Vec2 nPos2 = player->convertToWorldSpace(nPos1);
 			if (attackDelayTime >= attackRate) {
 				attackDelayTime = 0;
-				Bullet * bullet = new Bullet(nPos2, 1);
+				Bullet * bullet = new Bullet(nPos2, 1,cocosAngle);
 				bullets->push_back(bullet);
 				bullet->body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
 			}
@@ -452,15 +452,23 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
 		Vec2 nPos2 = player->convertToWorldSpace(nPos1);
 		Vec2 shootVector = touchPoint - nPos2;
+		// 각도 실험
+		float shootAngle = shootVector.getAngle();
+		cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
+
 		shootVector.normalize();
 
 		attackVector = b2Vec2(shootVector.x, shootVector.y);
 
 		isAttack = true;
 		attackDelayTime = 0;
-		Bullet * bullet = new Bullet(nPos2, 1);
-		bullets->push_back(bullet);
-		bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+		int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
+		if (current_Weapon == 0) {
+			Bullet * bullet = new Bullet(nPos2, current_Weapon,cocosAngle);
+			bullets->push_back(bullet);
+			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+		}
+
 
 		// 공격 애니메이션 
 		player->stopAllActions();
@@ -493,6 +501,10 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 		Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
 		Vec2 nPos2 = player->convertToWorldSpace(nPos1);
 		Vec2 shootVector = touchPoint - nPos2;
+
+		float shootAngle = shootVector.getAngle();
+		cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
+
 		shootVector.normalize();
 		attackVector = b2Vec2(shootVector.x, shootVector.y);
 

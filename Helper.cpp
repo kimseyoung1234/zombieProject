@@ -44,9 +44,13 @@ void Helper::autoAttack(float dt)
 			Vec2 nPos1 = Vec2(sprite->getContentSize().width, sprite->getContentSize().height / 2);
 			Vec2 nPos2 = sprite->convertToWorldSpace(nPos1);
 			Vec2 shootVector = monsters->at(selected_monster)->sprite->getPosition() - nPos2;
+			
+			float shootAngle = shootVector.getAngle();
+			float cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
+
 			shootVector.normalize();
 
-			Bullet * bullet = new Bullet(nPos2, 1);
+			Bullet * bullet = new Bullet(nPos2, 1,cocosAngle);
 			bullets->push_back(bullet);
 			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 			attackDelayTime = 0;
