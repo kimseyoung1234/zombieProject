@@ -5,7 +5,6 @@
 #include "PlayerInfoSingleTon.h"
 #include <algorithm>
 #include "MyQueryCallback.h"
-
 USING_NS_CC;
 
 // 몬스터 Y축 값에 따른 벡터 정렬
@@ -46,16 +45,15 @@ bool HelloWorld::init()
 	barricade = DataSingleTon::getInstance()->getBarricade();
 	traps = DataSingleTon::getInstance()->getTraps();
 	
-//	shopLayer = DataSingleTon::getInstance()->getShopLayer();
+
 
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
 	this->addChild(menuLayer, 5);
-	//this->addChild(shopLayer, 6);
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//this->addChild(background);
+	this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -105,7 +103,7 @@ void HelloWorld::waveStart(Ref* pSender)
 		for (int i = 0; i < maxMonster; i++) {
 			int rand = random(50, 600);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(1200, rand), r_monsterType);
+			Monster * mon = new Monster(Vec2(1200, rand),r_monsterType);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}

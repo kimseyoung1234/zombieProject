@@ -4,6 +4,7 @@
 #include "DataSingleTon.h"
 #include "MonsterInfoSingleTon.h"
 #include "PlayerInfoSingleTon.h"
+#include "ResouceLoad.h"
 USING_NS_CC;
 
 // 생성자 변수 초기화와 공용 변수 불러오기
@@ -30,32 +31,11 @@ Monster::Monster(Vec2 position,int monsterType)
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->brainZomie_ySpeed * direction;
 
 		// 공격 애니메이션 등록
-		auto sprite1 = Sprite::create("monster/brain_attack.png");
-		auto texture1 = sprite1->getTexture();
-		auto animation1 = Animation::create();
-		animation1->setDelayPerUnit(0.074f);
-
-		for (int i = 0; i < 27; i++)
-		{
-			int column = i % 15;
-			int row = i / 15;
-			animation1->addSpriteFrameWithTexture(texture1, Rect(column * 64, row * 64, 64, 64));
-		}
-
-		attackAnimate = Animate::create(animation1);
+		
+		attackAnimate = ResouceLoad::getInstance()->brain_attackAnimate->clone();
 		attackAnimate->retain();
-		auto sprite2 = Sprite::create("monster/brain_move.png");
-		auto texture2 = sprite2->getTexture();
-		auto animation2 = Animation::create();
-		animation2->setDelayPerUnit(0.05f);
-
-		for (int i = 0; i < 15; i++)
-		{
-			int column = i % 15;
-			int row = i / 15;
-			animation2->addSpriteFrameWithTexture(texture2, Rect(column * 64, row * 64, 64, 64));
-		}
-		moveAnimate = Animate::create(animation2);
+		
+		moveAnimate = ResouceLoad::getInstance()->brain_moveAnimate->clone();
 		moveAnimate->retain();
 	}
 	else if (monsterType == FatZombie)
@@ -66,32 +46,10 @@ Monster::Monster(Vec2 position,int monsterType)
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->fatZombie_xSpeed;
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->fatZomie_ySpeed;
 
-		auto sprite1 = Sprite::create("monster/fat_attack.png");
-		auto texture1 = sprite1->getTexture();
-		auto animation1 = Animation::create();
-		animation1->setDelayPerUnit(0.074f);
-
-		for (int i = 0; i < 18; i++)
-		{
-			int column = i % 7;
-			int row = i / 7;
-			animation1->addSpriteFrameWithTexture(texture1, Rect(column * 48, row * 48, 48, 48));
-		}
-
-		attackAnimate = Animate::create(animation1);
+		attackAnimate = ResouceLoad::getInstance()->fat_attackAnimate->clone();
 		attackAnimate->retain();
-		auto sprite2 = Sprite::create("monster/fat_move.png");
-		auto texture2 = sprite2->getTexture();
-		auto animation2 = Animation::create();
-		animation2->setDelayPerUnit(0.05f);
 
-		for (int i = 0; i < 14; i++)
-		{
-			int column = i % 7;
-			int row = i / 7;
-			animation2->addSpriteFrameWithTexture(texture2, Rect(column * 48, row * 48, 48, 48));
-		}
-		moveAnimate = Animate::create(animation2);
+		moveAnimate = ResouceLoad::getInstance()->fat_moveAnimate->clone();
 		moveAnimate->retain();
 	}
 	else if (monsterType == SuperZombie)
@@ -102,32 +60,10 @@ Monster::Monster(Vec2 position,int monsterType)
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->superZomie_ySpeed;
 
 
-		auto sprite1 = Sprite::create("monster/super_attack.png");
-		auto texture1 = sprite1->getTexture();
-		auto animation1 = Animation::create();
-		animation1->setDelayPerUnit(0.074f);
-
-		for (int i = 0; i < 20; i++)
-		{
-			int column = i % 7;
-			int row = i / 7;
-			animation1->addSpriteFrameWithTexture(texture1, Rect(column * 64, row * 64, 64, 64));
-		}
-
-		attackAnimate = Animate::create(animation1);
+		attackAnimate = ResouceLoad::getInstance()->super_attackAnimate->clone();
 		attackAnimate->retain();
-		auto sprite2 = Sprite::create("monster/super_move.png");
-		auto texture2 = sprite2->getTexture();
-		auto animation2 = Animation::create();
-		animation2->setDelayPerUnit(0.05f);
 
-		for (int i = 0; i < 12; i++)
-		{
-			int column = i % 7;
-			int row = i / 7;
-			animation2->addSpriteFrameWithTexture(texture2, Rect(column * 64, row * 64, 64, 64));
-		}
-		moveAnimate = Animate::create(animation2);
+		moveAnimate = ResouceLoad::getInstance()->super_moveAnimate->clone();
 		moveAnimate->retain();
 	}
 	body = addNewSprite(position, Size(30, 40), b2_dynamicBody, 0);
@@ -222,6 +158,8 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 Monster::~Monster()
 {
 	this->unschedule(schedule_selector(Monster::moving));
+	delete moveAnimate;
+	delete attackAnimate;
 }
 
 void Monster::moving(float dt)

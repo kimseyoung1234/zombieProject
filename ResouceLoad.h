@@ -1,0 +1,27 @@
+#ifndef __RESOUCELOAD_SINGLETON__H__
+#define __RESOUCELOAD_SINGLETON__H__
+#include "cocos2d.h"
+
+USING_NS_CC;
+// 리소스 로딩
+class ResouceLoad {
+private:
+	static ResouceLoad *m_pInstance;
+	ResouceLoad();
+
+public:
+	static ResouceLoad *getInstance();
+	void Loading();
+
+	Animate * brain_attackAnimate;
+	Animate * brain_moveAnimate;
+
+	Animate * fat_attackAnimate;
+	Animate * fat_moveAnimate;
+
+	Animate * super_attackAnimate;
+	Animate * super_moveAnimate;
+
+};
+
+#endif
