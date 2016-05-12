@@ -1,5 +1,6 @@
 #include "Helper.h"
 #include "DataSingleTon.h"
+#include "ResouceLoad.h"
 USING_NS_CC;
 
 Helper::Helper(Vec2 position, int type)
@@ -16,26 +17,14 @@ Helper::Helper(Vec2 position, int type)
 
 	this->type = type;
 
-
-	auto sprite = Sprite::create("helper1_idle.png");
-	auto texture = sprite->getTexture();
-	auto animation = Animation::create();
-	animation->setDelayPerUnit(0.15f);
-
-	for (int i = 0; i < 6; i++)
-	{
-		int column = i % 6;
-		int row = i / 6;
-		animation->addSpriteFrameWithTexture(texture, Rect(column * 56, row * 64, 56, 64));
-	}
-	sprite = Sprite::create("helper1_idle.png", Rect(0, 0, 56, 64));
+	auto sprite = Sprite::create("helper1_idle.png", Rect(0, 0, 56, 64));
 	sprite->setScale(1.5f);
 	sprite->setAnchorPoint(Vec2(0, 0));
 	sprite->setPosition(Vec2(position));
 	gameLayer->addChild(sprite);
 
-	auto animate = Animate::create(animation);
-	auto rep = RepeatForever::create(animate);
+	auto helper1_idle = ResouceLoad::getInstance()->helper1_idle->clone();
+	auto rep = RepeatForever::create(helper1_idle);
 	sprite->runAction(rep);
 
 	this->sprite = sprite;
@@ -64,20 +53,9 @@ void Helper::autoAttack(float dt)
 
 			// 공격 애니메이션
 			sprite->stopAllActions();
-			auto sprite1 = Sprite::create("helper1_attack.png");
-			auto texture = sprite1->getTexture();
-			auto animation = Animation::create();
-			animation->setDelayPerUnit(0.04f);
-
-			for (int i = 0; i < 12; i++)
-			{
-				int column = i % 4;
-				int row = i / 4;
-				animation->addSpriteFrameWithTexture(texture, Rect(column * 56, row * 64, 56, 64));
-			}
-
-			auto animate = Animate::create(animation);
-			auto seq = Sequence::create(animate,
+	
+			auto helper1_attack = ResouceLoad::getInstance()->helper1_attack->clone();
+			auto seq = Sequence::create(helper1_attack,
 				CallFunc::create(CC_CALLBACK_0(Helper::re_Idle,this)),nullptr);
 			sprite->runAction(seq);
 
@@ -88,21 +66,10 @@ void Helper::autoAttack(float dt)
 // 공격이 끝나면 Idle 애니메이션으로 돌아옴
 void Helper::re_Idle()
 {
-	log("reIdle");
 	sprite->stopAllActions();
-	auto sprite1 = Sprite::create("helper1_idle.png");
-	auto texture = sprite1->getTexture();
-	auto animation = Animation::create();
-	animation->setDelayPerUnit(0.15f);
-
-	for (int i = 0; i < 6; i++)
-	{
-		int column = i % 6;
-		int row = i / 6;
-		animation->addSpriteFrameWithTexture(texture, Rect(column * 56, row * 64, 56, 64));
-	}
-	auto animate = Animate::create(animation);
-	auto rep = RepeatForever::create(animate);
+	
+	auto helper1_idle = ResouceLoad::getInstance()->helper1_idle->clone();
+	auto rep = RepeatForever::create(helper1_idle);
 	sprite->runAction(rep);
 }
 

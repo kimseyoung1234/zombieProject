@@ -13,6 +13,11 @@ public:
 	static ResouceLoad *getInstance();
 	void Loading();
 
+	//플레이어
+	Animate * player_idleAnimate;
+	Animate * player_attackAnimate;
+
+	//몬스터
 	Animate * brain_attackAnimate;
 	Animate * brain_moveAnimate;
 
@@ -21,6 +26,14 @@ public:
 
 	Animate * super_attackAnimate;
 	Animate * super_moveAnimate;
+
+	Animate * dieAnimate;
+	// 폭파
+	Animate * explosion1;
+
+	//도우미
+	Animate * helper1_idle;
+	Animate * helper1_attack;
 
 };
 

@@ -5,6 +5,7 @@
 #include "PlayerInfoSingleTon.h"
 #include <algorithm>
 #include "MyQueryCallback.h"
+#include "ResouceLoad.h"
 USING_NS_CC;
 
 // 몬스터 Y축 값에 따른 벡터 정렬
@@ -45,7 +46,8 @@ bool HelloWorld::init()
 	barricade = DataSingleTon::getInstance()->getBarricade();
 	traps = DataSingleTon::getInstance()->getTraps();
 	
-
+	// 임시로 로딩
+	ResouceLoad::getInstance();
 
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
@@ -71,17 +73,7 @@ bool HelloWorld::init()
 	}
 	// 플레이어 생성
 	
-	auto sprite = Sprite::create("player_idle.png");
-	auto texture = sprite->getTexture();
-	auto animation = Animation::create();
-	animation->setDelayPerUnit(0.1f);
 
-	for (int i = 0; i < 6; i++)
-	{
-		int column = i % 4;
-		int row = i / 4;
-		animation->addSpriteFrameWithTexture(texture, Rect(column * 136, row * 72, 136, 72));
-	}
 	player = Sprite::create("player_idle.png", Rect(0, 0, 136, 72));
 	player->setScale(1.5f);
 	player->setAnchorPoint(Vec2(0, 0));
@@ -89,8 +81,8 @@ bool HelloWorld::init()
 		winSize.height / 2 + 43));
 	gameLayer->addChild(player);
 
-	auto animate = Animate::create(animation);
-	auto rep = RepeatForever::create(animate);
+	auto player_idle = ResouceLoad::getInstance()->player_idleAnimate->clone();
+	auto rep = RepeatForever::create(player_idle);
 	player->runAction(rep);
 	return true;
 }
@@ -320,27 +312,17 @@ void HelloWorld::removeObject()
 			auto sprite = (Sprite *)mon->body->GetUserData();
 			if (sprite != nullptr) {
 				//죽을때 애니메이션 
-				auto sprite1 = Sprite::create("monster/dead.png");
-				auto texture1 = sprite1->getTexture();
-				auto animation1 = Animation::create();
-				animation1->setDelayPerUnit(0.074f);
 
-				for (int i = 0; i < 15; i++)
-				{
-					int column = i % 15;
-					int row = i / 15;
-					animation1->addSpriteFrameWithTexture(texture1, Rect(column * 104, row * 104, 104, 104));
-				}
-				auto deadAnimate = Animate::create(animation1);
+				auto dieAnimate = ResouceLoad::getInstance()->dieAnimate->clone();
 				
 				auto deadSprite = Sprite::create("monster/brain_move.png", Rect(0, 0, 104, 104));
 				deadSprite->setPosition(sprite->getPosition());
 				gameLayer->addChild(deadSprite,150);
-				auto rep = Sequence::create(deadAnimate,
+				auto rep = Sequence::create(dieAnimate,
 					CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, deadSprite)), nullptr);
 				deadSprite->runAction(rep);
-				////
 
+				// 제거
 				gameLayer->removeChild(sprite);
 				gameLayer->removeChild(mon);
 				monsters->erase(monsters->begin() + i);
@@ -462,31 +444,17 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 		attackVector = b2Vec2(shootVector.x, shootVector.y);
 
-
 		isAttack = true;
 		attackDelayTime = 0;
 		Bullet * bullet = new Bullet(nPos2, 1);
 		bullets->push_back(bullet);
 		bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 
-
 		// 공격 애니메이션 
 		player->stopAllActions();
-		auto sprite = Sprite::create("player_attack.png");
-		auto texture = sprite->getTexture();
-		auto animation = Animation::create();
-		animation->setDelayPerUnit(0.05f);
 
-		for (int i = 0; i < 8; i++)
-		{
-			int column = i % 4;
-			int row = i / 4;
-			animation->addSpriteFrameWithTexture(texture, Rect(column * 136, row * 72, 136, 72));
-		}
-
-
-		auto animate = Animate::create(animation);
-		auto rep = RepeatForever::create(animate);
+		auto player_attack = ResouceLoad::getInstance()->player_attackAnimate->clone();
+		auto rep = RepeatForever::create(player_attack);
 		player->runAction(rep);
 	}
 
@@ -525,22 +493,11 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 
 void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 {
+	// 플레이어 idle 애니메이션 재시작
 	player->stopAllActions();
-	auto sprite = Sprite::create("player_idle.png");
-	auto texture = sprite->getTexture();
-	auto animation = Animation::create();
-	animation->setDelayPerUnit(0.1f);
-
-	// Idle 애니메이션 다시 시작
-	for (int i = 0; i < 6; i++)
-	{
-		int column = i % 4;
-		int row = i / 4;
-		animation->addSpriteFrameWithTexture(texture, Rect(column * 136, row * 72, 136, 72));
-	}
-
-	auto animate = Animate::create(animation);
-	auto rep = RepeatForever::create(animate);
+	
+	auto player_idle = ResouceLoad::getInstance()->player_idleAnimate->clone();
+	auto rep = RepeatForever::create(player_idle);
 	player->runAction(rep);
 	
 	selectedTrap = nullptr;
@@ -561,24 +518,14 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		//폭탄애니메이션 실험
 		auto cache = SpriteFrameCache::getInstance();
 		cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
-
-		Vector<SpriteFrame*> expFrames;
-
-		char str[100] = { 0 };
-		for (int i = 1; i < 90; i++)
-		{
-			sprintf(str, "explosion_100%02d.png", i + 1);
-			SpriteFrame* frame = cache->getSpriteFrameByName(str);
-			expFrames.pushBack(frame);
-		}
+	
 		auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
 		exp->setPosition(w_position);
 		exp->setScale(2.8f);
 		gameLayer->addChild(exp,200);
 
-		auto animation = Animation::createWithSpriteFrames(expFrames, 0.02f);
-		auto animate = Animate::create(animation);
-		auto rep = Sequence::create(animate,
+		auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
+		auto rep = Sequence::create(explosion1,
 			CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this,exp)),nullptr);
 		exp->runAction(rep);
 	}
