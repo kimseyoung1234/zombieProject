@@ -13,12 +13,12 @@ TableViewLayer::TableViewLayer(Vec2 position,int cellcount,int tag)
 
 	this->cellCount = cellcount;
 	this->tag = tag;
-	tableView = TableView::create(this, Size(500, 200));
+	tableView = TableView::create(this, Size(500, 140));
 	tableView->setDirection(ScrollView::Direction::HORIZONTAL);
 	tableView->setPosition(position);
 	tableView->setDelegate(this);
 	tableView->setTag(tag);
-	//shopLayer->addChild(tableView);
+
 	tableView->reloadData();
 
 }

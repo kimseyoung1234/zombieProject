@@ -60,8 +60,6 @@ bool HelloWorld::init()
 	// 사용자 UI 추가
 	addMenu();
 
-	
-	//실험용 도우미
 
 
 
@@ -398,6 +396,20 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 			if (trap->sprite->getBoundingBox().containsPoint(touchPoint))
 			{
 				trigger(trap->sprite->getPosition());
+				
+				//폭파 애니매이션
+				auto cache = SpriteFrameCache::getInstance();
+				cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
+
+				auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
+				exp->setPosition(trap->sprite->getPosition());
+				exp->setScale(2.8f);
+				gameLayer->addChild(exp, 200);
+
+				auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
+				auto rep = Sequence::create(explosion1,
+					CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, exp)), nullptr);
+				exp->runAction(rep);
 				// 효과 적용 후 삭제
 				gameLayer->removeChild(trap->sprite);
 				gameLayer->removeChild(trap);

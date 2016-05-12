@@ -27,22 +27,54 @@ bool ShopScene::init()
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	traps = DataSingleTon::getInstance()->getTraps();
 	helpers = DataSingleTon::getInstance()->getHelpers();
-	
-	auto shopLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
 
-	this->addChild(shopLayer);
+	// 배경
+	auto background = Sprite::create("shopbackground.png");
+	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	this->addChild(background);
 
-	weapon_tableLayer = new TableViewLayer(Vec2(300,550),2,WEAPON);
-	auto weapon_view = weapon_tableLayer->getTableView();
-	shopLayer->addChild(weapon_view);
+	// 테이블레이어
+	auto tableLayer = LayerColor::create(Color4B(0, 0, 0, 0), 1120 , 450);
+	tableLayer->setPosition(Vec2(80, 120));
+	this->addChild(tableLayer);
+	// 테이블레이어 배경
+	auto table_background = Sprite::create("tableBackground.png");
+	table_background->setPosition(tableLayer->getContentSize().width / 2, tableLayer->getContentSize().height / 2);
+	tableLayer->addChild(table_background);
 
-	trap_tableLayer = new TableViewLayer(Vec2(300, 340), 3,TRAP);
-	auto trap_view = trap_tableLayer->getTableView();
-	shopLayer->addChild(trap_view);
+	// 테이블뷰 각각의 레이어
+	auto weapon_tableLayer = LayerColor::create(Color4B(255, 255, 255, 0), 1009, 115);
+	weapon_tableLayer->setPosition(Vec2(55, 291));
+	tableLayer->addChild(weapon_tableLayer,100);
 
-	helper_tableLayer = new TableViewLayer(Vec2(300, 130), 3,HELPER);
-	auto helper_view = helper_tableLayer->getTableView();
-	shopLayer->addChild(helper_view);
+	// 무기 테이블뷰 배경
+	auto weapon_background = Sprite::create("weapon_layer.png");
+	weapon_background->setPosition(Vec2(weapon_tableLayer->getContentSize().width / 2, weapon_tableLayer->getContentSize().height / 2));
+	weapon_tableLayer->addChild(weapon_background);
+
+
+	auto trap_tableLayer = LayerColor::create(Color4B(255, 255, 255, 255), 1009, 115);
+	trap_tableLayer->setPosition(Vec2(55, 166));
+	tableLayer->addChild(trap_tableLayer, 100);
+
+	auto helper_tableLayer = LayerColor::create(Color4B(255, 255, 255, 255), 1009, 115);
+	helper_tableLayer->setPosition(Vec2(55, 42));
+	tableLayer->addChild(helper_tableLayer, 100);
+
+
+	// 테이블뷰 객체들
+	weapon_table = new TableViewLayer(Vec2(200,0),2,WEAPON);
+	auto weapon_view = weapon_table->getTableView();
+	weapon_tableLayer->addChild(weapon_view);
+
+
+	trap_table = new TableViewLayer(Vec2(200, 0), 3,TRAP);
+	auto trap_view = trap_table->getTableView();
+	trap_tableLayer->addChild(trap_view);
+
+	helper_table = new TableViewLayer(Vec2(200, 0), 3,HELPER);
+	auto helper_view = helper_table->getTableView();
+	helper_tableLayer->addChild(helper_view);
 
 
 	auto buy = MenuItemFont::create(
@@ -68,7 +100,7 @@ bool ShopScene::init()
 	menu->alignItemsHorizontallyWithPadding(50.0f);
 	menu->setPosition(Vec2(winSize.width/2, 50));
 	// 레이어에 메뉴 객체 추가
-	shopLayer->addChild(menu);
+	this->addChild(menu);
 
 	this->schedule(schedule_selector(ShopScene::tick));
 
@@ -110,15 +142,15 @@ void ShopScene::buy(Ref * pSender)
 // 트랩과 헬퍼 중에 하나만 체크하도록 확인
 void ShopScene::tick(float dt)
 {
-	int trap_tableCellCount = trap_tableLayer->cellCount;
-	int helper_tableCellCount = helper_tableLayer->cellCount;
+	int trap_tableCellCount = trap_table->cellCount;
+	int helper_tableCellCount = helper_table->cellCount;
 
 	for (int i = 0; i < trap_tableCellCount; i++)
 	{
 		if (PlayerInfoSingleTon::getInstance()->trapSeleted == i)
 		{
-			auto trap_table = trap_tableLayer->getTableView();
-			auto selectedCell = trap_table->cellAtIndex(i);
+			auto _trap_table = trap_table->getTableView();
+			auto selectedCell = _trap_table->cellAtIndex(i);
 			if (selectedCell) {
 				auto check = selectedCell->getChildByTag(123);
 				check->setVisible(true);
@@ -126,8 +158,8 @@ void ShopScene::tick(float dt)
 		}
 		else
 		{
-			auto trap_table = trap_tableLayer->getTableView();
-			auto selectedCell = trap_table->cellAtIndex(i);
+			auto _trap_table = trap_table->getTableView();
+			auto selectedCell = _trap_table->cellAtIndex(i);
 			if (selectedCell) {
 				auto check = selectedCell->getChildByTag(123);
 				check->setVisible(false);
@@ -139,8 +171,8 @@ void ShopScene::tick(float dt)
 	{
 		if (PlayerInfoSingleTon::getInstance()->helperSeleted == i)
 		{
-			auto helper_table = helper_tableLayer->getTableView();
-			auto selectedCell = helper_table->cellAtIndex(i);
+			auto _helper_table = helper_table->getTableView();
+			auto selectedCell = _helper_table->cellAtIndex(i);
 			if (selectedCell) {
 				auto check = selectedCell->getChildByTag(123);
 				check->setVisible(true);
@@ -148,8 +180,8 @@ void ShopScene::tick(float dt)
 		}
 		else
 		{
-			auto helper_table = helper_tableLayer->getTableView();
-			auto selectedCell = helper_table->cellAtIndex(i);
+			auto _helper_table = helper_table->getTableView();
+			auto selectedCell = _helper_table->cellAtIndex(i);
 			if (selectedCell) {
 				auto check = selectedCell->getChildByTag(123);
 				check->setVisible(false);
@@ -167,8 +199,8 @@ void ShopScene::onEnter()
 void ShopScene::onExit()
 {
 	this->unschedule(schedule_selector(ShopScene::tick));
-	delete weapon_tableLayer;
-	delete trap_tableLayer;
-	delete helper_tableLayer;
+	delete weapon_table;
+	delete trap_table;
+	delete helper_table;
 	Layer::onExit();
 }

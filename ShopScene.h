@@ -25,9 +25,9 @@ public:
 	std::vector<Trap *>* traps;
 	std::vector<Helper *>* helpers;
 
-	TableViewLayer * weapon_tableLayer;
-	TableViewLayer * trap_tableLayer;
-	TableViewLayer * helper_tableLayer;
+	TableViewLayer * weapon_table;
+	TableViewLayer * trap_table;
+	TableViewLayer * helper_table;
 
 
 	void shopClose(Ref * pSender);
