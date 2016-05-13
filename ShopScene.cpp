@@ -48,19 +48,29 @@ bool ShopScene::init()
 	tableLayer->addChild(weapon_tableLayer,100);
 
 	// 무기 테이블뷰 배경
-	auto weapon_background = Sprite::create("weapon_layer.png");
+	auto weapon_background = Sprite::create("layer_weapon.png");
 	weapon_background->setPosition(Vec2(weapon_tableLayer->getContentSize().width / 2, weapon_tableLayer->getContentSize().height / 2));
 	weapon_tableLayer->addChild(weapon_background);
 
 
-	auto trap_tableLayer = LayerColor::create(Color4B(255, 255, 255, 255), 1009, 115);
+	auto trap_tableLayer = LayerColor::create(Color4B(255, 255, 255, 0), 1009, 115);
 	trap_tableLayer->setPosition(Vec2(55, 166));
 	tableLayer->addChild(trap_tableLayer, 100);
 
-	auto helper_tableLayer = LayerColor::create(Color4B(255, 255, 255, 255), 1009, 115);
+	// 트랩 테이블뷰 배경
+	auto trap_background = Sprite::create("layer_trap.png");
+	trap_background->setPosition(Vec2(trap_tableLayer->getContentSize().width / 2, trap_tableLayer->getContentSize().height / 2));
+	trap_tableLayer->addChild(trap_background);
+
+	auto helper_tableLayer = LayerColor::create(Color4B(255, 255, 255, 0), 1009, 115);
 	helper_tableLayer->setPosition(Vec2(55, 42));
 	tableLayer->addChild(helper_tableLayer, 100);
 
+	// 도우미 테이블뷰 배경
+	auto helper_background = Sprite::create("layer_helper.png");
+	helper_background->setPosition(Vec2(helper_tableLayer->getContentSize().width / 2, helper_tableLayer->getContentSize().height / 2));
+	helper_tableLayer->addChild(helper_background);
+	
 
 	// 테이블뷰 객체들
 	weapon_table = new TableViewLayer(Vec2(200,0),2,WEAPON);
@@ -72,7 +82,7 @@ bool ShopScene::init()
 	auto trap_view = trap_table->getTableView();
 	trap_tableLayer->addChild(trap_view);
 
-	helper_table = new TableViewLayer(Vec2(200, 0), 3,HELPER);
+	helper_table = new TableViewLayer(Vec2(200, 0), 4,HELPER);
 	auto helper_view = helper_table->getTableView();
 	helper_tableLayer->addChild(helper_view);
 
