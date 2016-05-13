@@ -61,8 +61,6 @@ bool HelloWorld::init()
 	addMenu();
 
 
-
-
 	///////////////////////
 	//월드 생성
 	if (this->createBox2dWorld(true))

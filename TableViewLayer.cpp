@@ -129,6 +129,13 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 		check->setVisible(false);
 		cell->addChild(check);
 
+
+		if (tag == WEAPON) {
+			if (PlayerInfoSingleTon::getInstance()->weaponSeleted == idx)
+			{
+				check->setVisible(true);
+			}
+		}
 	}
 	else
 	{
@@ -140,10 +147,12 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 			auto check1 = (Sprite*)(cell->getChildByTag(123));
 			if (PlayerInfoSingleTon::getInstance()->weaponSeleted == idx)
 			{
+				log("%d ", idx);
 				check1->setVisible(true);
 			}
+			else
+				check1->setVisible(false);
 		}
-		//auto bbb = (Sprite*)(cell->getChildByTag(1000));
 	}
 	return cell;
 }
