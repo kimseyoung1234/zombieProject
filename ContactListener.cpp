@@ -2,7 +2,7 @@
 #include "HelloWorldScene.h"
 #include "DataSingleTon.h"
 #include "PlayerInfoSingleTon.h"
-
+#include "MyQueryCallback.h"
 ContactListener::ContactListener() {
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
@@ -42,14 +42,22 @@ void ContactListener::BeginContact(b2Contact *contact)
 						b2Body * b_body = (b2Body*)bullets->at(k)->body;
 							if (b_body == bodyB)
 							{
-								log("몬스터 HP : %d", monsters->at(i)->hp);
-								monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;
-								log("총알뎀지 : %d", bullets->at(k)->damage);
-								monsters->at(i)->hpBar->setVisible(true);
-								monsters->at(i)->hpBarShowTime = 0;
-								bullets->at(k)->isRemove = true;
-								log("몬스터 HP : %d", monsters->at(i)->hp);
-								break;
+								// 도우미 바주카 총알
+								if (bullets->at(k)->bulletType == 3) {
+									Vec2 position = Vec2(b_body->GetPosition().x * PTM_RATIO, b_body->GetPosition().y * PTM_RATIO);
+									trigger(position, 3.0f, 0);
+									bullets->at(k)->isRemove = true;
+								}
+								else {
+									log("몬스터 HP : %d", monsters->at(i)->hp);
+									monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;
+									log("총알뎀지 : %d", bullets->at(k)->damage);
+									monsters->at(i)->hpBar->setVisible(true);
+									monsters->at(i)->hpBarShowTime = 0;
+									bullets->at(k)->isRemove = true;
+									log("몬스터 HP : %d", monsters->at(i)->hp);
+									break;
+								}
 							}
 					}
 				}
@@ -138,3 +146,57 @@ void ContactListener::EndContact(b2Contact *contact)
 	}
 }
 
+
+void ContactListener::trigger(Vec2 position, float blastRadius, int type)
+{
+	log("x : %f  y : %f", position.x, position.y);
+	MyQueryCallback queryCallback; //see "World querying topic"
+	b2AABB aabb;
+	// center : 폭탄 중심 위치
+	b2Vec2 center = b2Vec2(position.x / PTM_RATIO, position.y / PTM_RATIO);
+	// 폭발 범위
+	//float blastRadius = 5.0;
+	// 폭발 바운딩박스 위치와 크기 
+	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
+	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
+	_world->QueryAABB(&queryCallback, aabb);
+
+	//check which of these bodies have their center of mass within the blast radius
+	for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
+		b2Body* body = queryCallback.foundBodies[i];
+		b2Vec2 bodyCom = body->GetWorldCenter();
+
+		//ignore bodies outside the blast range
+		if ((bodyCom - center).Length() >= blastRadius)
+		{
+			continue;
+		}
+		for (int k = 0; k < monsters->size(); k++)
+		{
+			b2Body * m_body = (b2Body*)monsters->at(k)->body;
+			if (body == m_body)
+			{
+				// 폭파효과
+				if (type == 0) {
+					monsters->at(k)->hp = monsters->at(k)->hp - 30;
+					monsters->at(k)->hpBar->setVisible(true);
+					monsters->at(k)->hpBarShowTime = 0;
+					applyBlastImpulse(body, center, bodyCom, 10);
+					break;
+				}
+			}
+		}
+	}
+}
+
+void ContactListener::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower)
+{
+	b2Vec2 blastDir = applyPoint - blastCenter;
+	float distance = blastDir.Normalize();
+	//ignore bodies exactly at the blast point - blast direction is undefined
+	if (distance == 0)
+		return;
+	float invDistance = 1 / distance;
+	float impulseMag = blastPower * invDistance * invDistance;
+	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
+}

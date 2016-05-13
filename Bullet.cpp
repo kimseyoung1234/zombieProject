@@ -17,6 +17,7 @@ Bullet::Bullet(Vec2 nPos2, int bulletType,float angle)
 	if (bulletType == 0) {
 		this->damage = PlayerInfoSingleTon::getInstance()->machine_Damage;
 	}
+	
 	body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
 
 }

@@ -19,10 +19,11 @@ public:
 	int damage=0;
 	bool isRemove = false;
 	float angle;
+	int bulletType;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
-	int bulletType;
+
 
 };
 
