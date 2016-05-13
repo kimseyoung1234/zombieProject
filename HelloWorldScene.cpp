@@ -210,7 +210,7 @@ void HelloWorld::tick(float dt)
 		int equipWeapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
 		if (equipWeapon == 0)
 		{
-			attackRate = PlayerInfoSingleTon::getInstance()->plstol_Rate;
+			attackRate = PlayerInfoSingleTon::getInstance()->machine_Rate;
 		}
 		else if (equipWeapon == 1)
 		{

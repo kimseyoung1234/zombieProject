@@ -21,8 +21,8 @@ public:
 	int helperSeleted = -1;
 
 	//ÃÑ¾Ë Á¤º¸
-	int pistol_Damage = 50;
-	float plstol_Rate = 0.1;
+	int machine_Damage = 50;
+	float machine_Rate = 0.1;
 
 	int ak_Damage = 100;
 	float ak_Rate = 0.5;

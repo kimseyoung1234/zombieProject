@@ -85,12 +85,12 @@ bool ShopScene::init()
 	helper_tableLayer->addChild(helperLabel, 101);
 
 	// 테이블뷰 객체들
-	weapon_table = new TableViewLayer(Vec2(200,0),2,WEAPON);
+	weapon_table = new TableViewLayer(Vec2(200,0),3,WEAPON);
 	auto weapon_view = weapon_table->getTableView();
 	weapon_tableLayer->addChild(weapon_view);
 
 
-	trap_table = new TableViewLayer(Vec2(200, 0), 3,TRAP);
+	trap_table = new TableViewLayer(Vec2(200, 0), 2,TRAP);
 	auto trap_view = trap_table->getTableView();
 	trap_tableLayer->addChild(trap_view);
 

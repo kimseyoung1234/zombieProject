@@ -87,15 +87,15 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 	cocos2d::String *str;
 	if (tag == WEAPON)
 	{
-		 str = String::createWithFormat("gun%02d.png", idx + 1);
+		 str = String::createWithFormat("item/gun%02d.png", idx + 1);
 	}
 	else if (tag == TRAP)
 	{
-		 str = String::createWithFormat("bomb.png", idx + 1);
+		 str = String::createWithFormat("item/bomb.png", idx + 1);
 	}
 	else if (tag == HELPER)
 	{
-		 str = String::createWithFormat("helper1.png", idx + 1);
+		 str = String::createWithFormat("item/helper1.png", idx + 1);
 	}
 
 	auto sprite = Sprite::create(str->getCString());
