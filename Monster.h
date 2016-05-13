@@ -29,10 +29,13 @@ public:
 	int damage;
 	bool isAttack = false;
 	float attackDelay = 1.0;
-	float hpBarShowTime = 0;
+	float hpBarShowTime = 0.0;
+	float slowTime = 0.0;
 	int present_ani = MOVE;
 	Animate * moveAnimate;
 	Animate * attackAnimate;
+
+	bool isSlow = false;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;

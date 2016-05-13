@@ -83,7 +83,7 @@ public:
 	Sprite* skill;
 	bool isSkill=false;
 
-	void trigger(Vec2 position);
+	void trigger(Vec2 position,float blastRadius,int type);
 	DrawNode * draw_node;
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

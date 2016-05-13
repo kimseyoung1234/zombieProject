@@ -1,5 +1,6 @@
 #include "Trap.h"
 #include "DataSingleTon.h"
+#include "PlayerInfoSingleTon.h"
 USING_NS_CC;
 
 Trap::Trap(Vec2 position,int type)
@@ -9,15 +10,21 @@ Trap::Trap(Vec2 position,int type)
 	{
 		this->autorelease();
 	}
-
+	float radius;
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 
 	this->type = type;
-
-	sprite = Sprite::create("bomb.png");
-	sprite->setScale(2.0f);
+	if (type == 0) {
+		sprite = Sprite::create("item/trap01.png");
+		radius = PlayerInfoSingleTon::getInstance()->trap1_blastRadius;
+	}
+	else if (type == 1)
+	{
+		sprite = Sprite::create("item/trap02.png");
+		radius = PlayerInfoSingleTon::getInstance()->trap2_blastRadius;
+	}
 	sprite->setPosition(position);
-	//sprite->setAnchorPoint(Vec2(0.5, 0.5));
+
 	gameLayer->addChild(sprite);
 
 	auto draw_node = DrawNode::create();
@@ -26,7 +33,7 @@ Trap::Trap(Vec2 position,int type)
 	Size parentSize;
 	parentSize = sprite->getContentSize();
 	sprite->addChild(draw_node);
-	draw_node->drawCircle(Vec2(parentSize.width / 2.0, parentSize.height / 2.0), 80, CC_DEGREES_TO_RADIANS(0), 50, false, Color4F(1, 1, 1, 1));
+	draw_node->drawCircle(Vec2(parentSize.width / 2.0, parentSize.height / 2.0), radius * PTM_RATIO, CC_DEGREES_TO_RADIANS(0), 50, false, Color4F(1, 1, 1, 1));
 }
 
 void Trap::onEnter()

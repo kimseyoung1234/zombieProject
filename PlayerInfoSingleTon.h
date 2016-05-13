@@ -27,6 +27,12 @@ public:
 	int ak_Damage = 100;
 	float ak_Rate = 0.5;
 
+	int trap1_Damage = 50;
+	float trap1_blastRadius = 5.0f;
+
+	int trap2_Damge = 0;
+	float trap2_blastRadius = 8.0f;
+
 };
 
 #endif

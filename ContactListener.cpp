@@ -137,3 +137,4 @@ void ContactListener::EndContact(b2Contact *contact)
 		}
 	}
 }
+

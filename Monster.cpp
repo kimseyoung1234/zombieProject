@@ -167,6 +167,12 @@ void Monster::moving(float dt)
 	yTurnTime = yTurnTime + dt;
 	attackDelay = attackDelay + dt;
 	hpBarShowTime = hpBarShowTime + dt;
+	slowTime = slowTime + dt;
+
+	if (slowTime >= 5.0)
+	{
+		isSlow = false;
+	}
 	// HP에 따른 HP바 크기
 	hpBar->setScaleX(hp / 100.0f);
 	
@@ -211,6 +217,11 @@ void Monster::moving(float dt)
 			present_ani = MOVE;
 		}
 		// 바디 이동
+		if (isSlow)
+		{
+			body->SetTransform(b2Vec2(body->GetPosition().x - (xSpeed/3), body->GetPosition().y - (ySpeed/3)), 0);
+		}
+		else
 		body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed, body->GetPosition().y - ySpeed), 0);
 	}
 }

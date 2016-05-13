@@ -331,7 +331,7 @@ void HelloWorld::removeObject()
 }
 
 
-void HelloWorld::trigger(Vec2 position)
+void HelloWorld::trigger(Vec2 position,float blastRadius,int type)
 {
 	log("x : %f  y : %f", position.x, position.y);
 	MyQueryCallback queryCallback; //see "World querying topic"
@@ -339,7 +339,7 @@ void HelloWorld::trigger(Vec2 position)
 	// center : 폭탄 중심 위치
 	b2Vec2 center = b2Vec2(position.x / PTM_RATIO, position.y / PTM_RATIO);
 	// 폭발 범위
-	float blastRadius = 5.0;
+	//float blastRadius = 5.0;
 	// 폭발 바운딩박스 위치와 크기 
 	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
 	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
@@ -359,17 +359,27 @@ void HelloWorld::trigger(Vec2 position)
 		{
 			b2Body * m_body = (b2Body*)monsters->at(k)->body;
 			if (body == m_body)
-			{
-				monsters->at(k)->hp = monsters->at(k)->hp - 50;
-				monsters->at(k)->hpBar->setVisible(true);
-				monsters->at(k)->hpBarShowTime = 0;
-				applyBlastImpulse(body, center, bodyCom, 100);
-				break;
+			{	
+				// 폭파효과
+				if (type == 0) {
+					monsters->at(k)->hp = monsters->at(k)->hp - PlayerInfoSingleTon::getInstance()->trap1_Damage;
+					monsters->at(k)->hpBar->setVisible(true);
+					monsters->at(k)->hpBarShowTime = 0;
+					applyBlastImpulse(body, center, bodyCom, 100);
+					break;
+				}
+				else if (type == 1)
+				{
+					monsters->at(k)->isSlow = true;
+					monsters->at(k)->slowTime = 0.0f;
+					break;
+				}
 			}
 		}
 	}
 }
 
+// 폭파 밀림
 void HelloWorld::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower)
 {
 	b2Vec2 blastDir = applyPoint - blastCenter;
@@ -381,6 +391,7 @@ void HelloWorld::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 appl
 	float impulseMag = blastPower * invDistance * invDistance;
 	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
 }
+
 
 bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
@@ -394,21 +405,31 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 			// 트랩이 눌렸다면
 			if (trap->sprite->getBoundingBox().containsPoint(touchPoint))
 			{
-				trigger(trap->sprite->getPosition());
+				int type = trap->type;
+				float blastRadius;
 				
 				//폭파 애니매이션
-				auto cache = SpriteFrameCache::getInstance();
-				cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
+				if (type == 0)
+				{
+					blastRadius = PlayerInfoSingleTon::getInstance()->trap1_blastRadius;
+					auto cache = SpriteFrameCache::getInstance();
+					cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
 
-				auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
-				exp->setPosition(trap->sprite->getPosition());
-				exp->setScale(2.8f);
-				gameLayer->addChild(exp, 200);
+					auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
+					exp->setPosition(trap->sprite->getPosition());
+					exp->setScale(2.8f);
+					gameLayer->addChild(exp, 200);
 
-				auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
-				auto rep = Sequence::create(explosion1,
-					CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, exp)), nullptr);
-				exp->runAction(rep);
+					auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
+					auto rep = Sequence::create(explosion1,
+						CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, exp)), nullptr);
+					exp->runAction(rep);
+				}
+				if (type == 1)
+				{
+					blastRadius = PlayerInfoSingleTon::getInstance()->trap2_blastRadius;
+				}
+				trigger(trap->sprite->getPosition(), blastRadius, type);
 				// 효과 적용 후 삭제
 				gameLayer->removeChild(trap->sprite);
 				gameLayer->removeChild(trap);
@@ -535,7 +556,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		Size parentSize;
 		parentSize = skill->getContentSize();
 		Vec2 w_position = skill->convertToWorldSpace(target->getPosition());
-		trigger(w_position);
+		trigger(w_position, 5.0f, 0);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 
 		//폭탄애니메이션 실험

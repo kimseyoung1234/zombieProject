@@ -91,7 +91,7 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 	}
 	else if (tag == TRAP)
 	{
-		 str = String::createWithFormat("item/bomb.png", idx + 1);
+		 str = String::createWithFormat("item/trap%02d.png", idx + 1);
 	}
 	else if (tag == HELPER)
 	{
