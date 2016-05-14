@@ -55,7 +55,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//this->addChild(background);
+	this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -184,7 +184,8 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	b2FixtureDef BoxShapeDef;
 	b2PolygonShape barricadeBox;
 	BoxShapeDef.shape = &barricadeBox;
-	BoxShapeDef.filter.groupIndex = -10;
+	BoxShapeDef.filter.categoryBits = 0x0004;
+	BoxShapeDef.filter.maskBits = 0x0002 ;
 
 	barricadeBox.SetAsBox(100 / PTM_RATIO, winSize.height / PTM_RATIO);
 
@@ -216,6 +217,10 @@ void HelloWorld::tick(float dt)
 		else if (equipWeapon == 1)
 		{
 			attackRate = PlayerInfoSingleTon::getInstance()->ak_Rate;
+		}
+		else if (equipWeapon == 2)
+		{
+			attackRate = PlayerInfoSingleTon::getInstance()->sniper_Rate;
 		}
 		// 웨이브 진행상황 갱신
 		waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
@@ -272,11 +277,13 @@ void HelloWorld::tick(float dt)
 				attackDelayTime = 0;
 				int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
 
+				// 머신건
 				if (current_Weapon == 0) {
 					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
 					bullets->push_back(bullet);
 					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 				}
+				// 멀티공격
 				else if (current_Weapon == 1)
 				{
 					float shootLength = shootVector.length();
@@ -306,6 +313,7 @@ void HelloWorld::tick(float dt)
 					bullets->push_back(bullet3);
 					bullet3->body->SetLinearVelocity(b2Vec2(shootVector3.x * 30, shootVector3.y * 30));
 				}
+				// 저격총
 				else if (current_Weapon == 2)
 				{
 					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
@@ -336,6 +344,18 @@ void HelloWorld::removeObject()
 	{
 		Bullet * bullet = (Bullet *)bullets->at(k);
 		if (bullet->isRemove == true) {
+			// 저격총이면 삭제하기전에 이미 공격했던 몬스터의 hitBullet을 초기화
+			if (bullet->bulletType == 2) {
+				// 몬스터랑 비교해서
+				for (int i = 0; i < monsters->size(); i++)
+				{
+					Monster * mon = (Monster*)monsters->at(i);
+					if (mon->hitBullet == bullet->body)
+					{
+						mon->hitBullet = nullptr;
+					}
+				}
+			}
 			auto sprite = (Sprite*)bullet->body->GetUserData();
 			if (sprite != nullptr) {
 				gameLayer->removeChild(sprite);

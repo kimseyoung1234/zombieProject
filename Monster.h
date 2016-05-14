@@ -41,9 +41,10 @@ public:
 	bool isAttack = false;
 	bool isSlow = false;
 	bool isPipe = false;
-
+	
 	bool isRight = false;
 	bool isLeft = true;
+	b2Body * hitBullet = nullptr;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;

@@ -112,7 +112,9 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	//바디에 적용할 물리 속석용 바디의 모양을 만든다
 	b2FixtureDef fixtureDef;
 	//fixtureDef.filter.groupIndex = -12;
-	
+	fixtureDef.filter.categoryBits = 0x0002;
+	fixtureDef.filter.maskBits = 0x0001 | 0x0002 | 0x0004;
+
 	b2PolygonShape dynamicBox;
 	b2CircleShape circle;
 

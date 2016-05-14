@@ -26,6 +26,7 @@ Bullet::Bullet(Vec2 nPos2, int bulletType,float angle)
 	else if (bulletType == 2)
 	{
 		monsters = DataSingleTon::getInstance()->getMonsters();
+		this->damage = PlayerInfoSingleTon::getInstance()->sniper_Damage;
 		this->schedule(schedule_selector(Bullet::tick));
 	}
 	body = this->addNewSprite(nPos2, Size(10, 10), b2_dynamicBody, 1);
@@ -73,9 +74,10 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 	fixtureDef.filter.groupIndex = -10;
 	//Define the dynamic body fixture.
 	//밀도
-	if(bulletType == 3)
+	if(bulletType == 2)
 	{
 		fixtureDef.density = 0.0f;
+		fixtureDef.filter.categoryBits = 0x0008;
 	}
 	else {
 		fixtureDef.density = 5.0f;
@@ -84,7 +86,6 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 	fixtureDef.friction = 0.0f;
 	//반발력 - 물체가 다른 물체에 닿았을 때 튕기는 값
 	fixtureDef.restitution = 0.0;
-
 	body->CreateFixture(&fixtureDef);
 
 	return body;
@@ -94,16 +95,16 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 Bullet::~Bullet()
 {
 }
+// 저격총일 경우 몬스터들을 관통하면서 공격
 void Bullet::tick(float dt)
 {
 	MyQueryCallback queryCallback; //see "World querying topic"
 	b2AABB aabb;
-	// center : 폭탄 중심 위치
 	
 	b2Vec2 center = body->GetWorldCenter();
-	// 폭발 범위
-	float blastRadius = 0.5f;
-	// 폭발 바운딩박스 위치와 크기 
+
+	float blastRadius = 0.8f;
+
 	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
 	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
 	_world->QueryAABB(&queryCallback, aabb);
@@ -123,11 +124,14 @@ void Bullet::tick(float dt)
 			b2Body * m_body = (b2Body*)monsters->at(k)->body;
 			if (body == m_body)
 			{
-				log("저겨총맞앗다");
-					monsters->at(k)->hp = monsters->at(k)->hp - 30;
+				if (monsters->at(k)->hitBullet != this->body) {
+					log("몇대맞ㅇ므");
+					monsters->at(k)->hitBullet = this->body;
+					monsters->at(k)->hp = monsters->at(k)->hp - damage;
 					monsters->at(k)->hpBar->setVisible(true);
 					monsters->at(k)->hpBarShowTime = 0;
-					break;
+				}
+				break;
 			}
 		}
 	}
