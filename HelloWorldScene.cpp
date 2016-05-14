@@ -55,7 +55,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	this->addChild(background);
+	//this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -193,6 +193,7 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	barricade->push_back(_barricade);
 
 	myContactListener = new ContactListener();
+
 	_world->SetContactListener((b2ContactListener *)myContactListener);
 	return true;
 }
@@ -305,6 +306,13 @@ void HelloWorld::tick(float dt)
 					bullets->push_back(bullet3);
 					bullet3->body->SetLinearVelocity(b2Vec2(shootVector3.x * 30, shootVector3.y * 30));
 				}
+				else if (current_Weapon == 2)
+				{
+					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
+					bullets->push_back(bullet);
+					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+					gameLayer->addChild(bullet);
+				}
 			}
 		}
 
@@ -335,6 +343,7 @@ void HelloWorld::removeObject()
 				bullets->erase(bullets->begin() + k);
 				_world->DestroyBody(bullet->body);
 				delete bullet;
+
 			}
 		}
 	}
@@ -479,6 +488,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 		isAttack = true;
 
+		attackPoint = touchPoint;
 		// 공격한번 했으면 딜레이 초기화
 		attackDelayTime = 0;
 
@@ -519,7 +529,13 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 			bullets->push_back(bullet3);
 			bullet3->body->SetLinearVelocity(b2Vec2(shootVector3.x * 30, shootVector3.y * 30));
 		}
-
+		else if (current_Weapon == 2)
+		{
+			Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
+			bullets->push_back(bullet);
+			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+			gameLayer->addChild(bullet);
+		}
 
 		// 공격 애니메이션 
 		player->stopAllActions();

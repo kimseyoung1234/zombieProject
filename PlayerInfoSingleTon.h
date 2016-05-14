@@ -24,9 +24,12 @@ public:
 	int machine_Damage = 50;
 	float machine_Rate = 0.1;
 
-	int ak_Damage = 100;
-	float ak_Rate = 0.5;
+	int ak_Damage = 40;
+	float ak_Rate = 0.4;
 
+	int sniper_Damage = 150;
+	int sniper_Rate = 150;
+	// Æ®·¦ Á¤º¸
 	int trap1_Damage = 50;
 	float trap1_blastRadius = 5.0f;
 

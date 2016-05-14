@@ -48,7 +48,7 @@ public:
 	GLESDebugDraw* m_debugDraw;
 
 	cocos2d::Sprite * selectedTrap;
-	b2Vec2 attackVector;
+	
 	Vec2 attackPoint;
 	float cocosAngle;
 	float attackDelayTime = 0.3;

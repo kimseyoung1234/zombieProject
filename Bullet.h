@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 #include "Box2D\Box2D.h"
-
+#include "Monster.h"
 USING_NS_CC;
 
 //using namespace cocos2d;
@@ -20,11 +20,13 @@ public:
 	bool isRemove = false;
 	float angle;
 	int bulletType;
+
+	std::vector<Monster*>* monsters;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
 
-
+	void tick(float dt);
 };
 
 #endif /* defined(__SpriteExtendEx_Monster__)*/

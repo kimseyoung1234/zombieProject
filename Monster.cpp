@@ -60,7 +60,7 @@ Monster::Monster(Vec2 position,int monsterType)
 		moveAnimate = ResouceLoad::getInstance()->super_moveAnimate->clone();
 		moveAnimate->retain();
 	}
-	body = addNewSprite(position, Size(30, 40), b2_dynamicBody, 0);
+	body = addNewSprite(position, Size(30, 50), b2_dynamicBody, 0);
 
 	this->schedule(schedule_selector(Monster::moving));
 }
@@ -112,6 +112,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	//바디에 적용할 물리 속석용 바디의 모양을 만든다
 	b2FixtureDef fixtureDef;
 	//fixtureDef.filter.groupIndex = -12;
+	
 	b2PolygonShape dynamicBox;
 	b2CircleShape circle;
 

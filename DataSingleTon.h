@@ -6,6 +6,7 @@
 #include "Bullet.h"
 #include "Trap.h"
 #include "Helper.h"
+#include "ContactListener.h"
 // 모든 클래스에서 사용하기 위한 싱글톤 클래스
 class DataSingleTon {
 private:
@@ -24,6 +25,7 @@ private:
 	cocos2d::LayerColor* shopLayer;
 	cocos2d::Size winSize;
 	b2Body * groundBody;
+
 public:
 
 	static DataSingleTon *getInstance();
@@ -37,7 +39,7 @@ public:
 	cocos2d::LayerColor* getGameLayer();
 	cocos2d::LayerColor* getMenuLayer();
 	cocos2d::LayerColor* getShopLayer();
-	//b2Body* getBarricade();
+	
 };
 
 #endif

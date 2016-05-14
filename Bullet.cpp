@@ -3,6 +3,7 @@
 #include <GLES-Render.h>
 #include "DataSingleTon.h"
 #include "PlayerInfoSingleTon.h"
+#include "MyQueryCallback.h"
 USING_NS_CC;
 
 // 생성자 변수 초기화와 공용 변수 불러오기
@@ -17,8 +18,17 @@ Bullet::Bullet(Vec2 nPos2, int bulletType,float angle)
 	if (bulletType == 0) {
 		this->damage = PlayerInfoSingleTon::getInstance()->machine_Damage;
 	}
+	else if (bulletType == 1)
+	{
+		this->damage = PlayerInfoSingleTon::getInstance()->ak_Damage;
+	}
 	
-	body = this->addNewSprite(nPos2, Size(9, 9), b2_dynamicBody, 1);
+	else if (bulletType == 2)
+	{
+		monsters = DataSingleTon::getInstance()->getMonsters();
+		this->schedule(schedule_selector(Bullet::tick));
+	}
+	body = this->addNewSprite(nPos2, Size(10, 10), b2_dynamicBody, 1);
 
 }
 
@@ -84,13 +94,41 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 Bullet::~Bullet()
 {
 }
-/*
-void Monster::onEnter()
+void Bullet::tick(float dt)
 {
-Node::onEnter();
+	MyQueryCallback queryCallback; //see "World querying topic"
+	b2AABB aabb;
+	// center : 폭탄 중심 위치
+	
+	b2Vec2 center = body->GetWorldCenter();
+	// 폭발 범위
+	float blastRadius = 0.5f;
+	// 폭발 바운딩박스 위치와 크기 
+	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
+	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
+	_world->QueryAABB(&queryCallback, aabb);
 
+	//check which of these bodies have their center of mass within the blast radius
+	for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
+		b2Body* body = queryCallback.foundBodies[i];
+		b2Vec2 bodyCom = body->GetWorldCenter();
+
+		//ignore bodies outside the blast range
+		if ((bodyCom - center).Length() >= blastRadius)
+		{
+			continue;
+		}
+		for (int k = 0; k < monsters->size(); k++)
+		{
+			b2Body * m_body = (b2Body*)monsters->at(k)->body;
+			if (body == m_body)
+			{
+				log("저겨총맞앗다");
+					monsters->at(k)->hp = monsters->at(k)->hp - 30;
+					monsters->at(k)->hpBar->setVisible(true);
+					monsters->at(k)->hpBarShowTime = 0;
+					break;
+			}
+		}
+	}
 }
-void Monster::onExit()
-{
-Node::onExit();
-}*/

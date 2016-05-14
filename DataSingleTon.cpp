@@ -17,6 +17,7 @@ DataSingleTon::DataSingleTon() {
 	gameLayer = LayerColor::create(Color4B(0, 0, 0, 0),winSize.width,winSize.height);
 	menuLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
 	shopLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
+
 }
 
 DataSingleTon * DataSingleTon::getInstance()
