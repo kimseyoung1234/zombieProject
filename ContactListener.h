@@ -18,7 +18,7 @@ public:
 	virtual void PreSolve(b2Contact *contact,const b2Manifold *oldManifold);
 	virtual void PostSolve(b2Contact *contact, const b2ContactImpulse *impulse);
 
-	void trigger(Vec2 position, float blastRadius, int type);
+	void trigger(Vec2 position, float blastRadius, int type, float blastPower);
 	void ContactListener::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
 	b2World* _world;
 	//b2Body* barricade;

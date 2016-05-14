@@ -63,7 +63,13 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 	fixtureDef.filter.groupIndex = -10;
 	//Define the dynamic body fixture.
 	//밀도
-	fixtureDef.density = 5.0f;
+	if(bulletType == 3)
+	{
+		fixtureDef.density = 0.0f;
+	}
+	else {
+		fixtureDef.density = 5.0f;
+	}
 	// 마찰력 - 0 ~ 1
 	fixtureDef.friction = 0.0f;
 	//반발력 - 물체가 다른 물체에 닿았을 때 튕기는 값

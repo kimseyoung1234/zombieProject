@@ -331,54 +331,6 @@ void HelloWorld::removeObject()
 }
 
 
-void HelloWorld::trigger(Vec2 position,float blastRadius,int type)
-{
-	log("x : %f  y : %f", position.x, position.y);
-	MyQueryCallback queryCallback; //see "World querying topic"
-	b2AABB aabb;
-	// center : 폭탄 중심 위치
-	b2Vec2 center = b2Vec2(position.x / PTM_RATIO, position.y / PTM_RATIO);
-	// 폭발 범위
-	//float blastRadius = 5.0;
-	// 폭발 바운딩박스 위치와 크기 
-	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
-	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
-	_world->QueryAABB(&queryCallback, aabb);
-
-	//check which of these bodies have their center of mass within the blast radius
-	for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
-		b2Body* body = queryCallback.foundBodies[i];
-		b2Vec2 bodyCom = body->GetWorldCenter();
-
-		//ignore bodies outside the blast range
-		if ((bodyCom - center).Length() >= blastRadius)
-		{
-			continue;
-		}
-		for (int k = 0; k < monsters->size(); k++)
-		{
-			b2Body * m_body = (b2Body*)monsters->at(k)->body;
-			if (body == m_body)
-			{	
-				// 폭파효과
-				if (type == 0) {
-					monsters->at(k)->hp = monsters->at(k)->hp - PlayerInfoSingleTon::getInstance()->trap1_Damage;
-					monsters->at(k)->hpBar->setVisible(true);
-					monsters->at(k)->hpBarShowTime = 0;
-					applyBlastImpulse(body, center, bodyCom, 100);
-					break;
-				}
-				else if (type == 1)
-				{
-					monsters->at(k)->isSlow = true;
-					monsters->at(k)->slowTime = 0.0f;
-					break;
-				}
-			}
-		}
-	}
-}
-
 // 폭파 밀림
 void HelloWorld::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower)
 {
@@ -429,7 +381,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 				{
 					blastRadius = PlayerInfoSingleTon::getInstance()->trap2_blastRadius;
 				}
-				trigger(trap->sprite->getPosition(), blastRadius, type);
+				myContactListener->trigger(trap->sprite->getPosition(), blastRadius, type, 100);
 				// 효과 적용 후 삭제
 				gameLayer->removeChild(trap->sprite);
 				gameLayer->removeChild(trap);
@@ -461,6 +413,14 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		target->setVisible(true);
 		target->setPosition(skill->convertToNodeSpace(touchPoint));
 		isSkill = true;
+		return true;
+	}
+	if (skill2->getBoundingBox().containsPoint(touchPoint))
+	{
+		auto target = static_cast<Sprite*>(skill2->getChildByTag(51));
+		target->setVisible(true);
+		target->setPosition(skill2->convertToNodeSpace(touchPoint));
+		isSkill2 = true;
 		return true;
 	}
 
@@ -516,6 +476,11 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 		auto target = static_cast<Sprite*>(skill->getChildByTag(50));
 		target->setPosition(target->getPosition() + touch->getDelta());
 	}
+	else if (isSkill2)
+	{
+		auto target = static_cast<Sprite*>(skill2->getChildByTag(51));
+		target->setPosition(target->getPosition() + touch->getDelta());
+	}
 	// 아니라면 공격
 	else {
 		Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
@@ -556,7 +521,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		Size parentSize;
 		parentSize = skill->getContentSize();
 		Vec2 w_position = skill->convertToWorldSpace(target->getPosition());
-		trigger(w_position, 5.0f, 0);
+		myContactListener->trigger(w_position, 5.0f, 0, 100);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 
 		//폭탄애니메이션 실험
@@ -572,6 +537,17 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		auto rep = Sequence::create(explosion1,
 			CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this,exp)),nullptr);
 		exp->runAction(rep);
+	}
+	else if (isSkill2)
+	{
+		isSkill2 = false;
+		auto target = static_cast<Sprite*>(skill2->getChildByTag(51));
+		target->setVisible(false);
+		Size parentSize;
+		parentSize = skill2->getContentSize();
+		Vec2 w_position = skill2->convertToWorldSpace(target->getPosition());
+		myContactListener->trigger(w_position, 15.0f, 2, 100);
+		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	}
 }
 
@@ -635,27 +611,47 @@ void HelloWorld::addMenu()
 	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
 	menuLayer->addChild(shopMenu);
 
-	//스킬창
+	//스킬1
 	skill = Sprite::create("skill1.png");
 	skill->setPosition(Vec2(100, 100));
-	
+
 	gameLayer->addChild(skill);
 
 	auto bomb = Sprite::create("bomb.png");
 	Size parentSize;
 	parentSize = skill->getContentSize();
-	bomb->setPosition(Vec2(parentSize.width / 2.0, parentSize.height /2.0));
+	bomb->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	bomb->setScale(3.0f);
 	skill->addChild(bomb);
 
-	// 스킬
 	auto range = Sprite::create("range.png");
 	range->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
-	
+
 	range->setTag(50);
 	range->setVisible(false);
 	skill->addChild(range);
 
+	//스킬2
+	
+	skill2 = Sprite::create("skill1.png");
+	skill2->setPosition(Vec2(250, 100));
+
+	gameLayer->addChild(skill2);
+
+	auto bomb2 = Sprite::create("bomb.png");
+	Size parentSize2;
+	parentSize2 = skill2->getContentSize();
+	bomb2->setPosition(Vec2(parentSize2.width / 2.0, parentSize2.height / 2.0));
+	bomb2->setScale(3.0f);
+	skill2->addChild(bomb2);
+
+	auto range2 = Sprite::create("range.png");
+	range2->setPosition(Vec2(parentSize2.width / 2.0, parentSize2.height / 2.0));
+
+	range2->setTag(51);
+	range2->setVisible(false);
+	skill2->addChild(range2);
+	
 }
 
 void HelloWorld::shopOpen(Ref * pSender)

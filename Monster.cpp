@@ -219,9 +219,31 @@ void Monster::moving(float dt)
 		// 바디 이동
 		if (isSlow)
 		{
-			body->SetTransform(b2Vec2(body->GetPosition().x - (xSpeed/3), body->GetPosition().y - (ySpeed/3)), 0);
+			if(isPipe)
+			{
+				Vec2 transVector = pipe_positon - sprite->getPosition();
+				transVector.normalize();
+				log("trans x :%f  y:%f", transVector.x, transVector.y);
+			}
+			else
+			{
+				body->SetTransform(b2Vec2(body->GetPosition().x - (xSpeed / 3), body->GetPosition().y - (ySpeed / 3)), 0);
+			}
 		}
 		else
-		body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed, body->GetPosition().y - ySpeed), 0);
+		{	
+			if (isPipe)
+			{
+				Vec2 transVector = pipe_positon - sprite->getPosition();
+				transVector.normalize();
+				log("trans x :%f  y:%f", transVector.x, transVector.y);
+			}
+			else
+			{
+				log("여기");
+			//	body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed, body->GetPosition().y - ySpeed), 0);
+				body->ApplyLinearImpulse(b2Vec2(-xSpeed*3, -ySpeed*3), body->GetWorldCenter(), true);
+			}
+		}
 	}
 }

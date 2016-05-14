@@ -81,7 +81,9 @@ public:
 
 	//실험
 	Sprite* skill;
-	bool isSkill=false;
+	Sprite* skill2;
+	bool isSkill = false;
+	bool isSkill2 = false;
 
 	void trigger(Vec2 position,float blastRadius,int type);
 	DrawNode * draw_node;

@@ -45,7 +45,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 								// 도우미 바주카 총알
 								if (bullets->at(k)->bulletType == 3) {
 									Vec2 position = Vec2(b_body->GetPosition().x * PTM_RATIO, b_body->GetPosition().y * PTM_RATIO);
-									trigger(position, 3.0f, 0);
+									trigger(position, 3.0f, 0, 10);
 									bullets->at(k)->isRemove = true;
 								}
 								else {
@@ -115,7 +115,7 @@ void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impu
 
 	if (bodyA->GetType() == b2_dynamicBody || bodyB->GetType() == b2_dynamicBody)
 	{
-		//log("Contact:impulse .. %f", impulse->normalImpulses[0]);
+	//	log("Contact:impulse .. %f", impulse->normalImpulses[0]);
 	}
 }
 
@@ -146,8 +146,8 @@ void ContactListener::EndContact(b2Contact *contact)
 	}
 }
 
-
-void ContactListener::trigger(Vec2 position, float blastRadius, int type)
+// type 0: 폭파효과 1: 슬로우효과
+void ContactListener::trigger(Vec2 position, float blastRadius, int type, float blastPower)
 {
 	log("x : %f  y : %f", position.x, position.y);
 	MyQueryCallback queryCallback; //see "World querying topic"
@@ -181,7 +181,20 @@ void ContactListener::trigger(Vec2 position, float blastRadius, int type)
 					monsters->at(k)->hp = monsters->at(k)->hp - 30;
 					monsters->at(k)->hpBar->setVisible(true);
 					monsters->at(k)->hpBarShowTime = 0;
-					applyBlastImpulse(body, center, bodyCom, 10);
+					applyBlastImpulse(body, center, bodyCom, blastPower);
+					break;
+				}
+				else if (type == 1)
+				{
+					monsters->at(k)->isSlow = true;
+					monsters->at(k)->slowTime = 0.0f;
+					break;
+				}
+				else if (type == 2)
+				{
+					monsters->at(k)->isPipe = true;
+					monsters->at(k)->pipe_positon = position;
+					log("파이프");
 					break;
 				}
 			}

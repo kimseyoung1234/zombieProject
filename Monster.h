@@ -36,6 +36,8 @@ public:
 	Animate * attackAnimate;
 
 	bool isSlow = false;
+	bool isPipe = false;
+	Vec2 pipe_positon;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
