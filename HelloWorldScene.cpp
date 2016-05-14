@@ -263,9 +263,40 @@ void HelloWorld::tick(float dt)
 			if (attackDelayTime >= attackRate) {
 				attackDelayTime = 0;
 				int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
-				Bullet * bullet = new Bullet(nPos2, current_Weapon,cocosAngle);
-				bullets->push_back(bullet);
-				bullet->body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
+				if (current_Weapon == 0) {
+					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
+					bullets->push_back(bullet);
+					bullet->body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
+				}
+				else if (current_Weapon == 1)
+				{
+					float shootLength = shootVector.length();
+
+					// 상탄
+					// 원점에서 각도를 바꿔 일정 길이만큼 이동한 좌표값 구하기
+					Vec2 shootVector2(shootLength * cosf(shootAngle + 0.15), shootLength * sinf(shootAngle + 0.15));
+					shootVector2.normalize();
+					float shootAngle2 = shootAngle + 0.15;
+					float cocosAngle2 = CC_RADIANS_TO_DEGREES(-1 * shootAngle2);
+					// 하탄
+					Vec2 shootVector3(shootLength * cosf(shootAngle - 0.15), shootLength * sinf(shootAngle - 0.15));
+					shootVector3.normalize();
+					float shootAngle3 = shootAngle - 0.15;
+					float cocosAngle3 = CC_RADIANS_TO_DEGREES(-1 * shootAngle3);
+
+					// 총알 생성
+					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
+					bullets->push_back(bullet);
+					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+
+					Bullet * bullet2 = new Bullet(nPos2, current_Weapon, cocosAngle);
+					bullets->push_back(bullet2);
+					bullet2->body->SetLinearVelocity(b2Vec2(shootVector2.x * 30, shootVector2.y * 30));
+
+					Bullet * bullet3 = new Bullet(nPos2, current_Weapon, cocosAngle);
+					bullets->push_back(bullet3);
+					bullet3->body->SetLinearVelocity(b2Vec2(shootVector3.x * 30, shootVector3.y * 30));
+				}
 			}
 		}
 
@@ -435,6 +466,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		// 각도 실험
 		float shootAngle = shootVector.getAngle();
 		cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
+		log("각도 : %f", shootAngle);
 
 		shootVector.normalize();
 
@@ -443,11 +475,41 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		isAttack = true;
 		attackDelayTime = 0;
 		int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
-	//	if (current_Weapon == 0) {
+		if (current_Weapon == 0) {
 			Bullet * bullet = new Bullet(nPos2, current_Weapon,cocosAngle);
 			bullets->push_back(bullet);
 			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
-	//	}
+		}
+		else if (current_Weapon == 1)
+		{
+			
+			float shootLength = shootVector.length();
+
+			// 상탄
+			// 원점에서 각도를 바꿔 일정 길이만큼 이동한 좌표값 구하기
+			Vec2 shootVector2(shootLength * cosf(shootAngle + 0.15), shootLength * sinf(shootAngle + 0.15));
+			shootVector2.normalize();
+			float shootAngle2 = shootAngle + 0.15;
+			float cocosAngle2 = CC_RADIANS_TO_DEGREES(-1 * shootAngle2);
+			// 하탄
+			Vec2 shootVector3(shootLength * cosf(shootAngle - 0.15), shootLength * sinf(shootAngle - 0.15));
+			shootVector3.normalize();
+			float shootAngle3 = shootAngle - 0.15;
+			float cocosAngle3 = CC_RADIANS_TO_DEGREES(-1 * shootAngle3);
+
+			// 총알 생성
+			Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
+			bullets->push_back(bullet);
+			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+		
+			Bullet * bullet2 = new Bullet(nPos2, current_Weapon, cocosAngle);
+			bullets->push_back(bullet2);
+			bullet2->body->SetLinearVelocity(b2Vec2(shootVector2.x * 30, shootVector2.y * 30));
+
+			Bullet * bullet3 = new Bullet(nPos2, current_Weapon, cocosAngle);
+			bullets->push_back(bullet3);
+			bullet3->body->SetLinearVelocity(b2Vec2(shootVector3.x * 30, shootVector3.y * 30));
+		}
 
 
 		// 공격 애니메이션 

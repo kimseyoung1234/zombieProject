@@ -104,13 +104,14 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 
 	bodyDef.position.Set(point.x / PTM_RATIO, point.y / PTM_RATIO);
 	bodyDef.userData = zombie;
-
+	
 	bodyDef.fixedRotation = true;
 	
 	// 월드에 바디데프의 정보로 바디를 만든다
 	b2Body *body = _world->CreateBody(&bodyDef);
 	//바디에 적용할 물리 속석용 바디의 모양을 만든다
 	b2FixtureDef fixtureDef;
+	//fixtureDef.filter.groupIndex = -12;
 	b2PolygonShape dynamicBox;
 	b2CircleShape circle;
 
