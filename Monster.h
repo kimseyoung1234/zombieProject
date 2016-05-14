@@ -21,23 +21,27 @@ public:
 	Monster(Vec2 position,int monsterType);
 	~Monster();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
+	
 	b2Body* body;
 	cocos2d::Sprite* sprite;
 	cocos2d::Sprite* hpBar;
-
-	int hp;
-	int damage;
-	bool isAttack = false;
-	float attackDelay = 1.0;
-	float hpBarShowTime = 0.0;
-	float slowTime = 0.0;
-	int present_ani = MOVE;
 	Animate * moveAnimate;
 	Animate * attackAnimate;
 
+	int hp;
+	int damage;
+
+	float attackDelay = 1.0;
+	float hpBarShowTime = 0.0;
+	float slowTime = 0.0;
+	float pipeTime = 0;
+	int present_ani = MOVE;
+	Vec2 pipe_positon;
+
+	bool isAttack = false;
 	bool isSlow = false;
 	bool isPipe = false;
-	Vec2 pipe_positon;
+	bool isFlip = false;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
@@ -45,7 +49,7 @@ private:
 	float xSpeed;
 	float ySpeed;
 	int monsterType;
-	float yTurnTime = 0;
+	
 	
 	void moving(float dt);
 	

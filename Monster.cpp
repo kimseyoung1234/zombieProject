@@ -19,16 +19,10 @@ Monster::Monster(Vec2 position,int monsterType)
 
 	if (monsterType == BrainZombie)
 	{
-		int direction = random(0, 1);
-		if (direction == 0)
-		{
-			direction = -1;
-		}
-
 		this->hp = MonsterInfoSingleTon::getInstance()->brainZombie_HP;
 		this->damage = MonsterInfoSingleTon::getInstance()->brainZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->brainZombie_xSpeed;
-		this->ySpeed = MonsterInfoSingleTon::getInstance()->brainZomie_ySpeed * direction;
+		this->ySpeed = MonsterInfoSingleTon::getInstance()->brainZomie_ySpeed;
 
 		// 공격 애니메이션 등록
 		
@@ -164,7 +158,7 @@ Monster::~Monster()
 
 void Monster::moving(float dt)
 {
-	yTurnTime = yTurnTime + dt;
+	pipeTime = pipeTime + dt;
 	attackDelay = attackDelay + dt;
 	hpBarShowTime = hpBarShowTime + dt;
 	slowTime = slowTime + dt;
@@ -177,12 +171,11 @@ void Monster::moving(float dt)
 	hpBar->setScaleX(hp / 100.0f);
 	
 	
-	if (yTurnTime >= 2.0)
+	if (pipeTime >= 3.0)
 	{
-		this->ySpeed = this->ySpeed * -1;
-		yTurnTime = 0;
+		isPipe= false;
 	}
-
+	
 	// 몬스터 피격스 3초동안만 hpBar가 보임
 	if (hpBarShowTime >= 3.0)
 	{
@@ -217,32 +210,79 @@ void Monster::moving(float dt)
 			present_ani = MOVE;
 		}
 		// 바디 이동
+
+		// 슬로우트랩 맞았을때 이동
 		if (isSlow)
 		{
 			if(isPipe)
 			{
 				Vec2 transVector = pipe_positon - sprite->getPosition();
 				transVector.normalize();
-				log("trans x :%f  y:%f", transVector.x, transVector.y);
+			
+				if (transVector.x > 0 && !isFlip)
+				{
+					isFlip = true;
+					auto FlipX = OrbitCamera::create(
+						0.2f,
+						1.0f, 0,
+						0, 180.0f,
+						0, 0);
+					sprite->runAction(FlipX);
+				}
+				body->ApplyLinearImpulse(b2Vec2(xSpeed * transVector.x / 3, ySpeed * transVector.y / 3), body->GetWorldCenter(), true);
 			}
 			else
 			{
-				body->SetTransform(b2Vec2(body->GetPosition().x - (xSpeed / 3), body->GetPosition().y - (ySpeed / 3)), 0);
+				if (isFlip)
+				{
+					isFlip = false;
+					auto FlipX = OrbitCamera::create(
+						0.2f,
+						1.0f, 0,
+						180.0f, 180.0f,
+						0, 0);
+					sprite->runAction(FlipX);
+				}
+
+				body->ApplyLinearImpulse(b2Vec2(-xSpeed/3, 0), body->GetWorldCenter(), true);
 			}
 		}
 		else
 		{	
+			// 파이프폭탄 맞았을때 이동
 			if (isPipe)
 			{
 				Vec2 transVector = pipe_positon - sprite->getPosition();
 				transVector.normalize();
-				log("trans x :%f  y:%f", transVector.x, transVector.y);
+			
+				if (transVector.x > 0 && !isFlip)
+				{
+					isFlip = true;
+					auto FlipX = OrbitCamera::create(
+						0.2f,
+						1.0f, 0,
+						0, 180.0f,
+						0, 0);
+					sprite->runAction(FlipX);
+				}
+				body->ApplyLinearImpulse(b2Vec2(xSpeed * transVector.x, ySpeed * transVector.y), body->GetWorldCenter(), true);
 			}
+			// 평소에 이동
 			else
 			{
-				log("여기");
-			//	body->SetTransform(b2Vec2(body->GetPosition().x - xSpeed, body->GetPosition().y - ySpeed), 0);
-				body->ApplyLinearImpulse(b2Vec2(-xSpeed*3, -ySpeed*3), body->GetWorldCenter(), true);
+				if (isFlip)
+				{
+					isFlip = false;
+					auto FlipX = OrbitCamera::create(
+						0.2f,
+						1.0f, 0,
+						180.0f, 180.0f,
+						0, 0);
+					sprite->runAction(FlipX);
+				}
+
+			
+				body->ApplyLinearImpulse(b2Vec2(-xSpeed, 0), body->GetWorldCenter(), true);
 			}
 		}
 	}

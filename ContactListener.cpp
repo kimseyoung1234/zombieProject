@@ -194,6 +194,7 @@ void ContactListener::trigger(Vec2 position, float blastRadius, int type, float 
 				{
 					monsters->at(k)->isPipe = true;
 					monsters->at(k)->pipe_positon = position;
+					monsters->at(k)->pipeTime = 0.0f;
 					log("фдюлга");
 					break;
 				}
