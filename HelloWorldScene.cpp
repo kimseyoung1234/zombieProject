@@ -260,13 +260,21 @@ void HelloWorld::tick(float dt)
 		if (isAttack) {
 			Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
 			Vec2 nPos2 = player->convertToWorldSpace(nPos1);
+			Vec2 shootVector = attackPoint - nPos2;
+			// 각도 실험
+			float shootAngle = shootVector.getAngle();
+			cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
+
+			shootVector.normalize();
+
 			if (attackDelayTime >= attackRate) {
 				attackDelayTime = 0;
 				int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
+
 				if (current_Weapon == 0) {
 					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
 					bullets->push_back(bullet);
-					bullet->body->SetLinearVelocity(b2Vec2(attackVector.x * 30, attackVector.y * 30));
+					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 				}
 				else if (current_Weapon == 1)
 				{
@@ -466,14 +474,15 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		// 각도 실험
 		float shootAngle = shootVector.getAngle();
 		cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
-		log("각도 : %f", shootAngle);
 
 		shootVector.normalize();
 
-		attackVector = b2Vec2(shootVector.x, shootVector.y);
-
 		isAttack = true;
+
+		// 공격한번 했으면 딜레이 초기화
 		attackDelayTime = 0;
+
+		// 현재 장착된 무기에 따라 총알 생성
 		int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
 		if (current_Weapon == 0) {
 			Bullet * bullet = new Bullet(nPos2, current_Weapon,cocosAngle);
@@ -545,16 +554,7 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 	}
 	// 아니라면 공격
 	else {
-		Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
-		Vec2 nPos2 = player->convertToWorldSpace(nPos1);
-		Vec2 shootVector = touchPoint - nPos2;
-
-		float shootAngle = shootVector.getAngle();
-		cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
-
-		shootVector.normalize();
-		attackVector = b2Vec2(shootVector.x, shootVector.y);
-
+		attackPoint = touchPoint;
 		if (attackDelayTime >= 0.2)
 		{
 			isAttack = true;
