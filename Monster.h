@@ -41,7 +41,9 @@ public:
 	bool isAttack = false;
 	bool isSlow = false;
 	bool isPipe = false;
-	bool isFlip = false;
+
+	bool isRight = false;
+	bool isLeft = true;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;

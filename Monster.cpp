@@ -174,6 +174,7 @@ void Monster::moving(float dt)
 	if (pipeTime >= 3.0)
 	{
 		isPipe= false;
+		pipe_positon = Vec2(0,0);
 	}
 	
 	// 몬스터 피격스 3초동안만 hpBar가 보임
@@ -218,10 +219,11 @@ void Monster::moving(float dt)
 			{
 				Vec2 transVector = pipe_positon - sprite->getPosition();
 				transVector.normalize();
-			
-				if (transVector.x > 0 && !isFlip)
+
+				if (transVector.x >= 0 && !isRight)
 				{
-					isFlip = true;
+					isRight = true;
+					isLeft = false;
 					auto FlipX = OrbitCamera::create(
 						0.2f,
 						1.0f, 0,
@@ -229,13 +231,26 @@ void Monster::moving(float dt)
 						0, 0);
 					sprite->runAction(FlipX);
 				}
+				else if (transVector.x < 0 && !isLeft)
+				{
+					isRight = false;
+					isLeft = true;
+					auto FlipX = OrbitCamera::create(
+						0.2f,
+						1.0f, 0,
+						180.0f, 180.0f,
+						0, 0);
+					sprite->runAction(FlipX);
+				}
+		
 				body->ApplyLinearImpulse(b2Vec2(xSpeed * transVector.x / 3, ySpeed * transVector.y / 3), body->GetWorldCenter(), true);
 			}
 			else
 			{
-				if (isFlip)
+				if (isRight)
 				{
-					isFlip = false;
+					isRight = false;
+					isLeft = true;
 					auto FlipX = OrbitCamera::create(
 						0.2f,
 						1.0f, 0,
@@ -255,9 +270,10 @@ void Monster::moving(float dt)
 				Vec2 transVector = pipe_positon - sprite->getPosition();
 				transVector.normalize();
 			
-				if (transVector.x > 0 && !isFlip)
+				if (transVector.x >= 0 && !isRight)
 				{
-					isFlip = true;
+					isRight = true;
+					isLeft = false;
 					auto FlipX = OrbitCamera::create(
 						0.2f,
 						1.0f, 0,
@@ -265,14 +281,10 @@ void Monster::moving(float dt)
 						0, 0);
 					sprite->runAction(FlipX);
 				}
-				body->ApplyLinearImpulse(b2Vec2(xSpeed * transVector.x, ySpeed * transVector.y), body->GetWorldCenter(), true);
-			}
-			// 평소에 이동
-			else
-			{
-				if (isFlip)
+				else if (transVector.x < 0 && !isLeft)
 				{
-					isFlip = false;
+					isRight = false;
+					isLeft = true;
 					auto FlipX = OrbitCamera::create(
 						0.2f,
 						1.0f, 0,
@@ -281,7 +293,23 @@ void Monster::moving(float dt)
 					sprite->runAction(FlipX);
 				}
 
-			
+				body->ApplyLinearImpulse(b2Vec2(xSpeed * transVector.x, ySpeed * transVector.y), body->GetWorldCenter(), true);
+			}
+			// 평소에 이동
+			else
+			{
+				if (isRight)
+				{
+					isRight = false;
+					isLeft = true;
+					auto FlipX = OrbitCamera::create(
+						0.2f,
+						1.0f, 0,
+						180.0f, 180.0f,
+						0, 0);
+					sprite->runAction(FlipX);
+				}
+
 				body->ApplyLinearImpulse(b2Vec2(-xSpeed, 0), body->GetWorldCenter(), true);
 			}
 		}
