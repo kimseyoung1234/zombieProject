@@ -194,24 +194,59 @@ void ShopScene::upgrade(Ref * pSender)
 }
 void ShopScene::buy(Ref * pSender)
 {
+	int money_In_Hand = PlayerInfoSingleTon::getInstance()->money_In_Hand; // 플레이어 소지금
+	bool isBuy = false;
 	//트랩에서 선택된거 있으면
 	if (PlayerInfoSingleTon::getInstance()->trapSeleted > -1)
 	{
 		int selectedTrap = PlayerInfoSingleTon::getInstance()->trapSeleted;
-		auto trap = new Trap(Vec2(winSize.width/2, winSize.height/2), selectedTrap);
-		gameLayer->addChild(trap);
-		traps->push_back(trap);
+		if (selectedTrap == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->trap1_price)
+		{
+			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->trap1_price;
+			isBuy = true;
+		}
+		else if (selectedTrap == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->trap2_price)
+		{
+			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->trap2_price;
+			isBuy = true;
+		}
+
+		if (isBuy) {
+			auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2), selectedTrap);
+			gameLayer->addChild(trap);
+			traps->push_back(trap);
+		}
+		else
+		{
+			log("살돈 없다");
+		}
 	}
 	// 도우미에서 선택된거 있으면
 	else if (PlayerInfoSingleTon::getInstance()->helperSeleted > -1)
 	{
-		log("스나이퍼삼");
 		
 		int selectedHelper = PlayerInfoSingleTon::getInstance()->helperSeleted;
-		log("%d", selectedHelper);
-		auto helper = new Helper(Vec2(50, 200), selectedHelper);
-		gameLayer->addChild(helper);
-		helpers->push_back(helper);
+
+		if (selectedHelper == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->helper1_price)
+		{
+			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->helper1_price;
+			isBuy = true;
+		}
+		else if (selectedHelper == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->helper2_price)
+		{
+			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->helper2_price;
+			isBuy = true;
+		}
+
+		if (isBuy) {
+			auto helper = new Helper(Vec2(50, 200), selectedHelper);
+			gameLayer->addChild(helper);
+			helpers->push_back(helper);
+		}
+		else
+		{
+			log("살돈 없다");
+		}
 	}
 	// 선택된 것이 아무 것도 없으면
 	else
