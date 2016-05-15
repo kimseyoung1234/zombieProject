@@ -94,7 +94,7 @@ bool ShopScene::init()
 	auto trap_view = trap_table->getTableView();
 	trap_tableLayer->addChild(trap_view);
 
-	helper_table = new TableViewLayer(Vec2(200, 0), 4,HELPER);
+	helper_table = new TableViewLayer(Vec2(200, 0), 2,HELPER);
 	auto helper_view = helper_table->getTableView();
 	helper_tableLayer->addChild(helper_view);
 
@@ -150,7 +150,11 @@ void ShopScene::buy(Ref * pSender)
 	// 도우미에서 선택된거 있으면
 	else if (PlayerInfoSingleTon::getInstance()->helperSeleted > -1)
 	{
-		auto helper = new Helper(Vec2(50, 200), 1);
+		log("스나이퍼삼");
+		
+		int selectedHelper = PlayerInfoSingleTon::getInstance()->helperSeleted;
+		log("%d", selectedHelper);
+		auto helper = new Helper(Vec2(50, 200), selectedHelper);
 		gameLayer->addChild(helper);
 		helpers->push_back(helper);
 	}

@@ -1,6 +1,7 @@
 #include "Helper.h"
 #include "DataSingleTon.h"
 #include "ResouceLoad.h"
+#include "PlayerInfoSingleTon.h"
 USING_NS_CC;
 
 Helper::Helper(Vec2 position, int type)
@@ -17,17 +18,36 @@ Helper::Helper(Vec2 position, int type)
 
 	this->type = type;
 
-	auto sprite = Sprite::create("helper1_idle.png", Rect(0, 0, 56, 64));
-	sprite->setScale(1.5f);
-	sprite->setAnchorPoint(Vec2(0, 0));
-	sprite->setPosition(Vec2(position));
-	gameLayer->addChild(sprite);
+	if (type == 0) {
+		auto sprite = Sprite::create("helper1_idle.png", Rect(0, 0, 56, 64));
+		sprite->setScale(1.5f);
+		sprite->setAnchorPoint(Vec2(0, 0));
+		sprite->setPosition(Vec2(position));
+		gameLayer->addChild(sprite);
 
-	auto helper1_idle = ResouceLoad::getInstance()->helper1_idle->clone();
-	auto rep = RepeatForever::create(helper1_idle);
-	sprite->runAction(rep);
+		auto helper1_idle = ResouceLoad::getInstance()->helper1_idle->clone();
+		auto rep = RepeatForever::create(helper1_idle);
+		sprite->runAction(rep);
 
-	this->sprite = sprite;
+		attackRate = PlayerInfoSingleTon::getInstance()->bazooka_Rate;
+		this->sprite = sprite;
+	}
+	else if(type == 1)
+	{
+	
+		auto sprite = Sprite::create("helper1_idle.png", Rect(0, 0, 56, 64));
+		sprite->setScale(1.5f);
+		sprite->setAnchorPoint(Vec2(0, 0));
+		sprite->setPosition(Vec2(position));
+		gameLayer->addChild(sprite);
+
+		auto helper1_idle = ResouceLoad::getInstance()->helper1_idle->clone();
+		auto rep = RepeatForever::create(helper1_idle);
+		sprite->runAction(rep);
+
+		attackRate = PlayerInfoSingleTon::getInstance()->sniper_Rate;
+		this->sprite = sprite;
+	}
 
 }
 
@@ -35,7 +55,7 @@ void Helper::autoAttack(float dt)
 {
 
 	attackDelayTime = attackDelayTime + dt;
-	if (attackDelayTime >= 2.0)
+	if (attackDelayTime >= attackRate)
 	{
 		if (monsters->size() > 0) {
 			int monsterSize = monsters->size() - 1;
@@ -49,10 +69,22 @@ void Helper::autoAttack(float dt)
 			float cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
 
 			shootVector.normalize();
-
-			Bullet * bullet = new Bullet(nPos2, 3,cocosAngle);
-			bullets->push_back(bullet);
-			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+			// 대포
+			if (type == 0) 
+			{
+				Bullet * bullet = new Bullet(nPos2, 3, cocosAngle);
+				bullets->push_back(bullet);
+				bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+			}
+			// 스나이퍼
+			else if (type == 1)
+			{
+				
+				Bullet * bullet = new Bullet(nPos2, 2, cocosAngle);
+				bullets->push_back(bullet);
+				bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+				gameLayer->addChild(bullet);
+			}
 			attackDelayTime = 0;
 
 			// 공격 애니메이션

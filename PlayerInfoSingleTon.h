@@ -29,6 +29,9 @@ public:
 
 	int sniper_Damage = 100;
 	float sniper_Rate = 0.6;
+
+	int bazooka_Damage = 70;
+	float bazooka_Rate = 2.0f;
 	// Æ®·¦ Á¤º¸
 	int trap1_Damage = 50;
 	float trap1_blastRadius = 5.0f;

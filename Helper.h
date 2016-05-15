@@ -16,7 +16,7 @@ public:
 	cocos2d::LayerColor* gameLayer;
 	std::vector<Monster *>* monsters;
 	std::vector<Bullet *>* bullets;
-
+	float attackRate;
 
 	void re_Idle();
 	

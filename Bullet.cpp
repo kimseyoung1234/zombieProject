@@ -98,17 +98,18 @@ Bullet::~Bullet()
 // 저격총일 경우 몬스터들을 관통하면서 공격
 void Bullet::tick(float dt)
 {
+	log("저격");
 	MyQueryCallback queryCallback; //see "World querying topic"
 	b2AABB aabb;
-	
+
 	b2Vec2 center = body->GetWorldCenter();
 
 	float blastRadius = 0.8f;
-
+	
 	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
 	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
 	_world->QueryAABB(&queryCallback, aabb);
-
+	
 	//check which of these bodies have their center of mass within the blast radius
 	for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
 		b2Body* body = queryCallback.foundBodies[i];
@@ -125,7 +126,6 @@ void Bullet::tick(float dt)
 			if (body == m_body)
 			{
 				if (monsters->at(k)->hitBullet != this->body) {
-					log("몇대맞ㅇ므");
 					monsters->at(k)->hitBullet = this->body;
 					monsters->at(k)->hp = monsters->at(k)->hp - damage;
 					monsters->at(k)->hpBar->setVisible(true);
