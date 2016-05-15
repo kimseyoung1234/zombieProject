@@ -136,6 +136,34 @@ void ShopScene::shopClose(Ref * pSender)
 void ShopScene::upgrade(Ref * pSender)
 {
 	log("업그레이드");
+	cocos2d::String *price;
+
+	int selectedWeapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
+
+	// 선택된 무기에 따라 업그레이드, 가격 올리기
+	if (selectedWeapon == 0)
+	{
+		PlayerInfoSingleTon::getInstance()->machine_price = PlayerInfoSingleTon::getInstance()->machine_price + 500;
+		price = price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->machine_price);
+	}
+	else if (selectedWeapon == 1)
+	{
+		PlayerInfoSingleTon::getInstance()->ak_price = PlayerInfoSingleTon::getInstance()->ak_price + 500;
+		price = price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->ak_price);
+	}
+	else if (selectedWeapon == 2)
+	{
+		PlayerInfoSingleTon::getInstance()->sniper_price = PlayerInfoSingleTon::getInstance()->sniper_price + 500;
+		price = price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->sniper_price);
+	}
+
+	// 새로운 가격으로 업데이트
+	auto _weapon_table = weapon_table->getTableView();
+	auto selectedCell = _weapon_table->cellAtIndex(selectedWeapon);
+	if (selectedCell) {
+		auto label = (LabelTTF*)selectedCell->getChildByTag(101);
+		label->setString(price->getCString());
+	}
 }
 void ShopScene::buy(Ref * pSender)
 {

@@ -84,27 +84,50 @@ Size TableViewLayer::tableCellSizeForIndex(TableView *table, ssize_t idx)
 
 TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 {
+	// 아이템 품목
 	cocos2d::String *str;
+	// 아이템 가격
+	cocos2d::String *price;
 	if (tag == WEAPON)
 	{
 		 str = String::createWithFormat("item/gun%02d.png", idx + 1);
+		 if (idx == 0){
+			 price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->machine_price);
+		 }
+		 else if (idx == 1) {
+			 price = String::createWithFormat(" %d", PlayerInfoSingleTon::getInstance()->ak_price);
+		 }
+		 else if( idx == 2) {
+			 price = String::createWithFormat(" %d", PlayerInfoSingleTon::getInstance()->sniper_price);
+		 }
 	}
 	else if (tag == TRAP)
 	{
 		 str = String::createWithFormat("item/trap%02d.png", idx + 1);
+		 if (idx == 0) {
+			 price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->trap1_price);
+		 }
+		 else if (idx == 1)	{
+			 price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->trap2_price);
+		 }
 	}
 	else if (tag == HELPER)
 	{
 		 str = String::createWithFormat("item/helper1.png", idx + 1);
+		 if (idx == 0) {
+			 price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->helper1_price);
+		 }
+		 else if (idx == 1)	{
+			 price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->helper2_price);
+		 }
 	}
 
 	auto sprite = Sprite::create(str->getCString());
 
-
-
 	TableViewCell *cell = table->dequeueCell();
 	if (!cell)
 	{
+		
 		cell = new CustomTableViewCell();
 		cell->autorelease();
 		// 셀 배경
@@ -114,6 +137,14 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 		layer_cell->setAnchorPoint(Vec2::ZERO);
 		cell->addChild(layer_cell);
 
+		// 가격
+
+		auto label = LabelTTF::create(price->getCString(), "Helvetica", 20.0);
+		label->setPosition(Vec2(75,25));
+		label->setAnchorPoint(Vec2(0.5,0.5));
+		label->setTag(101);
+		cell->addChild(label,1);
+		
 		// 품목
 		auto sprite = Sprite::create(str->getCString());
 
@@ -143,11 +174,13 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 		sprite1->setTexture(str->getCString());
 		sprite1->setPosition(Vec2(79, 60));
 
+		auto label = (LabelTTF*)cell->getChildByTag(101);
+		label->setString(price->getCString());
+		
 		if (tag == WEAPON) {
 			auto check1 = (Sprite*)(cell->getChildByTag(123));
 			if (PlayerInfoSingleTon::getInstance()->weaponSeleted == idx)
 			{
-				log("%d ", idx);
 				check1->setVisible(true);
 			}
 			else
