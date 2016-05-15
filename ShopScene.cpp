@@ -123,6 +123,17 @@ bool ShopScene::init()
 	// 레이어에 메뉴 객체 추가
 	this->addChild(menu);
 
+	// 소지금 라벨
+	cocos2d::String *money_In_Hand;
+	money_In_Hand = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
+
+	money_label = LabelTTF::create(money_In_Hand->getCString(), "Helvetica", 20.0);
+	money_label->setPosition(Vec2(200, winSize.height - 100));
+	money_label->setScale(1.5f);
+	money_label->setColor(Color3B::YELLOW);;
+	money_label->setAnchorPoint(Vec2(0.5, 0.5));
+	this->addChild(money_label, 1);
+
 	this->schedule(schedule_selector(ShopScene::tick));
 
 	return true;
@@ -135,35 +146,51 @@ void ShopScene::shopClose(Ref * pSender)
 
 void ShopScene::upgrade(Ref * pSender)
 {
-	log("업그레이드");
 	cocos2d::String *price;
-
-	int selectedWeapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
+	int selectedWeapon = PlayerInfoSingleTon::getInstance()->weaponSeleted; //선택된 무기
+	int money_In_Hand = PlayerInfoSingleTon::getInstance()->money_In_Hand; // 플레이어 소지금
+	bool isBuy = false; // 구입 했는지 아닌지
 
 	// 선택된 무기에 따라 업그레이드, 가격 올리기
-	if (selectedWeapon == 0)
+	if (selectedWeapon == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->machine_price)
 	{
+		// 소지금에서 구입한 물품에 가격 빼기
+		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->machine_price;
+		// 무기 업그레이드 비용 증가
 		PlayerInfoSingleTon::getInstance()->machine_price = PlayerInfoSingleTon::getInstance()->machine_price + 500;
-		price = price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->machine_price);
+		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->machine_price);
+
+		isBuy = true;
 	}
-	else if (selectedWeapon == 1)
+	else if (selectedWeapon == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->ak_price)
 	{
+		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->ak_price;
 		PlayerInfoSingleTon::getInstance()->ak_price = PlayerInfoSingleTon::getInstance()->ak_price + 500;
-		price = price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->ak_price);
+		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->ak_price);
+
+		isBuy = true;
 	}
-	else if (selectedWeapon == 2)
+	else if (selectedWeapon == 2 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->sniper_price)
 	{
+		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->sniper_price;
 		PlayerInfoSingleTon::getInstance()->sniper_price = PlayerInfoSingleTon::getInstance()->sniper_price + 500;
-		price = price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->sniper_price);
+		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->sniper_price);
+
+		isBuy = true;
 	}
 
 	// 새로운 가격으로 업데이트
-	auto _weapon_table = weapon_table->getTableView();
-	auto selectedCell = _weapon_table->cellAtIndex(selectedWeapon);
-	if (selectedCell) {
-		auto label = (LabelTTF*)selectedCell->getChildByTag(101);
-		label->setString(price->getCString());
+	if (isBuy) {
+		auto _weapon_table = weapon_table->getTableView();
+		auto selectedCell = _weapon_table->cellAtIndex(selectedWeapon);
+
+		if (selectedCell) {
+			auto label = (LabelTTF*)selectedCell->getChildByTag(101);
+			label->setString(price->getCString());
+		}
 	}
+	else
+		log("돈 부족해서 못삼");
 }
 void ShopScene::buy(Ref * pSender)
 {
@@ -193,12 +220,18 @@ void ShopScene::buy(Ref * pSender)
 	}
 }
 
-// 트랩과 헬퍼 중에 하나만 체크하도록 확인
+
 void ShopScene::tick(float dt)
 {
 	int trap_tableCellCount = trap_table->cellCount;
 	int helper_tableCellCount = helper_table->cellCount;
 
+	//소지금 라벨 업데이트
+	cocos2d::String *money_In_Hand;
+	money_In_Hand = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
+	money_label->setString(money_In_Hand->getCString());
+
+	// 트랩과 헬퍼 중에 하나만 체크하도록 확인
 	for (int i = 0; i < trap_tableCellCount; i++)
 	{
 		if (PlayerInfoSingleTon::getInstance()->trapSeleted == i)
