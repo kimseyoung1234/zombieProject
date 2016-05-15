@@ -52,6 +52,8 @@ public:
 	Vec2 attackPoint;
 	float cocosAngle;
 	float attackDelayTime = 0.3;
+	float skill1DelayTime = 5.0;
+	float skill2DelayTime = 5.0;
 	bool isAttack = false;
 	bool isWave = false;
 	bool isgameOver = false;

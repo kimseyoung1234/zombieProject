@@ -43,6 +43,7 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 	sprite->setTag(BULLET);
 	sprite->setScaleX(2.0f);
 	
+	this->sprite = sprite;
 	gameLayer->addChild(sprite);
 
 	bodyDef.type = bodytype;

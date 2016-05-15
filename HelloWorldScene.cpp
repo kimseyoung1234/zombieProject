@@ -55,7 +55,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	this->addChild(background);
+	//this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -91,7 +91,7 @@ void HelloWorld::waveStart(Ref* pSender)
 		for (int i = 0; i < maxMonster; i++) {
 			int rand = random(50, 600);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(1200, rand),r_monsterType);
+			Monster * mon = new Monster(Vec2(1500, rand),r_monsterType);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
@@ -149,7 +149,7 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	//그리고 바디(groundBody)에 모양(groundEdge)을 고정시킨다.
 
 	//아래
-	groundEdge.Set(b2Vec2(0, 1), b2Vec2(winSize.width / PTM_RATIO, 1));
+	groundEdge.Set(b2Vec2(0, 1), b2Vec2((winSize.width + 300) / PTM_RATIO, 1));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//왼쪽
@@ -157,11 +157,11 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//위쪽
-	groundEdge.Set(b2Vec2(0, (winSize.height-100) / PTM_RATIO), b2Vec2(winSize.width / PTM_RATIO, (winSize.height-100) / PTM_RATIO));
+	groundEdge.Set(b2Vec2(0, (winSize.height-100) / PTM_RATIO), b2Vec2((winSize.width + 300) / PTM_RATIO, (winSize.height-100) / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//오른쪽
-	groundEdge.Set(b2Vec2(winSize.width / PTM_RATIO, winSize.height / PTM_RATIO), b2Vec2(winSize.width / PTM_RATIO, 0));
+	groundEdge.Set(b2Vec2( (winSize.width + 300) / PTM_RATIO, winSize.height / PTM_RATIO), b2Vec2((winSize.width + 300) / PTM_RATIO, 0));
 	groundBody->CreateFixture(&boxShapeDef);
 	
 
@@ -202,6 +202,10 @@ bool HelloWorld::createBox2dWorld(bool debug)
 void HelloWorld::tick(float dt)
 {
 	if (!isgameOver) {
+		
+		skill1DelayTime = skill1DelayTime + dt;
+		skill2DelayTime = skill2DelayTime + dt;
+
 		//게임오버 체크
 		if (PlayerInfoSingleTon::getInstance()->hp <= 0)
 		{
@@ -343,6 +347,12 @@ void HelloWorld::removeObject()
 	for (int k = bullets->size() - 1; k >= 0; k--)
 	{
 		Bullet * bullet = (Bullet *)bullets->at(k);
+		// 총알이 화면넘어갔으면 삭제
+		if (bullet->sprite->getPositionX() >= winSize.width)
+		{
+			bullet->isRemove = true;
+		}
+
 		if (bullet->isRemove == true) {
 			// 저격총이면 삭제하기전에 이미 공격했던 몬스터의 hitBullet을 초기화
 			if (bullet->bulletType == 2) {
@@ -475,20 +485,22 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	}
 
 	// 스킬 실험
-	if (skill->getBoundingBox().containsPoint(touchPoint))
+	if (skill->getBoundingBox().containsPoint(touchPoint) && skill1DelayTime >= 2.0f)
 	{
 		auto target = static_cast<Sprite*>(skill->getChildByTag(50));
 		target->setVisible(true);
 		target->setPosition(skill->convertToNodeSpace(touchPoint));
 		isSkill = true;
+		skill1DelayTime = 0;
 		return true;
 	}
-	if (skill2->getBoundingBox().containsPoint(touchPoint))
+	if (skill2->getBoundingBox().containsPoint(touchPoint) && skill2DelayTime >= 2.0f)
 	{
 		auto target = static_cast<Sprite*>(skill2->getChildByTag(51));
 		target->setVisible(true);
 		target->setPosition(skill2->convertToNodeSpace(touchPoint));
 		isSkill2 = true;
+		skill2DelayTime = 0;
 		return true;
 	}
 

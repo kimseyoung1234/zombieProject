@@ -74,7 +74,7 @@ void ResouceLoad::Loading()
 	auto s_brain_move = Sprite::create("monster/brain_move.png");
 	auto t_brain_move = s_brain_move->getTexture();
 	auto a_brain_move = Animation::create();
-	a_brain_move->setDelayPerUnit(0.05f);
+	a_brain_move->setDelayPerUnit(0.06f);
 
 	for (int i = 0; i < 15; i++)
 	{
@@ -105,7 +105,7 @@ void ResouceLoad::Loading()
 	auto s_fat_move = Sprite::create("monster/fat_move.png");
 	auto t_fat_move = s_fat_move->getTexture();
 	auto a_fat_move = Animation::create();
-	a_fat_move->setDelayPerUnit(0.05f);
+	a_fat_move->setDelayPerUnit(0.06f);
 
 	for (int i = 0; i < 14; i++)
 	{
@@ -136,7 +136,7 @@ void ResouceLoad::Loading()
 	auto s_super_move = Sprite::create("monster/super_move.png");
 	auto t_super_move = s_super_move->getTexture();
 	auto a_super_move = Animation::create();
-	a_super_move->setDelayPerUnit(0.05f);
+	a_super_move->setDelayPerUnit(0.07f);
 
 	for (int i = 0; i < 12; i++)
 	{

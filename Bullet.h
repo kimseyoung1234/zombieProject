@@ -16,6 +16,7 @@ public:
 	~Bullet();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
 	b2Body* body;
+	Sprite * sprite;
 	int damage=0;
 	bool isRemove = false;
 	float angle;
