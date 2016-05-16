@@ -149,6 +149,8 @@ void Bullet::tick(float dt)
 					monsters->at(k)->hp = monsters->at(k)->hp - damage;
 					monsters->at(k)->hpBar->setVisible(true);
 					monsters->at(k)->hpBarShowTime = 0;
+					monsters->at(k)->isHit = true;
+					monsters->at(k)->stiffenTime = 0;
 					body->ApplyLinearImpulse(b2Vec2(10, 0), body->GetWorldCenter(), true);
 				}
 				break;

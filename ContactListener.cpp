@@ -50,12 +50,15 @@ void ContactListener::BeginContact(b2Contact *contact)
 								}
 								else {
 									log("몬스터 HP : %d", monsters->at(i)->hp);
-									monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;
+									monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;							
 									log("총알뎀지 : %d", bullets->at(k)->damage);
 									monsters->at(i)->hpBar->setVisible(true);
 									monsters->at(i)->hpBarShowTime = 0;
 									bullets->at(k)->isRemove = true;
 									log("몬스터 HP : %d", monsters->at(i)->hp);
+
+									monsters->at(i)->isHit = true;
+									monsters->at(i)->stiffenTime = 0;
 									break;
 								}
 							}
@@ -181,6 +184,8 @@ void ContactListener::trigger(Vec2 position, float blastRadius, int type, float 
 					monsters->at(k)->hp = monsters->at(k)->hp - 30;
 					monsters->at(k)->hpBar->setVisible(true);
 					monsters->at(k)->hpBarShowTime = 0;
+					monsters->at(k)->isHit = true;
+					monsters->at(k)->stiffenTime = 0;
 					applyBlastImpulse(body, center, bodyCom, blastPower);
 					break;
 				}

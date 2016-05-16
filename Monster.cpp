@@ -166,6 +166,12 @@ void Monster::moving(float dt)
 	attackDelay = attackDelay + dt;
 	hpBarShowTime = hpBarShowTime + dt;
 	slowTime = slowTime + dt;
+	stiffenTime = stiffenTime + dt;
+
+	if (stiffenTime >= 0.3)
+	{
+		isHit = false;
+	}
 
 	if (slowTime >= 5.0)
 	{
@@ -206,10 +212,11 @@ void Monster::moving(float dt)
 			attackDelay = 0;
 		}
 	}
-	else if(!isAttack){
+	else if(!isAttack && !isHit){
 		if (present_ani != MOVE) {
 			// 무브 애니메이션
 			sprite->stopAllActions();
+			sprite->setColor(Color3B::WHITE);
 			auto rep = RepeatForever::create(moveAnimate);
 			sprite->runAction(rep);
 			present_ani = MOVE;
@@ -317,5 +324,19 @@ void Monster::moving(float dt)
 				body->ApplyLinearImpulse(b2Vec2(-xSpeed, 0), body->GetWorldCenter(), true);
 			}
 		}
+	}
+	// 맞았을때 경직효과
+	else if (isHit && present_ani != HIT)
+	{
+	
+		sprite->stopAllActions();
+		auto tint = TintTo::create(0.1, Color3B::RED);
+		//auto r_colo = colo->reverse();
+		auto r_tint = TintTo::create(0.1, Color3B::WHITE);
+		auto seq = Sequence::create(tint, r_tint, nullptr);
+
+		auto rep2 = RepeatForever::create(seq);
+		sprite->runAction(rep2);
+		present_ani = HIT;
 	}
 }

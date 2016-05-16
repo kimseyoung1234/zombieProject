@@ -11,7 +11,7 @@ USING_NS_CC;
 
 #define MOVE 10
 #define ATTACK 20
-#define DIE 30
+#define HIT 30
 //using namespace cocos2d;
 
 class Monster : public cocos2d::Node
@@ -31,6 +31,7 @@ public:
 	int hp;
 	int damage;
 
+	float stiffenTime = 0.0;
 	float attackDelay = 1.0;
 	float hpBarShowTime = 0.0;
 	float slowTime = 0.0;
@@ -39,6 +40,8 @@ public:
 	Vec2 pipe_positon;
 
 	bool isAttack = false;
+	bool isHit = false;
+	bool isMotion = false;
 	bool isSlow = false;
 	bool isPipe = false;
 	

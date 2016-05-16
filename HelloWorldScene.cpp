@@ -81,21 +81,6 @@ bool HelloWorld::init()
 	auto rep = RepeatForever::create(player_idle);
 	player->runAction(rep);
 
-	// 피격 실험용
-
-	auto hit = Sprite::create("item/helper01.png");
-	hit->setPosition(Vec2(winSize.width / 2, winSize.height/2));
-	gameLayer->addChild(hit,1000);
-
-	auto colo = TintTo::create(0.1, Color3B::RED);
-	//auto r_colo = colo->reverse();
-	auto r_colo = TintTo::create(0.1,Color3B::WHITE);
-	auto seq = Sequence::create(colo, r_colo, nullptr);
-
-	auto rep2 = RepeatForever::create(seq);
-	hit->runAction(rep2);
-
-
 	return true;
 }
 
