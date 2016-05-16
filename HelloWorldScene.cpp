@@ -55,7 +55,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//this->addChild(background);
+	this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -89,9 +89,10 @@ void HelloWorld::waveStart(Ref* pSender)
 	if (isWave == false) {
 		int maxMonster = MonsterInfoSingleTon::getInstance()->maxMonster;
 		for (int i = 0; i < maxMonster; i++) {
-			int rand = random(50, 600);
+			int x_rand = random(1350, 1700);
+			int y_rand = random(50, 600);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(1500, rand),r_monsterType);
+			Monster * mon = new Monster(Vec2(x_rand, y_rand),r_monsterType);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
@@ -149,7 +150,7 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	//그리고 바디(groundBody)에 모양(groundEdge)을 고정시킨다.
 
 	//아래
-	groundEdge.Set(b2Vec2(0, 1), b2Vec2((winSize.width + 300) / PTM_RATIO, 1));
+	groundEdge.Set(b2Vec2(0, 1), b2Vec2((winSize.width + 500) / PTM_RATIO, 1));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//왼쪽
@@ -157,11 +158,11 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//위쪽
-	groundEdge.Set(b2Vec2(0, (winSize.height-100) / PTM_RATIO), b2Vec2((winSize.width + 300) / PTM_RATIO, (winSize.height-100) / PTM_RATIO));
+	groundEdge.Set(b2Vec2(0, (winSize.height-100) / PTM_RATIO), b2Vec2((winSize.width + 500) / PTM_RATIO, (winSize.height-100) / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//오른쪽
-	groundEdge.Set(b2Vec2( (winSize.width + 300) / PTM_RATIO, winSize.height / PTM_RATIO), b2Vec2((winSize.width + 300) / PTM_RATIO, 0));
+	groundEdge.Set(b2Vec2( (winSize.width + 500) / PTM_RATIO, winSize.height / PTM_RATIO), b2Vec2((winSize.width + 500) / PTM_RATIO, 0));
 	groundBody->CreateFixture(&boxShapeDef);
 	
 

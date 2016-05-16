@@ -38,11 +38,22 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 	//바디데프를 만들고 속성들을 지정한다.
 	b2BodyDef bodyDef;
 
-	auto sprite = Sprite::create("bullet1.png");
-	sprite->setRotation(angle);
-	sprite->setTag(BULLET);
-	sprite->setScaleX(2.0f);
-	
+	Sprite* sprite;
+	//바주카
+	if (bulletType == 3)
+	{
+		sprite = Sprite::create("bullet4.png");
+		sprite->setRotation(angle);
+		sprite->setTag(BULLET);
+		sprite->setScaleY(2.0f);
+	}
+	else 
+	{
+		sprite = Sprite::create("bullet1.png");
+		sprite->setRotation(angle);
+		sprite->setTag(BULLET);
+		sprite->setScaleX(2.0f);
+	}
 	this->sprite = sprite;
 	gameLayer->addChild(sprite);
 

@@ -13,12 +13,12 @@ public:
 	static MonsterInfoSingleTon *getInstance();
 
 	int level = 1;
-	int maxMonster = 20;
+	int maxMonster = 40;
 
 	int fatZombie_HP = 150;
 	int fatZombie_damage = 5;
 	float fatZombie_xSpeed = 0.15;
-	float fatZomie_ySpeed=0.1;
+	float fatZomie_ySpeed = 0.1;
 
 	int brainZombie_HP = 100;
 	int brainZombie_damage = 2;

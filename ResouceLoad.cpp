@@ -185,7 +185,7 @@ void ResouceLoad::Loading()
 
 	// 도우미1 Idle 애니메이션
 
-	auto s_helper1_idle = Sprite::create("helper1_idle.png");
+	auto s_helper1_idle = Sprite::create("helper/helper1_idle.png");
 	auto t_helper1_idle = s_helper1_idle->getTexture();
 	auto a_helper1_idle = Animation::create();
 	a_helper1_idle->setDelayPerUnit(0.15f);
@@ -200,19 +200,51 @@ void ResouceLoad::Loading()
 	helper1_idle->retain();
 
 	//도우미1 공격 애니메이션
-	auto s_helper1_attack = Sprite::create("helper1_attack.png");
+	auto s_helper1_attack = Sprite::create("helper/helper1_attack.png");
 	auto t_helper1_attack = s_helper1_attack->getTexture();
 	auto a_helper1_attack = Animation::create();
 	a_helper1_attack->setDelayPerUnit(0.04f);
 
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 14; i++)
 	{
 		int column = i % 4;
 		int row = i / 4;
-		a_helper1_attack->addSpriteFrameWithTexture(t_helper1_attack, Rect(column * 56, row * 64, 56, 64));
+		a_helper1_attack->addSpriteFrameWithTexture(t_helper1_attack, Rect(column * 88, row * 64, 88, 64));
 	}
 
 	helper1_attack = Animate::create(a_helper1_attack);
 	helper1_attack->retain();
 
+
+	// 도우미2 Idle 애니메이션
+
+	auto s_helper2_idle = Sprite::create("helper/helper2_idle.png");
+	auto t_helper2_idle = s_helper2_idle->getTexture();
+	auto a_helper2_idle = Animation::create();
+	a_helper2_idle->setDelayPerUnit(0.15f);
+
+	for (int i = 0; i < 8; i++)
+	{
+		int column = i % 8;
+		int row = i / 8;
+		a_helper2_idle->addSpriteFrameWithTexture(t_helper2_idle, Rect(column * 72, row * 56, 72, 56));
+	}
+	helper2_idle = Animate::create(a_helper2_idle);
+	helper2_idle->retain();
+
+	//도우미2 공격 애니메이션
+	auto s_helper2_attack = Sprite::create("helper/helper2_attack.png");
+	auto t_helper2_attack = s_helper2_attack->getTexture();
+	auto a_helper2_attack = Animation::create();
+	a_helper2_attack->setDelayPerUnit(0.04f);
+
+	for (int i = 0; i < 12; i++)
+	{
+		int column = i % 7;
+		int row = i / 7;
+		a_helper2_attack->addSpriteFrameWithTexture(t_helper2_attack, Rect(column * 72, row * 56, 72, 56));
+	}
+
+	helper2_attack = Animate::create(a_helper2_attack);
+	helper2_attack->retain();
 }

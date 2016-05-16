@@ -45,7 +45,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 								// 도우미 바주카 총알
 								if (bullets->at(k)->bulletType == 3) {
 									Vec2 position = Vec2(b_body->GetPosition().x * PTM_RATIO, b_body->GetPosition().y * PTM_RATIO);
-									trigger(position, 3.0f, 0, 10);
+									trigger(position, 3.0f, 0, 20);
 									bullets->at(k)->isRemove = true;
 								}
 								else {

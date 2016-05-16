@@ -113,7 +113,7 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 	}
 	else if (tag == HELPER)
 	{
-		 str = String::createWithFormat("item/helper1.png", idx + 1);
+		 str = String::createWithFormat("item/helper%02d.png", idx + 1);
 		 if (idx == 0) {
 			 price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->helper1_price);
 		 }

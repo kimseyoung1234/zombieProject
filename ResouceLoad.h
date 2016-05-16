@@ -34,6 +34,8 @@ public:
 	//µµ¿ì¹Ì
 	Animate * helper1_idle;
 	Animate * helper1_attack;
+	Animate * helper2_idle;
+	Animate * helper2_attack;
 
 };
 
