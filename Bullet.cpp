@@ -47,6 +47,13 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 		sprite->setTag(BULLET);
 		sprite->setScaleY(2.0f);
 	}
+	else if (bulletType == 2)
+	{
+		sprite = Sprite::create("bullet3.png");
+		sprite->setRotation(angle);
+		sprite->setTag(BULLET);
+		sprite->setScaleX(1.5f);
+	}
 	else 
 	{
 		sprite = Sprite::create("bullet1.png");
@@ -116,7 +123,7 @@ void Bullet::tick(float dt)
 
 	b2Vec2 center = body->GetWorldCenter();
 
-	float blastRadius = 0.8f;
+	float blastRadius = 1.0f;
 	
 	aabb.lowerBound = center - b2Vec2(blastRadius, blastRadius);
 	aabb.upperBound = center + b2Vec2(blastRadius, blastRadius);
@@ -142,6 +149,7 @@ void Bullet::tick(float dt)
 					monsters->at(k)->hp = monsters->at(k)->hp - damage;
 					monsters->at(k)->hpBar->setVisible(true);
 					monsters->at(k)->hpBarShowTime = 0;
+					body->ApplyLinearImpulse(b2Vec2(10, 0), body->GetWorldCenter(), true);
 				}
 				break;
 			}

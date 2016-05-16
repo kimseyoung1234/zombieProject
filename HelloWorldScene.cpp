@@ -323,7 +323,7 @@ void HelloWorld::tick(float dt)
 				{
 					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
 					bullets->push_back(bullet);
-					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 70, shootVector.y * 70));
 					gameLayer->addChild(bullet);
 				}
 			}
@@ -566,7 +566,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		{
 			Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
 			bullets->push_back(bullet);
-			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 70, shootVector.y * 70));
 			gameLayer->addChild(bullet);
 		}
 
