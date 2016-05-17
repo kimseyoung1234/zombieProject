@@ -21,6 +21,7 @@ public:
 	Monster(Vec2 position,int monsterType);
 	~Monster();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
+
 	
 	b2Body* body;
 	cocos2d::Sprite* sprite;
@@ -44,7 +45,7 @@ public:
 	bool isMotion = false;
 	bool isSlow = false;
 	bool isPipe = false;
-	
+
 	bool isRight = false;
 	bool isLeft = true;
 	b2Body * hitBullet = nullptr;

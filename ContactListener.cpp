@@ -49,13 +49,11 @@ void ContactListener::BeginContact(b2Contact *contact)
 									bullets->at(k)->isRemove = true;
 								}
 								else {
-									log("몬스터 HP : %d", monsters->at(i)->hp);
+
 									monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;							
-									log("총알뎀지 : %d", bullets->at(k)->damage);
 									monsters->at(i)->hpBar->setVisible(true);
 									monsters->at(i)->hpBarShowTime = 0;
 									bullets->at(k)->isRemove = true;
-									log("몬스터 HP : %d", monsters->at(i)->hp);
 
 									monsters->at(i)->isHit = true;
 									monsters->at(i)->stiffenTime = 0;
@@ -200,7 +198,6 @@ void ContactListener::trigger(Vec2 position, float blastRadius, int type, float 
 					monsters->at(k)->isPipe = true;
 					monsters->at(k)->pipe_positon = position;
 					monsters->at(k)->pipeTime = 0.0f;
-					log("파이프");
 					break;
 				}
 			}

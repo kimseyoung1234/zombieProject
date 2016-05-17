@@ -99,6 +99,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 
 	//auto animate = Animate::create(animation);
 	auto rep = RepeatForever::create(moveAnimate);
+	rep->setTag(600);
 	zombie->runAction(rep);
 
 
@@ -170,6 +171,7 @@ void Monster::moving(float dt)
 
 	if (stiffenTime >= 0.3)
 	{
+		//log("들옴?");
 		isHit = false;
 	}
 
@@ -198,9 +200,11 @@ void Monster::moving(float dt)
 	{
 		if (present_ani != ATTACK) {
 			// 공격 애니메이션
-			sprite->stopAllActions();
+			sprite->stopActionByTag(600);
+			sprite->stopActionByTag(700);
+			//sprite->setColor(Color3B::WHITE);
 			auto rep = RepeatForever::create(attackAnimate);
-			
+			rep->setTag(700);
 			sprite->runAction(rep);
 			present_ani = ATTACK;
 		}
@@ -215,9 +219,11 @@ void Monster::moving(float dt)
 	else if(!isAttack && !isHit){
 		if (present_ani != MOVE) {
 			// 무브 애니메이션
-			sprite->stopAllActions();
+			sprite->stopActionByTag(600);
+			sprite->stopActionByTag(700);
 			sprite->setColor(Color3B::WHITE);
 			auto rep = RepeatForever::create(moveAnimate);
+			rep->setTag(600);
 			sprite->runAction(rep);
 			present_ani = MOVE;
 		}
@@ -267,6 +273,7 @@ void Monster::moving(float dt)
 						1.0f, 0,
 						180.0f, 180.0f,
 						0, 0);
+					
 					sprite->runAction(FlipX);
 				}
 
@@ -290,6 +297,7 @@ void Monster::moving(float dt)
 						1.0f, 0,
 						0, 180.0f,
 						0, 0);
+				
 					sprite->runAction(FlipX);
 				}
 				else if (transVector.x < 0 && !isLeft)
@@ -301,6 +309,7 @@ void Monster::moving(float dt)
 						1.0f, 0,
 						180.0f, 180.0f,
 						0, 0);
+
 					sprite->runAction(FlipX);
 				}
 
@@ -318,6 +327,7 @@ void Monster::moving(float dt)
 						1.0f, 0,
 						180.0f, 180.0f,
 						0, 0);
+
 					sprite->runAction(FlipX);
 				}
 
@@ -329,14 +339,16 @@ void Monster::moving(float dt)
 	else if (isHit && present_ani != HIT)
 	{
 	
-		sprite->stopAllActions();
+		sprite->stopActionByTag(600);
+		sprite->stopActionByTag(700);
 		auto tint = TintTo::create(0.1, Color3B::RED);
 		//auto r_colo = colo->reverse();
 		auto r_tint = TintTo::create(0.1, Color3B::WHITE);
 		auto seq = Sequence::create(tint, r_tint, nullptr);
 
-		auto rep2 = RepeatForever::create(seq);
+		auto rep2 = Repeat::create(seq,2.0f);
 		sprite->runAction(rep2);
 		present_ani = HIT;
 	}
 }
+

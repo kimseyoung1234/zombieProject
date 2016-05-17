@@ -22,7 +22,7 @@ public:
 	int helperSeleted = -1;
 
 	//ÃÑ¾Ë Á¤º¸
-	int machine_Damage = 50;
+	int machine_Damage = 10;
 	float machine_Rate = 0.1;
 	int machine_price = 100;
 
