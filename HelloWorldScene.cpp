@@ -55,7 +55,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//this->addChild(background);
+	this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -93,7 +93,7 @@ void HelloWorld::waveStart(Ref* pSender)
 			int x_rand = random(1350, 1700);
 			int y_rand = random(50, 600);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(x_rand, y_rand),r_monsterType);
+			Monster * mon = new Monster(Vec2(x_rand, y_rand),4);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
@@ -660,6 +660,18 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		Vec2 w_position = skill2->convertToWorldSpace(target->getPosition());
 		myContactListener->trigger(w_position, 15.0f, 2, 100);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+
+	/*	auto pipe = Sprite::create("item/pipe_bomb_ani.png");
+		pipe->setTextureRect(Rect(0, 0, 56, 56));
+		pipe->setScale(2.0f);
+		pipe->setPosition(w_position);
+		gameLayer->addChild(pipe, 200);
+
+		auto pipemove = ResouceLoad::getInstance()->pipe_move->clone();
+		auto rep = RepeatForever::create(pipemove);
+		//auto rep = Sequence::create(pipemove,
+			//CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, pipe)), nullptr);
+		pipe->runAction(rep);*/
 	}
 }
 
@@ -729,7 +741,7 @@ void HelloWorld::addMenu()
 
 	gameLayer->addChild(skill);
 
-	auto bomb = Sprite::create("bomb.png");
+	auto bomb = Sprite::create("item/bomb.png");
 	Size parentSize;
 	parentSize = skill->getContentSize();
 	bomb->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
@@ -750,7 +762,7 @@ void HelloWorld::addMenu()
 
 	gameLayer->addChild(skill2);
 
-	auto bomb2 = Sprite::create("bomb.png");
+	auto bomb2 = Sprite::create("item/pipe_bomb.png");
 	Size parentSize2;
 	parentSize2 = skill2->getContentSize();
 	bomb2->setPosition(Vec2(parentSize2.width / 2.0, parentSize2.height / 2.0));

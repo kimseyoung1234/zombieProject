@@ -13,7 +13,7 @@ public:
 	static MonsterInfoSingleTon *getInstance();
 
 	int level = 1;
-	int maxMonster = 50;
+	int maxMonster = 2;
 
 	int fatZombie_HP = 150;
 	int fatZombie_damage = 5;
@@ -29,6 +29,11 @@ public:
 	int superZombie_damage = 3;
 	float superZombie_xSpeed = 0.2;
 	float superZomie_ySpeed = 0.1;
+
+	int bossZombie_HP = 120;
+	int bossZombie_damage = 3;
+	float bossZombie_xSpeed = 0.2;
+	float bossZomie_ySpeed = 0.1;
 
 	void level_up();
 };

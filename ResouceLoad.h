@@ -27,10 +27,14 @@ public:
 	Animate * super_attackAnimate;
 	Animate * super_moveAnimate;
 
+	Animate * boss_moveAnimate;
+	Animate * boss_attackAnimate;
+	Animate * boss_attack2Animate;
+
 	Animate * dieAnimate;
 	// ÆøÆÄ
 	Animate * explosion1;
-
+	Animate * pipe_move;
 	//µµ¿ì¹Ì
 	Animate * helper1_idle;
 	Animate * helper1_attack;

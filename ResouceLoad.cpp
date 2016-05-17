@@ -161,6 +161,54 @@ void ResouceLoad::Loading()
 	}
 	dieAnimate = Animate::create(a_die);
 	dieAnimate->retain();
+
+
+	// 보스 좀비 이동 애니메이션
+	auto s_boss_move = Sprite::create("monster/boss_move.png");
+	auto t_boss_move = s_boss_move->getTexture();
+	auto a_boss_move = Animation::create();
+	a_boss_move->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 12; i++)
+	{
+		int column = i % 7;
+		int row = i / 7;
+		a_boss_move->addSpriteFrameWithTexture(t_boss_move, Rect(column * 104, row * 104, 104, 104));
+	}
+	boss_moveAnimate = Animate::create(a_boss_move);
+	boss_moveAnimate->retain();
+
+	// 보스 좀비 공격 애니메이션
+	 
+
+	auto s_boss_attack = Sprite::create("monster/boss_attack.png");
+	auto t_boss_attack = s_boss_attack->getTexture();
+	auto a_boss_attack = Animation::create();
+	a_boss_attack->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 13; i++)
+	{
+		int column = i % 7;
+		int row = i / 7;
+		a_boss_attack->addSpriteFrameWithTexture(t_boss_attack, Rect(column * 104, row * 104, 104, 104));
+	}
+	boss_attackAnimate = Animate::create(a_boss_attack);
+	boss_attackAnimate->retain();
+
+	auto s_boss_attack2 = Sprite::create("monster/boss_attack2.png");
+	auto t_boss_attack2 = s_boss_attack2->getTexture();
+	auto a_boss_attack2 = Animation::create();
+	a_boss_attack2->setDelayPerUnit(0.04f);
+
+	for (int i = 0; i < 13; i++)
+	{
+		int column = i % 7;
+		int row = i / 7;
+		a_boss_attack2->addSpriteFrameWithTexture(t_boss_attack2, Rect(column * 104, row * 104, 104, 104));
+	}
+	boss_attack2Animate = Animate::create(a_boss_attack2);
+	boss_attack2Animate->retain();
+
 	////////////////////////////////////////////// 폭파
 
 	//폭파1 애니메이션
@@ -247,4 +295,20 @@ void ResouceLoad::Loading()
 
 	helper2_attack = Animate::create(a_helper2_attack);
 	helper2_attack->retain();
+
+	// 파이프폭탄 애니매이션
+	/*auto s_pipe_move = Sprite::create("item/pipe_bomb_ani.png");
+	auto t_pipe_move = s_pipe_move->getTexture();
+	auto a_pipe_move = Animation::create();
+	a_pipe_move->setDelayPerUnit(0.05f);
+
+	for (int i = 0; i < 8; i++)
+	{
+		int column = i % 8;
+		int row = i / 8;
+		a_pipe_move->addSpriteFrameWithTexture(t_pipe_move, Rect(column * 56, row * 56, 56, 56));
+	}
+
+	pipe_move = Animate::create(a_pipe_move);
+	pipe_move->retain();*/
 }

@@ -60,6 +60,23 @@ Monster::Monster(Vec2 position,int monsterType)
 		moveAnimate = ResouceLoad::getInstance()->super_moveAnimate->clone();
 		moveAnimate->retain();
 	}
+
+	else if (monsterType == BossZombie)
+	{
+		this->hp = MonsterInfoSingleTon::getInstance()->bossZombie_HP;
+		this->damage = MonsterInfoSingleTon::getInstance()->bossZombie_damage;
+		this->xSpeed = MonsterInfoSingleTon::getInstance()->bossZombie_xSpeed;
+		this->ySpeed = MonsterInfoSingleTon::getInstance()->bossZomie_ySpeed;
+
+		attackAnimate = ResouceLoad::getInstance()->boss_attackAnimate->clone();
+		attackAnimate->retain();
+
+		attack2Animate = ResouceLoad::getInstance()->boss_attack2Animate->clone();
+		attack2Animate->retain();
+
+		moveAnimate = ResouceLoad::getInstance()->boss_moveAnimate->clone();
+		moveAnimate->retain();
+	}
 	body = addNewSprite(position, Size(30, 50), b2_dynamicBody, 0);
 
 	this->schedule(schedule_selector(Monster::moving));
@@ -79,22 +96,32 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 		auto sprite = Sprite::create("monster/brain_move.png");
 	
 		zombie = Sprite::create("monster/brain_move.png", Rect(0, 0, 64, 64));
+		zombie->setScale(1.75f);
 	}
 	else if (monsterType == FatZombie)
 	{
 		auto sprite = Sprite::create("monster/fat_move.png");
 
 		zombie = Sprite::create("monster/fat_move.png", Rect(0, 0, 48, 48));
+		zombie->setScale(1.75f);
 	}
 	else if (monsterType == SuperZombie)
 	{
-		auto sprite = Sprite::create("superZombie_Move.png");
+		auto sprite = Sprite::create("monster/super_move.png");
 
-		zombie = Sprite::create("superZombie_Move.png", Rect(0, 0, 50, 45));
+		zombie = Sprite::create("monster/super_move.png", Rect(0, 0, 64, 64));
+		zombie->setScale(1.75f);
+	}
+	else if (monsterType == BossZombie)
+	{
+		auto sprite = Sprite::create("monster/boss_move.png");
+
+		zombie = Sprite::create("monster/boss_move.png", Rect(0, 0, 100, 100));
+		zombie->setScale(4.75f);
 	}
 	this->sprite = zombie;
 	zombie->setTag(MONSTER);
-	zombie->setScale(1.75f);
+
 	gameLayer->addChild(zombie);
 
 	//auto animate = Animate::create(animation);

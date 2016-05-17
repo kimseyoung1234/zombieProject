@@ -30,7 +30,6 @@ TableView* TableViewLayer::getTableView()
 
 void TableViewLayer::scrollViewDidScroll(ScrollView *view)
 {
-
 }
 void TableViewLayer::scrollViewDidZoom(ScrollView *view)
 {

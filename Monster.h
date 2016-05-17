@@ -8,10 +8,12 @@ USING_NS_CC;
 #define FatZombie 1
 #define BrainZombie 2
 #define SuperZombie 3
+#define BossZombie 4
 
 #define MOVE 10
 #define ATTACK 20
 #define HIT 30
+
 //using namespace cocos2d;
 
 class Monster : public cocos2d::Node
@@ -28,6 +30,7 @@ public:
 	cocos2d::Sprite* hpBar;
 	Animate * moveAnimate;
 	Animate * attackAnimate;
+	Animate * attack2Animate;
 
 	int hp;
 	int damage;

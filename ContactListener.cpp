@@ -3,6 +3,7 @@
 #include "DataSingleTon.h"
 #include "PlayerInfoSingleTon.h"
 #include "MyQueryCallback.h"
+#include "ResouceLoad.h"
 ContactListener::ContactListener() {
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
@@ -47,6 +48,20 @@ void ContactListener::BeginContact(b2Contact *contact)
 									Vec2 position = Vec2(b_body->GetPosition().x * PTM_RATIO, b_body->GetPosition().y * PTM_RATIO);
 									trigger(position, 3.0f, 0, 20);
 									bullets->at(k)->isRemove = true;
+
+									// 폭파 애니매이션
+									auto cache = SpriteFrameCache::getInstance();
+									cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
+
+									auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
+									exp->setPosition(bullets->at(k)->sprite->getPosition());
+									exp->setScale(1.7f);
+									gameLayer->addChild(exp, 200);
+
+									auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
+									auto rep = Sequence::create(explosion1,
+										CallFunc::create(CC_CALLBACK_0(ContactListener::remove_anim, this, exp)), nullptr);
+									exp->runAction(rep);
 								}
 								else {
 
@@ -179,7 +194,7 @@ void ContactListener::trigger(Vec2 position, float blastRadius, int type, float 
 			{
 				// 폭파효과
 				if (type == 0) {
-					monsters->at(k)->hp = monsters->at(k)->hp - 30;
+					monsters->at(k)->hp = monsters->at(k)->hp - 90;
 					monsters->at(k)->hpBar->setVisible(true);
 					monsters->at(k)->hpBarShowTime = 0;
 					monsters->at(k)->isHit = true;
@@ -215,4 +230,10 @@ void ContactListener::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2
 	float invDistance = 1 / distance;
 	float impulseMag = blastPower * invDistance * invDistance;
 	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
+}
+
+void ContactListener::remove_anim(Node* sender)
+{
+	auto sprite = (Sprite*)sender;
+	gameLayer->removeChild(sprite);
 }
