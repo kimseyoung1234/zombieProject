@@ -55,7 +55,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	this->addChild(background);
+//	this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -660,18 +660,6 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		Vec2 w_position = skill2->convertToWorldSpace(target->getPosition());
 		myContactListener->trigger(w_position, 15.0f, 2, 100);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
-
-	/*	auto pipe = Sprite::create("item/pipe_bomb_ani.png");
-		pipe->setTextureRect(Rect(0, 0, 56, 56));
-		pipe->setScale(2.0f);
-		pipe->setPosition(w_position);
-		gameLayer->addChild(pipe, 200);
-
-		auto pipemove = ResouceLoad::getInstance()->pipe_move->clone();
-		auto rep = RepeatForever::create(pipemove);
-		//auto rep = Sequence::create(pipemove,
-			//CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, pipe)), nullptr);
-		pipe->runAction(rep);*/
 	}
 }
 

@@ -13,6 +13,7 @@ USING_NS_CC;
 #define MOVE 10
 #define ATTACK 20
 #define HIT 30
+#define ATTACKFINISH 40
 
 //using namespace cocos2d;
 
@@ -23,7 +24,8 @@ public:
 	Monster(Vec2 position,int monsterType);
 	~Monster();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
-
+	void attackFinish();
+	void remove_anim(Node* sender);
 	
 	b2Body* body;
 	cocos2d::Sprite* sprite;

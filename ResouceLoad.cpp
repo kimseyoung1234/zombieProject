@@ -58,9 +58,11 @@ void ResouceLoad::Loading()
 	auto s_brain_attack = Sprite::create("monster/brain_attack.png");
 	auto t_brain_attack = s_brain_attack->getTexture();
 	auto a_brain_attack = Animation::create();
+	auto a_brain_attack2 = Animation::create();
 	a_brain_attack->setDelayPerUnit(0.074f);
+	a_brain_attack2->setDelayPerUnit(0.074f);
 
-	for (int i = 0; i < 27; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		int column = i % 15;
 		int row = i / 15;
@@ -69,6 +71,16 @@ void ResouceLoad::Loading()
 
 	brain_attackAnimate = Animate::create(a_brain_attack);
 	brain_attackAnimate->retain();
+
+	for (int i = 12; i < 27; i++)
+	{
+		int column = i % 15;
+		int row = i / 15;
+		a_brain_attack2->addSpriteFrameWithTexture(t_brain_attack, Rect(column * 64, row * 64, 64, 64));
+	}
+
+	brain_attack2Animate = Animate::create(a_brain_attack2);
+	brain_attack2Animate->retain();
 
 	// 브레인좀비 이동 애니메이션
 	auto s_brain_move = Sprite::create("monster/brain_move.png");
@@ -89,9 +101,11 @@ void ResouceLoad::Loading()
 	auto s_fat_attack = Sprite::create("monster/fat_attack.png");
 	auto t_fat_attack = s_fat_attack->getTexture();
 	auto a_fat_attack = Animation::create();
+	auto a_fat_attack2 = Animation::create();
 	a_fat_attack->setDelayPerUnit(0.074f);
+	a_fat_attack2->setDelayPerUnit(0.074f);
 
-	for (int i = 0; i < 18; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		int column = i % 7;
 		int row = i / 7;
@@ -100,6 +114,16 @@ void ResouceLoad::Loading()
 
 	fat_attackAnimate = Animate::create(a_fat_attack);
 	fat_attackAnimate->retain();
+
+	for (int i = 12; i < 18; i++)
+	{
+		int column = i % 7;
+		int row = i / 7;
+		a_fat_attack2->addSpriteFrameWithTexture(t_fat_attack, Rect(column * 48, row * 48, 48, 48));
+	}
+
+	fat_attack2Animate = Animate::create(a_fat_attack2);
+	fat_attack2Animate->retain();
 
 	// 팻좀비 이동 애니메이션
 	auto s_fat_move = Sprite::create("monster/fat_move.png");
@@ -120,9 +144,11 @@ void ResouceLoad::Loading()
 	auto s_super_attack = Sprite::create("monster/super_attack.png");
 	auto t_super_attack = s_super_attack->getTexture();
 	auto a_super_attack = Animation::create();
+	auto a_super_attack2 = Animation::create();
 	a_super_attack->setDelayPerUnit(0.074f);
+	a_super_attack2->setDelayPerUnit(0.074f);
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		int column = i % 7;
 		int row = i / 7;
@@ -131,6 +157,16 @@ void ResouceLoad::Loading()
 
 	super_attackAnimate = Animate::create(a_super_attack);
 	super_attackAnimate->retain();
+
+	for (int i = 10; i < 20; i++)
+	{
+		int column = i % 7;
+		int row = i / 7;
+		a_super_attack2->addSpriteFrameWithTexture(t_super_attack, Rect(column * 64, row * 64, 64, 64));
+	}
+
+	super_attack2Animate = Animate::create(a_super_attack2);
+	super_attack2Animate->retain();
 	
 	//슈퍼좀비 이동 애니메이션
 	auto s_super_move = Sprite::create("monster/super_move.png");
@@ -184,7 +220,9 @@ void ResouceLoad::Loading()
 	auto s_boss_attack = Sprite::create("monster/boss_attack.png");
 	auto t_boss_attack = s_boss_attack->getTexture();
 	auto a_boss_attack = Animation::create();
+	auto a_boss_attack2 = Animation::create();
 	a_boss_attack->setDelayPerUnit(0.1f);
+	a_boss_attack2->setDelayPerUnit(0.1f);
 
 	for (int i = 0; i < 13; i++)
 	{
@@ -192,23 +230,36 @@ void ResouceLoad::Loading()
 		int row = i / 7;
 		a_boss_attack->addSpriteFrameWithTexture(t_boss_attack, Rect(column * 104, row * 104, 104, 104));
 	}
+
 	boss_attackAnimate = Animate::create(a_boss_attack);
 	boss_attackAnimate->retain();
 
-	auto s_boss_attack2 = Sprite::create("monster/boss_attack2.png");
-	auto t_boss_attack2 = s_boss_attack2->getTexture();
-	auto a_boss_attack2 = Animation::create();
-	a_boss_attack2->setDelayPerUnit(0.04f);
-
-	for (int i = 0; i < 13; i++)
+	for (int i = 13; i < 26; i++)
 	{
 		int column = i % 7;
 		int row = i / 7;
-		a_boss_attack2->addSpriteFrameWithTexture(t_boss_attack2, Rect(column * 104, row * 104, 104, 104));
+		a_boss_attack2->addSpriteFrameWithTexture(t_boss_attack, Rect(column * 104, row * 104, 104, 104));
 	}
+
 	boss_attack2Animate = Animate::create(a_boss_attack2);
 	boss_attack2Animate->retain();
 
+
+	//보스 공격중 터지는 애니메이션
+	auto s_boss_bomb = Sprite::create("monster/boss_attack_bomb.png");
+	auto t_boss_bomb = s_boss_bomb->getTexture();
+	auto a_boss_bomb = Animation::create();
+	a_boss_bomb->setDelayPerUnit(0.04f);
+
+	for (int i = 13; i < 31; i++)
+	{
+		int column = i % 7;
+		int row = i / 7;
+		a_boss_bomb->addSpriteFrameWithTexture(t_boss_bomb, Rect(column * 104, row * 104, 104, 104));
+	}
+
+	boss_bombAnimate = Animate::create(a_boss_bomb);
+	boss_bombAnimate->retain();
 	////////////////////////////////////////////// 폭파
 
 	//폭파1 애니메이션

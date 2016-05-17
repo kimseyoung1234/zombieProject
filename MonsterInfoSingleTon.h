@@ -30,10 +30,10 @@ public:
 	float superZombie_xSpeed = 0.2;
 	float superZomie_ySpeed = 0.1;
 
-	int bossZombie_HP = 120;
-	int bossZombie_damage = 3;
-	float bossZombie_xSpeed = 0.2;
-	float bossZomie_ySpeed = 0.1;
+	int bossZombie_HP = 1000;
+	int bossZombie_damage = 10;
+	float bossZombie_xSpeed = 20.0;
+	float bossZomie_ySpeed = 20.0;
 
 	void level_up();
 };

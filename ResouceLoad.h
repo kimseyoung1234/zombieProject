@@ -19,17 +19,21 @@ public:
 
 	//¸ó½ºÅÍ
 	Animate * brain_attackAnimate;
+	Animate * brain_attack2Animate;
 	Animate * brain_moveAnimate;
 
 	Animate * fat_attackAnimate;
+	Animate * fat_attack2Animate;
 	Animate * fat_moveAnimate;
 
 	Animate * super_attackAnimate;
+	Animate * super_attack2Animate;
 	Animate * super_moveAnimate;
 
 	Animate * boss_moveAnimate;
 	Animate * boss_attackAnimate;
 	Animate * boss_attack2Animate;
+	Animate * boss_bombAnimate;
 
 	Animate * dieAnimate;
 	// ÆøÆÄ

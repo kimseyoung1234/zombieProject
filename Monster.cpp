@@ -28,6 +28,9 @@ Monster::Monster(Vec2 position,int monsterType)
 		
 		attackAnimate = ResouceLoad::getInstance()->brain_attackAnimate->clone();
 		attackAnimate->retain();
+
+		attack2Animate = ResouceLoad::getInstance()->brain_attack2Animate->clone();
+		attack2Animate->retain();
 		
 		moveAnimate = ResouceLoad::getInstance()->brain_moveAnimate->clone();
 		moveAnimate->retain();
@@ -43,6 +46,9 @@ Monster::Monster(Vec2 position,int monsterType)
 		attackAnimate = ResouceLoad::getInstance()->fat_attackAnimate->clone();
 		attackAnimate->retain();
 
+		attack2Animate = ResouceLoad::getInstance()->fat_attack2Animate->clone();
+		attack2Animate->retain();
+
 		moveAnimate = ResouceLoad::getInstance()->fat_moveAnimate->clone();
 		moveAnimate->retain();
 	}
@@ -56,6 +62,9 @@ Monster::Monster(Vec2 position,int monsterType)
 
 		attackAnimate = ResouceLoad::getInstance()->super_attackAnimate->clone();
 		attackAnimate->retain();
+
+		attack2Animate = ResouceLoad::getInstance()->super_attack2Animate->clone();
+		attack2Animate->retain();
 
 		moveAnimate = ResouceLoad::getInstance()->super_moveAnimate->clone();
 		moveAnimate->retain();
@@ -77,8 +86,14 @@ Monster::Monster(Vec2 position,int monsterType)
 		moveAnimate = ResouceLoad::getInstance()->boss_moveAnimate->clone();
 		moveAnimate->retain();
 	}
-	body = addNewSprite(position, Size(30, 50), b2_dynamicBody, 0);
-
+	if (monsterType == BossZombie)
+	{
+		body = addNewSprite(position, Size(140, 50), b2_dynamicBody, 0);
+	}
+	else
+	{
+		body = addNewSprite(position, Size(30, 50), b2_dynamicBody, 0);
+	}
 	this->schedule(schedule_selector(Monster::moving));
 }
 
@@ -91,6 +106,16 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 //	animation->setDelayPerUnit(0.05f);
 	Texture2D* texture;
 	Sprite* zombie;
+	//바디에 적용할 물리 속석용 바디의 모양을 만든다
+	b2FixtureDef fixtureDef;
+	//Define the dynamic body fixture.
+	//밀도
+	fixtureDef.density = 0.5f;
+	// 마찰력 - 0 ~ 1
+	fixtureDef.friction = 1.0f;
+	//반발력 - 물체가 다른 물체에 닿았을 때 튕기는 값
+	fixtureDef.restitution = 0.1;
+
 	if(monsterType == BrainZombie)
 	{
 		auto sprite = Sprite::create("monster/brain_move.png");
@@ -117,7 +142,9 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 		auto sprite = Sprite::create("monster/boss_move.png");
 
 		zombie = Sprite::create("monster/boss_move.png", Rect(0, 0, 100, 100));
-		zombie->setScale(4.75f);
+		zombie->setScale(4.0f);
+
+		fixtureDef.density = 7.0f;
 	}
 	this->sprite = zombie;
 	zombie->setTag(MONSTER);
@@ -137,8 +164,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	
 	// 월드에 바디데프의 정보로 바디를 만든다
 	b2Body *body = _world->CreateBody(&bodyDef);
-	//바디에 적용할 물리 속석용 바디의 모양을 만든다
-	b2FixtureDef fixtureDef;
+
 	//fixtureDef.filter.groupIndex = -12;
 	fixtureDef.filter.categoryBits = 0x0002;
 	fixtureDef.filter.maskBits = 0x0001 | 0x0002 | 0x0004;
@@ -156,16 +182,10 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 		circle.m_radius = (size.width / 2) / PTM_RATIO;
 		fixtureDef.shape = &circle;
 	}
-	//Define the dynamic body fixture.
-	//밀도
-	fixtureDef.density = 0.5f;
-	// 마찰력 - 0 ~ 1
-	fixtureDef.friction = 1.0f;
-	//반발력 - 물체가 다른 물체에 닿았을 때 튕기는 값
-	fixtureDef.restitution = 0.1;
 
 
-	body->SetLinearDamping(5.0f);
+
+	body->SetLinearDamping(7.0f);
 	body->CreateFixture(&fixtureDef);
 
 	// HP바 스프라이트
@@ -191,7 +211,7 @@ Monster::~Monster()
 void Monster::moving(float dt)
 {
 	pipeTime = pipeTime + dt;
-	attackDelay = attackDelay + dt;
+	//attackDelay = attackDelay + dt;
 	hpBarShowTime = hpBarShowTime + dt;
 	slowTime = slowTime + dt;
 	stiffenTime = stiffenTime + dt;
@@ -229,19 +249,16 @@ void Monster::moving(float dt)
 			// 공격 애니메이션
 			sprite->stopActionByTag(600);
 			sprite->stopActionByTag(700);
-			//sprite->setColor(Color3B::WHITE);
-			auto rep = RepeatForever::create(attackAnimate);
+
+			auto seq = Sequence::create(attackAnimate,
+				CallFunc::create(CC_CALLBACK_0(Monster::attackFinish, this)),
+				attack2Animate,nullptr);
+			auto rep = RepeatForever::create(seq);
 			rep->setTag(700);
 			sprite->runAction(rep);
 			present_ani = ATTACK;
 		}
 		// 바리게이트와 충돌 시 2초마다 공격
-		if (attackDelay >= 2.0)
-		{
-			PlayerInfoSingleTon::getInstance()->hp = PlayerInfoSingleTon::getInstance()->hp - damage;
-			log("플레이어 hp : %d", PlayerInfoSingleTon::getInstance()->hp);
-			attackDelay = 0;
-		}
 	}
 	else if(!isAttack && !isHit){
 		if (present_ani != MOVE) {
@@ -368,14 +385,43 @@ void Monster::moving(float dt)
 	
 		sprite->stopActionByTag(600);
 		sprite->stopActionByTag(700);
+		sprite->stopActionByTag(800);
 		auto tint = TintTo::create(0.1, Color3B::RED);
 		//auto r_colo = colo->reverse();
 		auto r_tint = TintTo::create(0.1, Color3B::WHITE);
 		auto seq = Sequence::create(tint, r_tint, nullptr);
 
 		auto rep2 = Repeat::create(seq,2.0f);
+		rep2->setTag(800);
 		sprite->runAction(rep2);
 		present_ani = HIT;
 	}
 }
 
+void Monster::attackFinish()
+{
+	PlayerInfoSingleTon::getInstance()->hp = PlayerInfoSingleTon::getInstance()->hp - damage;
+	log("맞았다");
+	log("플레이어 hp : %d", PlayerInfoSingleTon::getInstance()->hp);
+
+	if (monsterType == 4)
+	{
+		auto exp = Sprite::create("monster/boss_attack_bomb.png");
+		exp->setTextureRect(Rect(104, 644, 104, 104));
+		Vec2 position = sprite->getPosition();
+		exp->setPosition(position.x,position.y);
+		exp->setScale(4.0f);
+		gameLayer->addChild(exp, 200);
+
+		auto explosion1 = ResouceLoad::getInstance()->boss_bombAnimate->clone();
+		auto rep = Sequence::create(explosion1,
+			CallFunc::create(CC_CALLBACK_0(Monster::remove_anim, this, exp)), nullptr);
+		exp->runAction(rep);
+	}
+}
+
+void Monster::remove_anim(Node* sender)
+{
+	auto sprite = (Sprite*)sender;
+	gameLayer->removeChild(sprite);
+}
