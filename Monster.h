@@ -25,6 +25,7 @@ public:
 	~Monster();
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int type);
 	void attackFinish();
+	void finish_hit();
 	void remove_anim(Node* sender);
 	
 	b2Body* body;

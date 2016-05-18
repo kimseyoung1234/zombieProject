@@ -55,7 +55,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-//	this->addChild(background);
+	this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -93,7 +93,7 @@ void HelloWorld::waveStart(Ref* pSender)
 			int x_rand = random(1350, 1700);
 			int y_rand = random(50, 600);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(x_rand, y_rand),r_monsterType);
+			Monster * mon = new Monster(Vec2(x_rand, y_rand),4);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
@@ -236,7 +236,7 @@ void HelloWorld::tick(float dt)
 		waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
 
 		// 플레이어 HP바 갱신
-		playerHpBar->setScaleX(PlayerInfoSingleTon::getInstance()->hp / 100.0f);
+		playerHp->setScaleX(PlayerInfoSingleTon::getInstance()->hp / 100.0f);
 
 		int velocityIterations = 8;
 		int positionIterations = 3;
@@ -488,6 +488,36 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 				return true;
 			}
 		}
+
+		if (item->getBoundingBox().containsPoint(touchPoint))
+		{
+			if (PlayerInfoSingleTon::getInstance()->have_trap1 > 0)
+			{
+				PlayerInfoSingleTon::getInstance()->have_trap1--;
+
+				auto trap = new Trap(Vec2(touchPoint.x, touchPoint.y), 0);
+				gameLayer->addChild(trap);
+				traps->push_back(trap);
+
+				selectedTrap = trap->sprite;
+				isSelectedTrap = true;
+			}
+			return true;
+		}
+		if (item2->getBoundingBox().containsPoint(touchPoint))
+		{
+			if (PlayerInfoSingleTon::getInstance()->have_trap2 > 0) {
+				PlayerInfoSingleTon::getInstance()->have_trap2--;
+
+				auto trap = new Trap(Vec2(touchPoint.x, touchPoint.y), 1);
+				gameLayer->addChild(trap);
+				traps->push_back(trap);
+
+				selectedTrap = trap->sprite;
+				isSelectedTrap = true;
+			}
+			return true;
+		}
 	}
 
 	// 스킬 실험
@@ -510,35 +540,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		return true;
 	}
 
-	if (item->getBoundingBox().containsPoint(touchPoint))
-	{
-		if (PlayerInfoSingleTon::getInstance()->have_trap1 > 0)
-		{
-			PlayerInfoSingleTon::getInstance()->have_trap1--;
-
-			auto trap = new Trap(Vec2(touchPoint.x, touchPoint.y), 0);
-			gameLayer->addChild(trap);
-			traps->push_back(trap);
-
-			selectedTrap = trap->sprite;
-			isSelectedTrap = true;
-		}
-		return true;
-	}
-	if (item2->getBoundingBox().containsPoint(touchPoint))
-	{
-		if (PlayerInfoSingleTon::getInstance()->have_trap2 > 0) {
-			PlayerInfoSingleTon::getInstance()->have_trap2--;
-
-			auto trap = new Trap(Vec2(touchPoint.x, touchPoint.y), 1);
-			gameLayer->addChild(trap);
-			traps->push_back(trap);
-
-			selectedTrap = trap->sprite;
-			isSelectedTrap = true;
-		}
-		return true;
-	}
+	
 
 	// 누르고 공격가능 하면 총알 생성
 	if (attackDelayTime >= attackRate) {
@@ -649,6 +651,7 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 
 void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 {
+	auto touchPoint = touch->getLocation();
 	// 플레이어 idle 애니메이션 재시작
 	player->stopAllActions();
 	
@@ -656,8 +659,6 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 	auto rep = RepeatForever::create(player_idle);
 	player->runAction(rep);
 	
-	selectedTrap = nullptr;
-	isSelectedTrap = false;
 	isAttack = false;
 
 	// 스킬실험
@@ -696,7 +697,51 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		myContactListener->trigger(w_position, 15.0f, 2, 100);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	}
+	else if (selectedTrap)
+	{
+		if (item->getBoundingBox().containsPoint(touchPoint))
+		{
+			for (int i = 0; i < traps->size(); i++)
+			{
+				auto trap = (Trap*)traps->at(i);
 
+				if (trap->sprite == selectedTrap)
+				{
+					if (trap->type == 0)
+					{
+						PlayerInfoSingleTon::getInstance()->have_trap1++;
+						gameLayer->removeChild(trap->sprite);
+						gameLayer->removeChild(trap);
+						traps->erase(traps->begin() + i);
+						break;
+					}
+				}
+			}
+		}
+		else if(item2->getBoundingBox().containsPoint(touchPoint))
+		{
+			for (int i = 0; i < traps->size(); i++)
+			{
+				auto trap = (Trap*)traps->at(i);
+
+				if (trap->sprite == selectedTrap)
+				{
+					if (trap->type == 1)
+					{
+						PlayerInfoSingleTon::getInstance()->have_trap2++;
+						gameLayer->removeChild(trap->sprite);
+						gameLayer->removeChild(trap);
+						traps->erase(traps->begin() + i);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+
+	selectedTrap = nullptr;
+	isSelectedTrap = false;
 }
 
 void HelloWorld::remove_anim(Node* sender)
@@ -713,23 +758,19 @@ void HelloWorld::gameOver()
 }
 void HelloWorld::addMenu()
 {
-	// 시작 버튼
-
-	auto pMenuItem = MenuItemImage::create(
-		"btn-play-normal.png",
-		"btn-play-normal.png",
-		CC_CALLBACK_1(HelloWorld::waveStart, this));
-
-	auto pMenu = Menu::create(pMenuItem, nullptr);
-	pMenu->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
-	menuLayer->addChild(pMenu);
+	// 레벨UI
+	auto level_ui = Sprite::create("ui/ui_level.png");
+	level_ui->setPosition(Vec2(69, winSize.height - 75));
+	level_ui->setScale(1.2f);
+	menuLayer->addChild(level_ui);
+	Size level_ui_Size = level_ui->getContentSize();
 
 	// 현재 레벨
 
-	levelLabel = Label::create("Level : 1", "Arial", 34);
-	levelLabel->setPosition(Vec2(100, winSize.height - 50));
+	levelLabel = Label::create("Level : 1", "Arial", 24);
+	levelLabel->setPosition(Vec2(level_ui_Size.width/2,level_ui_Size.height/2));
 	levelLabel->setColor(Color3B::RED);
-	menuLayer->addChild(levelLabel);
+	level_ui->addChild(levelLabel);
 
 	// 웨이브 진행 상황
 
@@ -742,12 +783,27 @@ void HelloWorld::addMenu()
 
 	// 플레이어 HP
 
-	playerHpBar = Sprite::create("white-512x512.png");
-	playerHpBar->setTextureRect(Rect(0, 0, 200, 10));
-	playerHpBar->setColor(Color3B::RED);
+	playerHpBar = Sprite::create("ui/ui_hp_bar.png");
+	playerHpBar->setScale(1.5f);
 	playerHpBar->setAnchorPoint(Vec2(0, 0.5));
-	playerHpBar->setPosition(Vec2(200, winSize.height - 50));
-	menuLayer->addChild(playerHpBar);
+	playerHpBar->setPosition(Vec2(level_ui_Size.width - 7,level_ui_Size.height/2 + 20));
+	level_ui->addChild(playerHpBar);
+
+	playerHp = Sprite::create("ui/ui_hp.png");
+	playerHp->setAnchorPoint(Vec2(0.071, 0.5));
+	playerHp->setPosition(Vec2(12, 13));
+	playerHpBar->addChild(playerHp);
+
+	// 시작 버튼
+
+	auto pMenuItem = MenuItemImage::create(
+		"btn-play-normal.png",
+		"btn-play-normal.png",
+		CC_CALLBACK_1(HelloWorld::waveStart, this));
+
+	auto pMenu = Menu::create(pMenuItem, nullptr);
+	pMenu->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
+	menuLayer->addChild(pMenu);
 
 	// 상점 메뉴
 	auto shop = MenuItemFont::create(
@@ -760,8 +816,8 @@ void HelloWorld::addMenu()
 	menuLayer->addChild(shopMenu);
 
 	//스킬1
-	skill = Sprite::create("skill1.png");
-	skill->setPosition(Vec2(100, 100));
+	skill = Sprite::create("ui/ui_item.png");
+	skill->setPosition(Vec2(winSize.width - 225, 60));
 
 	gameLayer->addChild(skill);
 
@@ -781,8 +837,8 @@ void HelloWorld::addMenu()
 
 	//스킬2
 	
-	skill2 = Sprite::create("skill1.png");
-	skill2->setPosition(Vec2(250, 100));
+	skill2 = Sprite::create("ui/ui_item.png");
+	skill2->setPosition(Vec2(winSize.width - 75, 60));
 
 	gameLayer->addChild(skill2);
 
@@ -801,8 +857,8 @@ void HelloWorld::addMenu()
 	skill2->addChild(range2);
 
 	//아이템 창
-	item = Sprite::create("skill1.png");
-	item->setPosition(Vec2(100, 600));
+	item = Sprite::create("ui/ui_item.png");
+	item->setPosition(Vec2(75, 60));
 
 	gameLayer->addChild(item);
 
@@ -818,8 +874,8 @@ void HelloWorld::addMenu()
 	
 
 	///
-	item2 = Sprite::create("skill1.png");
-	item2->setPosition(Vec2(250, 600));
+	item2 = Sprite::create("ui/ui_item.png");
+	item2->setPosition(Vec2(225, 60));
 
 	gameLayer->addChild(item2);
 

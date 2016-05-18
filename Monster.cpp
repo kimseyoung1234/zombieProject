@@ -206,17 +206,19 @@ Monster::~Monster()
 	this->unschedule(schedule_selector(Monster::moving));
 	delete moveAnimate;
 	delete attackAnimate;
+	delete attack2Animate;
 }
 
 void Monster::moving(float dt)
 {
+	log("%d", present_ani);
 	pipeTime = pipeTime + dt;
 	//attackDelay = attackDelay + dt;
 	hpBarShowTime = hpBarShowTime + dt;
 	slowTime = slowTime + dt;
 	stiffenTime = stiffenTime + dt;
 
-	if (stiffenTime >= 0.3)
+	if (stiffenTime >= 0.1)
 	{
 		//log("들옴?");
 		isHit = false;
@@ -249,12 +251,12 @@ void Monster::moving(float dt)
 			// 공격 애니메이션
 			sprite->stopActionByTag(600);
 			sprite->stopActionByTag(700);
-
+		//	sprite->stopActionByTag(800);
 			auto seq = Sequence::create(attackAnimate,
 				CallFunc::create(CC_CALLBACK_0(Monster::attackFinish, this)),
 				attack2Animate,nullptr);
 			auto rep = RepeatForever::create(seq);
-			rep->setTag(700);
+			rep->setTag(700);                                    
 			sprite->runAction(rep);
 			present_ani = ATTACK;
 		}
@@ -265,6 +267,7 @@ void Monster::moving(float dt)
 			// 무브 애니메이션
 			sprite->stopActionByTag(600);
 			sprite->stopActionByTag(700);
+		//	sprite->stopActionByTag(800);
 			sprite->setColor(Color3B::WHITE);
 			auto rep = RepeatForever::create(moveAnimate);
 			rep->setTag(600);
@@ -362,6 +365,7 @@ void Monster::moving(float dt)
 			// 평소에 이동
 			else
 			{
+				//log("평소");
 				if (isRight)
 				{
 					isRight = false;
@@ -382,6 +386,7 @@ void Monster::moving(float dt)
 	// 맞았을때 경직효과
 	else if (isHit && present_ani != HIT)
 	{
+		log("으악");
 		if(monsterType == 4)
 		{
 			sprite->stopActionByTag(700);
@@ -395,7 +400,8 @@ void Monster::moving(float dt)
 		auto tint = TintTo::create(0.1, Color3B::RED);
 		//auto r_colo = colo->reverse();
 		auto r_tint = TintTo::create(0.1, Color3B::WHITE);
-		auto seq = Sequence::create(tint, r_tint, nullptr);
+		auto seq = Sequence::create(tint, r_tint,
+			CallFunc::create(CC_CALLBACK_0(Monster::finish_hit,this)),nullptr);
 
 		auto rep2 = Repeat::create(seq,2.0f);
 		rep2->setTag(800);
@@ -415,9 +421,9 @@ void Monster::attackFinish()
 		auto exp = Sprite::create("monster/boss_attack_bomb.png");
 		exp->setTextureRect(Rect(104, 644, 104, 104));
 		Vec2 position = sprite->getPosition();
-		exp->setPosition(position.x,position.y);
-		exp->setScale(4.0f);
-		gameLayer->addChild(exp, 200);
+		exp->setPosition(position.x-60,position.y - 10);
+		exp->setScale(2.7f);
+		gameLayer->addChild(exp, 1200);
 
 		auto explosion1 = ResouceLoad::getInstance()->boss_bombAnimate->clone();
 		auto rep = Sequence::create(explosion1,
@@ -425,9 +431,14 @@ void Monster::attackFinish()
 		exp->runAction(rep);
 	}
 }
-
+void Monster::finish_hit()
+{
+	present_ani = 0;
+	log("피격끝남");
+}
 void Monster::remove_anim(Node* sender)
 {
+	// 게임레이어 어케함
 	auto sprite = (Sprite*)sender;
 	if (sprite != nullptr) {
 		gameLayer->removeChild(sprite);

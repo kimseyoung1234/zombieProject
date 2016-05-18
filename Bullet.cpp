@@ -59,7 +59,7 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 		sprite = Sprite::create("bullet1.png");
 		sprite->setRotation(angle);
 		sprite->setTag(BULLET);
-		sprite->setScaleX(2.0f);
+		sprite->setScaleX(1.2f);
 	}
 	this->sprite = sprite;
 	gameLayer->addChild(sprite);

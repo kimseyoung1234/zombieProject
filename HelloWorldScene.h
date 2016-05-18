@@ -42,6 +42,8 @@ public:
 
 	cocos2d::Sprite * waveProgress;
 	cocos2d::Sprite * playerHpBar;
+	cocos2d::Sprite * playerHp;
+
 	ContactListener* myContactListener;
 
 	cocos2d::Size winSize;
