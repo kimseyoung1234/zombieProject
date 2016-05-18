@@ -382,10 +382,16 @@ void Monster::moving(float dt)
 	// 맞았을때 경직효과
 	else if (isHit && present_ani != HIT)
 	{
-	
-		sprite->stopActionByTag(600);
-		sprite->stopActionByTag(700);
-		sprite->stopActionByTag(800);
+		if(monsterType == 4)
+		{
+			sprite->stopActionByTag(700);
+			sprite->stopActionByTag(800);
+		}
+		else {
+			sprite->stopActionByTag(600);
+			sprite->stopActionByTag(700);
+			sprite->stopActionByTag(800);
+		}
 		auto tint = TintTo::create(0.1, Color3B::RED);
 		//auto r_colo = colo->reverse();
 		auto r_tint = TintTo::create(0.1, Color3B::WHITE);
@@ -423,5 +429,7 @@ void Monster::attackFinish()
 void Monster::remove_anim(Node* sender)
 {
 	auto sprite = (Sprite*)sender;
-	gameLayer->removeChild(sprite);
+	if (sprite != nullptr) {
+		gameLayer->removeChild(sprite);
+	}
 }

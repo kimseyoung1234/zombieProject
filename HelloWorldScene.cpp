@@ -93,7 +93,7 @@ void HelloWorld::waveStart(Ref* pSender)
 			int x_rand = random(1350, 1700);
 			int y_rand = random(50, 600);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(x_rand, y_rand),4);
+			Monster * mon = new Monster(Vec2(x_rand, y_rand),r_monsterType);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
