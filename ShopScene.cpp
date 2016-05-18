@@ -203,18 +203,20 @@ void ShopScene::buy(Ref * pSender)
 		if (selectedTrap == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->trap1_price)
 		{
 			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->trap1_price;
+			PlayerInfoSingleTon::getInstance()->have_trap1++;
 			isBuy = true;
 		}
 		else if (selectedTrap == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->trap2_price)
 		{
 			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->trap2_price;
+			PlayerInfoSingleTon::getInstance()->have_trap2++;
 			isBuy = true;
 		}
 
 		if (isBuy) {
-			auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2), selectedTrap);
+			/*auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2), selectedTrap);
 			gameLayer->addChild(trap);
-			traps->push_back(trap);
+			traps->push_back(trap);*/
 		}
 		else
 		{

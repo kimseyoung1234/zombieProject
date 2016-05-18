@@ -37,6 +37,9 @@ public:
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::Label * levelLabel;
+	cocos2d::Label * item_Label;
+	cocos2d::Label * item2_Label;
+
 	cocos2d::Sprite * waveProgress;
 	cocos2d::Sprite * playerHpBar;
 	ContactListener* myContactListener;
@@ -85,10 +88,11 @@ public:
 	//실험
 	Sprite* skill;
 	Sprite* skill2;
+	Sprite* item;
+	Sprite* item2;
 	bool isSkill = false;
 	bool isSkill2 = false;
 
-	void trigger(Vec2 position,float blastRadius,int type);
 	DrawNode * draw_node;
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

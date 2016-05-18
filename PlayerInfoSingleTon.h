@@ -16,6 +16,10 @@ public:
 	int hp = 100;
 	int money_In_Hand = 500;
 
+	// 가지고있는 트랩 수
+	int have_trap1 = 0;
+	int have_trap2 = 0;
+
 	// 상점에서 선택된 것
 	int weaponSeleted = 0;
 	int trapSeleted = -1;

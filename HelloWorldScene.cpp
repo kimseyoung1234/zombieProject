@@ -208,6 +208,10 @@ void HelloWorld::tick(float dt)
 		skill1DelayTime = skill1DelayTime + dt;
 		skill2DelayTime = skill2DelayTime + dt;
 
+		//보유 아이템 수 갱신
+		item_Label->setString((String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->have_trap1)->getCString()));
+		item2_Label->setString((String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->have_trap2)->getCString()));
+
 		//게임오버 체크
 		if (PlayerInfoSingleTon::getInstance()->hp <= 0)
 		{
@@ -506,6 +510,36 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 		return true;
 	}
 
+	if (item->getBoundingBox().containsPoint(touchPoint))
+	{
+		if (PlayerInfoSingleTon::getInstance()->have_trap1 > 0)
+		{
+			PlayerInfoSingleTon::getInstance()->have_trap1--;
+
+			auto trap = new Trap(Vec2(touchPoint.x, touchPoint.y), 0);
+			gameLayer->addChild(trap);
+			traps->push_back(trap);
+
+			selectedTrap = trap->sprite;
+			isSelectedTrap = true;
+		}
+		return true;
+	}
+	if (item2->getBoundingBox().containsPoint(touchPoint))
+	{
+		if (PlayerInfoSingleTon::getInstance()->have_trap2 > 0) {
+			PlayerInfoSingleTon::getInstance()->have_trap2--;
+
+			auto trap = new Trap(Vec2(touchPoint.x, touchPoint.y), 1);
+			gameLayer->addChild(trap);
+			traps->push_back(trap);
+
+			selectedTrap = trap->sprite;
+			isSelectedTrap = true;
+		}
+		return true;
+	}
+
 	// 누르고 공격가능 하면 총알 생성
 	if (attackDelayTime >= attackRate) {
 
@@ -602,6 +636,7 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 		auto target = static_cast<Sprite*>(skill2->getChildByTag(51));
 		target->setPosition(target->getPosition() + touch->getDelta());
 	}
+
 	// 아니라면 공격
 	else {
 		attackPoint = touchPoint;
@@ -661,6 +696,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		myContactListener->trigger(w_position, 15.0f, 2, 100);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	}
+
 }
 
 void HelloWorld::remove_anim(Node* sender)
@@ -763,7 +799,39 @@ void HelloWorld::addMenu()
 	range2->setTag(51);
 	range2->setVisible(false);
 	skill2->addChild(range2);
+
+	//아이템 창
+	item = Sprite::create("skill1.png");
+	item->setPosition(Vec2(100, 600));
+
+	gameLayer->addChild(item);
+
+	auto trap1 = Sprite::create("item/trap01.png");
+	trap1->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+	trap1->setScale(2.0f);
+	item->addChild(trap1);
+
+	item_Label = Label::create("0","Arial", 34);
+	item_Label->setPosition(parentSize.width/2.0, 15);
+	item_Label->setColor(Color3B::RED);
+	item->addChild(item_Label);
 	
+
+	///
+	item2 = Sprite::create("skill1.png");
+	item2->setPosition(Vec2(250, 600));
+
+	gameLayer->addChild(item2);
+
+	auto trap2 = Sprite::create("item/trap02.png");
+	trap2->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+	trap2->setScale(2.0f);
+	item2->addChild(trap2);
+	
+	item2_Label = Label::create("0", "Arial", 34);
+	item2_Label->setPosition(parentSize.width / 2.0, 15);
+	item2_Label->setColor(Color3B::RED);
+	item2->addChild(item2_Label);
 }
 
 void HelloWorld::shopOpen(Ref * pSender)
