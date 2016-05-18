@@ -39,6 +39,8 @@ public:
 	cocos2d::LayerColor* getGameLayer();
 	cocos2d::LayerColor* getMenuLayer();
 	cocos2d::LayerColor* getShopLayer();
+
+	void remove_anim(Node* sender);
 	
 };
 

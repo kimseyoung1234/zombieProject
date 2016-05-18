@@ -72,3 +72,13 @@ std::vector<b2Body*>* DataSingleTon::getBarricade()
 {
 	return barricade;
 }
+
+void DataSingleTon::remove_anim(Node* sender)
+{
+	// 게임레이어 어케함
+	auto sprite = (Sprite*)sender;
+	if (sprite != nullptr) {
+		gameLayer->removeChild(sprite);
+		log("삭제완료");
+	}
+}

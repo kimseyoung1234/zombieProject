@@ -211,7 +211,6 @@ Monster::~Monster()
 
 void Monster::moving(float dt)
 {
-	log("%d", present_ani);
 	pipeTime = pipeTime + dt;
 	//attackDelay = attackDelay + dt;
 	hpBarShowTime = hpBarShowTime + dt;
@@ -441,6 +440,6 @@ void Monster::remove_anim(Node* sender)
 	// 게임레이어 어케함
 	auto sprite = (Sprite*)sender;
 	if (sprite != nullptr) {
-		gameLayer->removeChild(sprite);
+		DataSingleTon::getInstance()->remove_anim(sprite);
 	}
 }
