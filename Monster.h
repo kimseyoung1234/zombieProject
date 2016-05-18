@@ -37,6 +37,7 @@ public:
 
 	int hp;
 	int damage;
+	int monsterType;
 
 	float stiffenTime = 0.0;
 	float attackDelay = 1.0;
@@ -61,7 +62,6 @@ private:
 	cocos2d::Vec2 position;
 	float xSpeed;
 	float ySpeed;
-	int monsterType;
 	
 	
 	void moving(float dt);

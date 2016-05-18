@@ -55,7 +55,10 @@ public:
 
 	//스킬정보
 	float skill_cooltime = 3.0f;
+	float skill_blastRadius = 5.0f;
+
 	float skill2_cooltime = 5.0f;
+	float skill2_blastRadius = 8.0f;
 
 };
 

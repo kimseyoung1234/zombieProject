@@ -210,9 +210,12 @@ void ContactListener::trigger(Vec2 position, float blastRadius, int type, float 
 				}
 				else if (type == 2)
 				{
-					monsters->at(k)->isPipe = true;
-					monsters->at(k)->pipe_positon = position;
-					monsters->at(k)->pipeTime = 0.0f;
+					if (monsters->at(k)->monsterType != BossZombie)
+					{
+						monsters->at(k)->isPipe = true;
+						monsters->at(k)->pipe_positon = position;
+						monsters->at(k)->pipeTime = 0.0f;
+					}
 					break;
 				}
 			}

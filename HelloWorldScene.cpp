@@ -93,7 +93,7 @@ void HelloWorld::waveStart(Ref* pSender)
 			int x_rand = random(1350, 1700);
 			int y_rand = random(50, 600);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(x_rand, y_rand),4);
+			Monster * mon = new Monster(Vec2(x_rand, y_rand),r_monsterType);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
@@ -315,11 +315,11 @@ void HelloWorld::tick(float dt)
 					bullets->push_back(bullet);
 					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 
-					Bullet * bullet2 = new Bullet(nPos2, current_Weapon, cocosAngle);
+					Bullet * bullet2 = new Bullet(nPos2, current_Weapon, cocosAngle2);
 					bullets->push_back(bullet2);
 					bullet2->body->SetLinearVelocity(b2Vec2(shootVector2.x * 30, shootVector2.y * 30));
 
-					Bullet * bullet3 = new Bullet(nPos2, current_Weapon, cocosAngle);
+					Bullet * bullet3 = new Bullet(nPos2, current_Weapon, cocosAngle3);
 					bullets->push_back(bullet3);
 					bullet3->body->SetLinearVelocity(b2Vec2(shootVector3.x * 30, shootVector3.y * 30));
 				}
@@ -596,11 +596,11 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 			bullets->push_back(bullet);
 			bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 		
-			Bullet * bullet2 = new Bullet(nPos2, current_Weapon, cocosAngle);
+			Bullet * bullet2 = new Bullet(nPos2, current_Weapon, cocosAngle2);
 			bullets->push_back(bullet2);
 			bullet2->body->SetLinearVelocity(b2Vec2(shootVector2.x * 30, shootVector2.y * 30));
 
-			Bullet * bullet3 = new Bullet(nPos2, current_Weapon, cocosAngle);
+			Bullet * bullet3 = new Bullet(nPos2, current_Weapon, cocosAngle3);
 			bullets->push_back(bullet3);
 			bullet3->body->SetLinearVelocity(b2Vec2(shootVector3.x * 30, shootVector3.y * 30));
 		}
@@ -676,7 +676,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		Size parentSize;
 		parentSize = skill->getContentSize();
 		Vec2 w_position = skill->convertToWorldSpace(target->getPosition());
-		myContactListener->trigger(w_position, 5.0f, 0, 100);
+		myContactListener->trigger(w_position, PlayerInfoSingleTon::getInstance()->skill_blastRadius, 0, 100);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 
 		//폭탄애니메이션 실험
@@ -718,7 +718,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		Size parentSize;
 		parentSize = skill2->getContentSize();
 		Vec2 w_position = skill2->convertToWorldSpace(target->getPosition());
-		myContactListener->trigger(w_position, 15.0f, 2, 100);
+		myContactListener->trigger(w_position, PlayerInfoSingleTon::getInstance()->skill2_blastRadius, 2, 100);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 
 		// 프로그래스 시험
@@ -882,9 +882,9 @@ void HelloWorld::addMenu()
 	bomb->setScale(3.0f);
 	skill->addChild(bomb);
 
-	auto range = Sprite::create("range.png");
+	auto range = Sprite::create("ui/ui_range.png");
 	range->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
-
+	range->setScale(PlayerInfoSingleTon::getInstance()->skill_blastRadius);
 	range->setTag(50);
 	range->setVisible(false);
 	skill->addChild(range);
@@ -904,9 +904,9 @@ void HelloWorld::addMenu()
 	bomb2->setScale(3.0f);
 	skill2->addChild(bomb2);
 
-	auto range2 = Sprite::create("range.png");
+	auto range2 = Sprite::create("ui/ui_range.png");
 	range2->setPosition(Vec2(parentSize2.width / 2.0, parentSize2.height / 2.0));
-
+	range2->setScale(PlayerInfoSingleTon::getInstance()->skill2_blastRadius);
 	range2->setTag(51);
 	range2->setVisible(false);
 	skill2->addChild(range2);
