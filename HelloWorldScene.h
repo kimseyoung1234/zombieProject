@@ -40,6 +40,10 @@ public:
 	cocos2d::Label * item_Label;
 	cocos2d::Label * item2_Label;
 
+
+	//cocos2d::ProgressTimer * progress;
+	//cocos2d::ProgressTimer * progress2;
+
 	cocos2d::Sprite * waveProgress;
 	cocos2d::Sprite * playerHpBar;
 	cocos2d::Sprite * playerHp;
@@ -86,6 +90,7 @@ public:
 	void shopOpen(Ref * pSender);
 	void addMenu();
 	void remove_anim(Node* sender);
+	void cooldown_finish(Node* sender,int type);
 
 	//실험
 	Sprite* skill;
@@ -94,7 +99,8 @@ public:
 	Sprite* item2;
 	bool isSkill = false;
 	bool isSkill2 = false;
-
+	bool skill_cool = false;
+	bool skill2_cool = false;
 	DrawNode * draw_node;
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

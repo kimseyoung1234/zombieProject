@@ -521,23 +521,28 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	}
 
 	// 스킬 실험
-	if (skill->getBoundingBox().containsPoint(touchPoint) && skill1DelayTime >= 2.0f)
+	if (skill->getBoundingBox().containsPoint(touchPoint))
 	{
-		auto target = static_cast<Sprite*>(skill->getChildByTag(50));
-		target->setVisible(true);
-		target->setPosition(skill->convertToNodeSpace(touchPoint));
-		isSkill = true;
-		skill1DelayTime = 0;
+		if (!skill_cool) {
+			auto target = static_cast<Sprite*>(skill->getChildByTag(50));
+			target->setVisible(true);
+			target->setPosition(skill->convertToNodeSpace(touchPoint));
+			isSkill = true;
+		}
+	//	skill1DelayTime = 0;
 		return true;
 	}
-	if (skill2->getBoundingBox().containsPoint(touchPoint) && skill2DelayTime >= 2.0f)
+	if (skill2->getBoundingBox().containsPoint(touchPoint))
 	{
-		auto target = static_cast<Sprite*>(skill2->getChildByTag(51));
-		target->setVisible(true);
-		target->setPosition(skill2->convertToNodeSpace(touchPoint));
-		isSkill2 = true;
-		skill2DelayTime = 0;
+		if (!skill2_cool) {
+			auto target = static_cast<Sprite*>(skill2->getChildByTag(51));
+			target->setVisible(true);
+			target->setPosition(skill2->convertToNodeSpace(touchPoint));
+			isSkill2 = true;
+			skill2DelayTime = 0;
+		}
 		return true;
+
 	}
 
 	
@@ -664,6 +669,8 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 	// 스킬실험
 	if (isSkill) {
 		isSkill = false;
+		skill_cool = true;
+
 		auto target = static_cast<Sprite*>(skill->getChildByTag(50));
 		target->setVisible(false);
 		Size parentSize;
@@ -685,10 +692,27 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		auto rep = Sequence::create(explosion1,
 			CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this,exp)),nullptr);
 		exp->runAction(rep);
+
+		// 프로그래스 시험
+		auto ui_cooldown = Sprite::create("ui/ui_cooldown.png");
+
+		auto to1 = ProgressFromTo::create(PlayerInfoSingleTon::getInstance()->skill_cooltime, 100, 0);
+
+		auto progress = ProgressTimer::create(ui_cooldown);
+		progress->setType(ProgressTimer::Type::RADIAL);
+		progress->setReverseProgress(true);
+		skill->addChild(progress);
+		progress->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+
+		auto p_seq = Sequence::create(to1,
+			CallFunc::create(CC_CALLBACK_0(HelloWorld::cooldown_finish, this, progress,0)), nullptr);
+		progress->runAction(p_seq);
 	}
 	else if (isSkill2)
 	{
 		isSkill2 = false;
+		skill2_cool = true;
+
 		auto target = static_cast<Sprite*>(skill2->getChildByTag(51));
 		target->setVisible(false);
 		Size parentSize;
@@ -696,6 +720,21 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		Vec2 w_position = skill2->convertToWorldSpace(target->getPosition());
 		myContactListener->trigger(w_position, 15.0f, 2, 100);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+
+		// 프로그래스 시험
+		auto ui_cooldown = Sprite::create("ui/ui_cooldown.png");
+
+		auto to1 = ProgressFromTo::create(PlayerInfoSingleTon::getInstance()->skill2_cooltime, 100, 0);
+
+		auto progress = ProgressTimer::create(ui_cooldown);
+		progress->setType(ProgressTimer::Type::RADIAL);
+		progress->setReverseProgress(true);
+		skill2->addChild(progress);
+		progress->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+
+		auto p_seq = Sequence::create(to1,
+			CallFunc::create(CC_CALLBACK_0(HelloWorld::cooldown_finish, this, progress,1)), nullptr);
+		progress->runAction(p_seq);
 	}
 	else if (selectedTrap)
 	{
@@ -742,6 +781,21 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 
 	selectedTrap = nullptr;
 	isSelectedTrap = false;
+}
+void HelloWorld::cooldown_finish(Node* sender,int type)
+{
+	auto progress = (ProgressTimer *)sender;
+	if (type == 0) {
+		skill_cool = false;
+		skill->removeChild(progress, true);
+	}
+	else if(type == 1)
+	{
+		skill2_cool = false;
+		skill2->removeChild(progress, true);
+	}
+	log("쿨 다됨!");
+	log("%d", type);
 }
 
 void HelloWorld::remove_anim(Node* sender)
@@ -834,6 +888,7 @@ void HelloWorld::addMenu()
 	range->setTag(50);
 	range->setVisible(false);
 	skill->addChild(range);
+
 
 	//스킬2
 	
