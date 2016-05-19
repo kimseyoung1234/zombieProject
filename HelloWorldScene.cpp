@@ -483,6 +483,19 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 				if (type == 1)
 				{
 					blastRadius = PlayerInfoSingleTon::getInstance()->trap2_blastRadius;
+
+					auto cache = SpriteFrameCache::getInstance();
+					cache->addSpriteFramesWithFile("explosion/Explosion2Plist.plist");
+
+					auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
+					exp->setPosition(trap->sprite->getPosition());
+					//exp->setScale(2.8f);
+					gameLayer->addChild(exp, 200);
+
+					auto explosion2 = ResouceLoad::getInstance()->explosion2->clone();
+					auto rep = Sequence::create(explosion2,
+						CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, exp)), nullptr);
+					exp->runAction(rep);
 				}
 				myContactListener->trigger(trap->sprite->getPosition(), blastRadius, type, 100);
 				// 효과 적용 후 삭제
@@ -566,11 +579,9 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 	// 무기눌렀을때 교체
 	auto weapon_touchPoint = level_ui->convertToNodeSpace(touchPoint);
-	log("월드 x: %f  y: %f", touchPoint.x, touchPoint.y);
-	log("무기 x: %f  y: %f", weapon_touchPoint.x, weapon_touchPoint.y);
+
 	if (weapon_ui->getBoundingBox().containsPoint(weapon_touchPoint))
 	{
-		log("찍힘?");
 		PlayerInfoSingleTon::getInstance()->weaponSeleted = (PlayerInfoSingleTon::getInstance()->weaponSeleted + 1) % 3;
 		auto str = String::createWithFormat("item/gun%02d.png", PlayerInfoSingleTon::getInstance()->weaponSeleted + 1);
 		weapon->setTexture(str->getCString());

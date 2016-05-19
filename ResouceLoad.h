@@ -38,6 +38,7 @@ public:
 	Animate * dieAnimate;
 	// 폭파
 	Animate * explosion1;
+	Animate * explosion2;
 	Animate * pipe_move;
 	//도우미
 	Animate * helper1_idle;

@@ -280,7 +280,27 @@ void ResouceLoad::Loading()
 	explosion1 = Animate::create(a_exp);
 	explosion1->retain();
 
+	//폭파2 애니메이션
+	auto cache2 = SpriteFrameCache::getInstance();
+	cache2->addSpriteFramesWithFile("explosion/Explosion2Plist.plist");
+
+	Vector<SpriteFrame*> expFrames2;
+
+	char str2[100] = { 0 };
+	for (int i = 1; i < 90; i++)
+	{
+		sprintf(str2, "explosion_100%02d.png", i + 1);
+		SpriteFrame* frame = cache2->getSpriteFrameByName(str2);
+		expFrames2.pushBack(frame);
+	}
+
+	auto a_exp2 = Animation::createWithSpriteFrames(expFrames2, 0.02f);
+	explosion2 = Animate::create(a_exp2);
+	explosion2->retain();
+
 	//////////////////////// 도우미 애니메이션
+
+
 
 	// 도우미1 Idle 애니메이션
 
