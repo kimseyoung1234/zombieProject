@@ -45,6 +45,7 @@ bool HelloWorld::init()
 	winSize = Director::getInstance()->getWinSize();
 	barricade = DataSingleTon::getInstance()->getBarricade();
 	traps = DataSingleTon::getInstance()->getTraps();
+	helpers = DataSingleTon::getInstance()->getHelpers();
 	
 	// 임시로 로딩
 	ResouceLoad::getInstance();
@@ -347,6 +348,16 @@ void HelloWorld::tick(float dt)
 			PlayerInfoSingleTon::getInstance()->hp = 100;
 			levelLabel->setString((String::createWithFormat("Level : %d", MonsterInfoSingleTon::getInstance()->level)->getCString()));
 			isWave = false;
+
+			// 클리어 하면 도우미 삭제
+			for (int i = 0; i < helpers->size(); i++)
+			{
+				auto helper = (Helper*)helpers->at(i);
+				gameLayer->removeChild(helper->sprite);
+				gameLayer->removeChild(helper);
+			}
+			helpers->clear();
+			PlayerInfoSingleTon::getInstance()->have_helper = 0;
 		}
 	}
 }
@@ -849,6 +860,7 @@ void HelloWorld::addMenu()
 	weapon->setPosition(Vec2(weapon_ui_Size.width / 2, weapon_ui_Size.height / 2));
 	weapon->setScale(0.7f);
 	weapon_ui->addChild(weapon);
+
 	// 현재 레벨
 
 	levelLabel = Label::create("Level : 1", "Arial", 24);
@@ -883,7 +895,7 @@ void HelloWorld::addMenu()
 	gold->setPosition(Vec2(level_ui_Size.width+20, level_ui_Size.height / 2-20));
 	level_ui->addChild(gold);
 	
-	// 골드
+	// 골드라벨
 	cocos2d::String *money_In_Hand;
 	money_In_Hand = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
 
@@ -962,34 +974,38 @@ void HelloWorld::addMenu()
 	//아이템 창
 	item = Sprite::create("ui/ui_item.png");
 	item->setPosition(Vec2(75, 60));
-
+	item->setOpacity(180.0f);
 	gameLayer->addChild(item);
 
 	auto trap1 = Sprite::create("item/trap01.png");
 	trap1->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	trap1->setScale(2.0f);
+	trap1->setOpacity(180.0f);
 	item->addChild(trap1);
 
 	item_Label = Label::create("0","Arial", 34);
 	item_Label->setPosition(parentSize.width/2.0, 15);
 	item_Label->setColor(Color3B::RED);
+	item_Label->setOpacity(180.0f);
 	item->addChild(item_Label);
 	
 
 	///
 	item2 = Sprite::create("ui/ui_item.png");
 	item2->setPosition(Vec2(225, 60));
-
+	item2->setOpacity(180.0f);
 	gameLayer->addChild(item2);
 
 	auto trap2 = Sprite::create("item/trap02.png");
 	trap2->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	trap2->setScale(2.0f);
+	trap2->setOpacity(180.0f);
 	item2->addChild(trap2);
 	
 	item2_Label = Label::create("0", "Arial", 34);
 	item2_Label->setPosition(parentSize.width / 2.0, 15);
 	item2_Label->setColor(Color3B::RED);
+	item2_Label->setOpacity(180.0f);
 	item2->addChild(item2_Label);
 }
 

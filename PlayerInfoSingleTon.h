@@ -19,6 +19,9 @@ public:
 	// 가지고있는 트랩 수
 	int have_trap1 = 0;
 	int have_trap2 = 0;
+	
+	// 가지고있는 도우미 수
+	int have_helper = 0;
 
 	// 상점에서 선택된 것
 	int weaponSeleted = 0;

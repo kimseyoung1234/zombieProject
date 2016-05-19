@@ -30,6 +30,7 @@ public:
 	// 변수
 	cocos2d::Sprite * player;
 	std::vector<Monster * >* monsters;
+	std::vector<Helper * >* helpers;
 	std::vector<Bullet * >* bullets;
 	std::vector<b2Body * >* barricade;
 	std::vector<Trap *>* traps;

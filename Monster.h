@@ -38,6 +38,7 @@ public:
 	int hp;
 	int damage;
 	int monsterType;
+	int reward;
 
 	float stiffenTime = 0.0;
 	float attackDelay = 1.0;

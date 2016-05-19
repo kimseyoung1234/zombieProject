@@ -233,25 +233,37 @@ void ShopScene::buy(Ref * pSender)
 		
 		int selectedHelper = PlayerInfoSingleTon::getInstance()->helperSeleted;
 
-		if (selectedHelper == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->helper1_price)
+		if (selectedHelper == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->helper1_price && PlayerInfoSingleTon::getInstance()->have_helper < 2)
 		{
 			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->helper1_price;
 			isBuy = true;
 		}
-		else if (selectedHelper == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->helper2_price)
+		else if (selectedHelper == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->helper2_price && PlayerInfoSingleTon::getInstance()->have_helper < 2)
 		{
 			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->helper2_price;
 			isBuy = true;
 		}
 
 		if (isBuy) {
-			auto helper = new Helper(Vec2(50, 200), selectedHelper);
-			gameLayer->addChild(helper);
-			helpers->push_back(helper);
+			if (PlayerInfoSingleTon::getInstance()->have_helper == 0) {
+				auto helper = new Helper(Vec2(50, 200), selectedHelper);
+				gameLayer->addChild(helper);
+				helpers->push_back(helper);
+
+				PlayerInfoSingleTon::getInstance()->have_helper++;
+			}
+			else if (PlayerInfoSingleTon::getInstance()->have_helper == 1)
+			{
+				auto helper = new Helper(Vec2(50, 300), selectedHelper);
+				gameLayer->addChild(helper);
+				helpers->push_back(helper);
+
+				PlayerInfoSingleTon::getInstance()->have_helper++;
+			}
 		}
 		else
 		{
-			log("살돈 없다");
+			log("못삼");
 		}
 	}
 	// 선택된 것이 아무 것도 없으면
