@@ -97,6 +97,9 @@ public:
 	Sprite* skill2;
 	Sprite* item;
 	Sprite* item2;
+	Sprite* level_ui;
+	Sprite* weapon;
+	Sprite* weapon_ui;
 	bool isSkill = false;
 	bool isSkill2 = false;
 	bool skill_cool = false;

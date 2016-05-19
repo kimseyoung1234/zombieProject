@@ -550,6 +550,19 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 	}
 
+	// 무기눌렀을때 교체
+	auto weapon_touchPoint = level_ui->convertToNodeSpace(touchPoint);
+	log("월드 x: %f  y: %f", touchPoint.x, touchPoint.y);
+	log("무기 x: %f  y: %f", weapon_touchPoint.x, weapon_touchPoint.y);
+	if (weapon_ui->getBoundingBox().containsPoint(weapon_touchPoint))
+	{
+		log("찍힘?");
+		PlayerInfoSingleTon::getInstance()->weaponSeleted = (PlayerInfoSingleTon::getInstance()->weaponSeleted + 1) % 3;
+		auto str = String::createWithFormat("item/gun%02d.png", PlayerInfoSingleTon::getInstance()->weaponSeleted + 1);
+		weapon->setTexture(str->getCString());
+		return true;
+	}
+
 	
 
 	// 누르고 공격가능 하면 총알 생성
@@ -820,17 +833,22 @@ void HelloWorld::gameOver()
 void HelloWorld::addMenu()
 {
 	// 레벨UI
-	auto level_ui = Sprite::create("ui/ui_level.png");
+	level_ui = Sprite::create("ui/ui_level.png");
 	level_ui->setPosition(Vec2(105, winSize.height - 75));
 	level_ui->setScale(1.2f);
 	menuLayer->addChild(level_ui);
 	Size level_ui_Size = level_ui->getContentSize();
 
 	// 현재 무기
-	auto weapon_ui = Sprite::create("ui/ui_weapon.png");
+	weapon_ui = Sprite::create("ui/ui_weapon.png");
 	weapon_ui->setPosition(Vec2(level_ui_Size.width / 2 - 35,10));
 	level_ui->addChild(weapon_ui);
+	Size weapon_ui_Size = weapon_ui->getContentSize();
 
+	weapon = Sprite::create("item/gun01.png");
+	weapon->setPosition(Vec2(weapon_ui_Size.width / 2, weapon_ui_Size.height / 2));
+	weapon->setScale(0.7f);
+	weapon_ui->addChild(weapon);
 	// 현재 레벨
 
 	levelLabel = Label::create("Level : 1", "Arial", 24);
