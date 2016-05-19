@@ -206,6 +206,19 @@ void ContactListener::trigger(Vec2 position, float blastRadius, int type, float 
 				{
 					monsters->at(k)->isSlow = true;
 					monsters->at(k)->slowTime = 0.0f;
+
+					// 슬로우 효과 애니매이션
+					auto slow = Sprite::create("explosion/slow_effect.png");
+					slow->setScale(0.6f);
+					slow->setTag(5);
+					slow->setTextureRect(Rect(0, 0, 40, 32));
+					Size size = monsters->at(k)->sprite->getContentSize();
+					slow->setPosition(size.width / 2, size.height / 2);
+
+					monsters->at(k)->sprite->addChild(slow);
+					auto rep = RepeatForever::create(ResouceLoad::getInstance()->slow_effect->clone());
+					slow->runAction(rep);
+
 					break;
 				}
 				else if (type == 2)

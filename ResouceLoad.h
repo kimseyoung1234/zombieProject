@@ -40,6 +40,7 @@ public:
 	Animate * explosion1;
 	Animate * explosion2;
 	Animate * pipe_move;
+	Animate * slow_effect;
 	//µµ¿ì¹Ì
 	Animate * helper1_idle;
 	Animate * helper1_attack;

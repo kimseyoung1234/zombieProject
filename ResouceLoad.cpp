@@ -298,6 +298,23 @@ void ResouceLoad::Loading()
 	explosion2 = Animate::create(a_exp2);
 	explosion2->retain();
 
+	// 슬로우 흔적
+	auto s_slow = Sprite::create("explosion/slow_effect.png");
+	auto t_slow = s_slow->getTexture();
+	auto a_slow = Animation::create();
+	a_slow->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 10; i++)
+	{
+		int column = i % 10;
+		int row = i / 10;
+		a_slow->addSpriteFrameWithTexture(t_slow, Rect(column * 40, row * 32, 40, 32));
+	}
+
+	slow_effect = Animate::create(a_slow);
+	slow_effect->retain();
+
+
 	//////////////////////// 도우미 애니메이션
 
 

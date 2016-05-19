@@ -230,6 +230,8 @@ void Monster::moving(float dt)
 	if (slowTime >= 5.0)
 	{
 		isSlow = false;
+		auto slow = (Sprite*)sprite->getChildByTag(5);
+		sprite->removeChild(slow,true);
 	}
 	// HP에 따른 HP바 크기
 	hpBar->setScaleX(hp / 100.0f);

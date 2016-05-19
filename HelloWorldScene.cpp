@@ -857,6 +857,7 @@ void HelloWorld::gameOver()
 }
 void HelloWorld::addMenu()
 {
+
 	// 레벨UI
 	level_ui = Sprite::create("ui/ui_level.png");
 	level_ui->setPosition(Vec2(105, winSize.height - 75));
