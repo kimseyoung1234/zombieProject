@@ -487,9 +487,9 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 					auto cache = SpriteFrameCache::getInstance();
 					cache->addSpriteFramesWithFile("explosion/Explosion2Plist.plist");
 
-					auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
+					auto exp = Sprite::createWithSpriteFrameName("explosion_11002.png");
 					exp->setPosition(trap->sprite->getPosition());
-					//exp->setScale(2.8f);
+					exp->setScale(2.8f);
 					gameLayer->addChild(exp, 200);
 
 					auto explosion2 = ResouceLoad::getInstance()->explosion2->clone();

@@ -289,7 +289,7 @@ void ResouceLoad::Loading()
 	char str2[100] = { 0 };
 	for (int i = 1; i < 90; i++)
 	{
-		sprintf(str2, "explosion_100%02d.png", i + 1);
+		sprintf(str2, "explosion_110%02d.png", i + 1);
 		SpriteFrame* frame = cache2->getSpriteFrameByName(str2);
 		expFrames2.pushBack(frame);
 	}
