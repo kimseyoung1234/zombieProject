@@ -408,6 +408,9 @@ void HelloWorld::removeObject()
 		{
 			auto sprite = (Sprite *)mon->body->GetUserData();
 			if (sprite != nullptr) {
+				//몬스터가 가지고 있는 돈을 획득
+				PlayerInfoSingleTon::getInstance()->money_In_Hand = PlayerInfoSingleTon::getInstance()->money_In_Hand + mon->reward;
+
 				//죽을때 애니메이션 
 
 				auto dieAnimate = ResouceLoad::getInstance()->dieAnimate->clone();

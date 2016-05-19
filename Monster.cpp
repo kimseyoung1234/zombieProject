@@ -23,6 +23,7 @@ Monster::Monster(Vec2 position,int monsterType)
 		this->damage = MonsterInfoSingleTon::getInstance()->brainZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->brainZombie_xSpeed;
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->brainZomie_ySpeed;
+		this->reward = MonsterInfoSingleTon::getInstance()->brainZombie_reward + random(-2, 2);
 
 		// 공격 애니메이션 등록
 		
@@ -42,6 +43,7 @@ Monster::Monster(Vec2 position,int monsterType)
 		this->damage = MonsterInfoSingleTon::getInstance()->fatZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->fatZombie_xSpeed;
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->fatZomie_ySpeed;
+		this->reward = MonsterInfoSingleTon::getInstance()->fatZombie_reward + random(-2, 2);
 
 		attackAnimate = ResouceLoad::getInstance()->fat_attackAnimate->clone();
 		attackAnimate->retain();
@@ -58,6 +60,7 @@ Monster::Monster(Vec2 position,int monsterType)
 		this->damage = MonsterInfoSingleTon::getInstance()->superZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->superZombie_xSpeed;
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->superZomie_ySpeed;
+		this->reward = MonsterInfoSingleTon::getInstance()->superZombie_reward + random(-2, 2);
 
 
 		attackAnimate = ResouceLoad::getInstance()->super_attackAnimate->clone();
@@ -76,6 +79,7 @@ Monster::Monster(Vec2 position,int monsterType)
 		this->damage = MonsterInfoSingleTon::getInstance()->bossZombie_damage;
 		this->xSpeed = MonsterInfoSingleTon::getInstance()->bossZombie_xSpeed;
 		this->ySpeed = MonsterInfoSingleTon::getInstance()->bossZomie_ySpeed;
+		this->reward = MonsterInfoSingleTon::getInstance()->bossZombie_reward + random(-2,2);
 
 		attackAnimate = ResouceLoad::getInstance()->boss_attackAnimate->clone();
 		attackAnimate->retain();
