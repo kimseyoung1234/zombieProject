@@ -32,6 +32,7 @@ bool ShopScene::init()
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(background);
 
+
 	// 테이블레이어
 	auto tableLayer = LayerColor::create(Color4B(0, 0, 0, 0), 1120 , 450);
 	tableLayer->setPosition(Vec2(80, 120));
@@ -278,6 +279,9 @@ void ShopScene::tick(float dt)
 {
 	int trap_tableCellCount = trap_table->cellCount;
 	int helper_tableCellCount = helper_table->cellCount;
+
+
+	//
 
 	//소지금 라벨 업데이트
 	cocos2d::String *money_In_Hand;

@@ -32,14 +32,21 @@ public:
 	int machine_Damage = 10;
 	float machine_Rate = 0.1;
 	int machine_price = 100;
+	int machine_level = 7;
+
 
 	int ak_Damage = 40;
 	float ak_Rate = 0.4;
 	int ak_price = 200;
+	int ak_level = 1;
+
 
 	int sniper_Damage = 100;
 	float sniper_Rate = 0.6;
 	int sniper_price = 150;
+	int sniper_level = 5;
+
+
 
 	int bazooka_Damage = 70;
 	float bazooka_Rate = 2.0f;

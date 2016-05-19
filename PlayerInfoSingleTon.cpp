@@ -18,4 +18,4 @@ PlayerInfoSingleTon * PlayerInfoSingleTon::getInstance()
 	}
 	return m_pInstance;
 }
-
+///////

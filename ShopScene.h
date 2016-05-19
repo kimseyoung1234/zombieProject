@@ -18,9 +18,12 @@ public:
 
 	CREATE_FUNC(ShopScene);
 
-
+	bool is_gage1 = false;
+	bool is_gage2 = false;
+	bool is_gage3 = false;
 	Size winSize;
 
+	cocos2d::Sprite * gage;
 	cocos2d::LayerColor* gameLayer;
 	std::vector<Trap *>* traps;
 	std::vector<Helper *>* helpers;
