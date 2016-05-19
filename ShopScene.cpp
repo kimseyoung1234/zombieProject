@@ -123,12 +123,16 @@ bool ShopScene::init()
 	// 레이어에 메뉴 객체 추가
 	this->addChild(menu);
 
+	auto gold = Sprite::create("item/gold.png");
+	gold->setPosition(Vec2(150, winSize.height - 100));
+	this->addChild(gold);
+
 	// 소지금 라벨
 	cocos2d::String *money_In_Hand;
 	money_In_Hand = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
 
 	money_label = LabelTTF::create(money_In_Hand->getCString(), "Helvetica", 20.0);
-	money_label->setPosition(Vec2(200, winSize.height - 100));
+	money_label->setPosition(Vec2(220, winSize.height - 100));
 	money_label->setScale(1.5f);
 	money_label->setColor(Color3B::YELLOW);;
 	money_label->setAnchorPoint(Vec2(0.5, 0.5));

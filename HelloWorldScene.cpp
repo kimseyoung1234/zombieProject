@@ -55,7 +55,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	this->addChild(background);
+	//this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -211,6 +211,11 @@ void HelloWorld::tick(float dt)
 		//보유 아이템 수 갱신
 		item_Label->setString((String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->have_trap1)->getCString()));
 		item2_Label->setString((String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->have_trap2)->getCString()));
+
+		//소지금 라벨 업데이트
+		cocos2d::String *money_In_Hand;
+		money_In_Hand = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
+		money_label->setString(money_In_Hand->getCString());
 
 		//게임오버 체크
 		if (PlayerInfoSingleTon::getInstance()->hp <= 0)
@@ -701,6 +706,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		auto progress = ProgressTimer::create(ui_cooldown);
 		progress->setType(ProgressTimer::Type::RADIAL);
 		progress->setReverseProgress(true);
+		progress->setOpacity(180.0f);
 		skill->addChild(progress);
 		progress->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 
@@ -729,6 +735,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		auto progress = ProgressTimer::create(ui_cooldown);
 		progress->setType(ProgressTimer::Type::RADIAL);
 		progress->setReverseProgress(true);
+		progress->setOpacity(180.0f);
 		skill2->addChild(progress);
 		progress->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 
@@ -814,10 +821,15 @@ void HelloWorld::addMenu()
 {
 	// 레벨UI
 	auto level_ui = Sprite::create("ui/ui_level.png");
-	level_ui->setPosition(Vec2(69, winSize.height - 75));
+	level_ui->setPosition(Vec2(105, winSize.height - 75));
 	level_ui->setScale(1.2f);
 	menuLayer->addChild(level_ui);
 	Size level_ui_Size = level_ui->getContentSize();
+
+	// 현재 무기
+	auto weapon_ui = Sprite::create("ui/ui_weapon.png");
+	weapon_ui->setPosition(Vec2(level_ui_Size.width / 2 - 35,10));
+	level_ui->addChild(weapon_ui);
 
 	// 현재 레벨
 
@@ -847,6 +859,21 @@ void HelloWorld::addMenu()
 	playerHp->setAnchorPoint(Vec2(0.071, 0.5));
 	playerHp->setPosition(Vec2(12, 13));
 	playerHpBar->addChild(playerHp);
+	
+	// 골드 
+	auto gold = Sprite::create("item/gold.png");
+	gold->setPosition(Vec2(level_ui_Size.width+20, level_ui_Size.height / 2-20));
+	level_ui->addChild(gold);
+	
+	// 골드
+	cocos2d::String *money_In_Hand;
+	money_In_Hand = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
+
+	money_label = LabelTTF::create(money_In_Hand->getCString(), "Helvetica", 20.0);
+	money_label->setPosition(Vec2(level_ui_Size.width + 80, level_ui_Size.height / 2 - 20));
+	money_label->setScale(1.3f);
+	money_label->setColor(Color3B::YELLOW);;
+	level_ui->addChild(money_label);
 
 	// 시작 버튼
 
@@ -872,14 +899,16 @@ void HelloWorld::addMenu()
 	//스킬1
 	skill = Sprite::create("ui/ui_item.png");
 	skill->setPosition(Vec2(winSize.width - 225, 60));
+	skill->setOpacity(180.0f);
 
-	gameLayer->addChild(skill);
+	gameLayer->addChild(skill,1000);
 
 	auto bomb = Sprite::create("item/bomb.png");
 	Size parentSize;
 	parentSize = skill->getContentSize();
 	bomb->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	bomb->setScale(3.0f);
+	bomb->setOpacity(180.0f);
 	skill->addChild(bomb);
 
 	auto range = Sprite::create("ui/ui_range.png");
@@ -894,14 +923,15 @@ void HelloWorld::addMenu()
 	
 	skill2 = Sprite::create("ui/ui_item.png");
 	skill2->setPosition(Vec2(winSize.width - 75, 60));
-
-	gameLayer->addChild(skill2);
+	skill2->setOpacity(180.0f);
+	gameLayer->addChild(skill2,1000);
 
 	auto bomb2 = Sprite::create("item/pipe_bomb.png");
 	Size parentSize2;
 	parentSize2 = skill2->getContentSize();
 	bomb2->setPosition(Vec2(parentSize2.width / 2.0, parentSize2.height / 2.0));
 	bomb2->setScale(3.0f);
+	bomb2->setOpacity(180.0f);
 	skill2->addChild(bomb2);
 
 	auto range2 = Sprite::create("ui/ui_range.png");

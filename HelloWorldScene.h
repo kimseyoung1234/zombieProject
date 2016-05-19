@@ -39,7 +39,7 @@ public:
 	cocos2d::Label * levelLabel;
 	cocos2d::Label * item_Label;
 	cocos2d::Label * item2_Label;
-
+	cocos2d::LabelTTF * money_label;
 
 	//cocos2d::ProgressTimer * progress;
 	//cocos2d::ProgressTimer * progress2;
