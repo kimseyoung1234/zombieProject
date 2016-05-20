@@ -47,6 +47,18 @@ bool HelloWorld::init()
 	traps = DataSingleTon::getInstance()->getTraps();
 	helpers = DataSingleTon::getInstance()->getHelpers();
 	
+	// 게임 결과 레이어
+	result_Layer = LayerColor::create(Color4B(0, 0, 0, 100), winSize.width, winSize.height);
+
+	
+	//result_Layer->setPosition(0);
+	this->addChild(result_Layer,1000);
+	// 게임 결과 배경
+	auto result_background = Sprite::create("ui/ui_result.png");
+	result_background->setPosition(winSize.width/2, winSize.height/2);
+	result_Layer->addChild(result_background);
+
+	result_Layer->setVisible(false);
 	// 임시로 로딩
 	ResouceLoad::getInstance();
 
@@ -56,6 +68,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	background->setAnchorPoint(Vec2(0.5, 0.5));
 	this->addChild(background);
 
 	// 사용자 UI 추가
@@ -362,6 +375,11 @@ void HelloWorld::tick(float dt)
 		if (monsters->size() == 0 && isWave == true)
 		{
 			log("클리어!");
+			// 결과창
+
+			result_Layer->setVisible(true);
+
+			
 			MonsterInfoSingleTon::getInstance()->level_up();
 			PlayerInfoSingleTon::getInstance()->hp = 100;
 			levelLabel->setString((String::createWithFormat("Level : %d", MonsterInfoSingleTon::getInstance()->level)->getCString()));

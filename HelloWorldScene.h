@@ -37,6 +37,7 @@ public:
 	b2Body * body;
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
+	cocos2d::LayerColor* result_Layer;
 	cocos2d::LabelBMFont * levelLabel;
 	cocos2d::LabelBMFont * item_Label;
 	cocos2d::LabelBMFont * item2_Label;
