@@ -12,9 +12,10 @@ private:
 public:
 	static PlayerInfoSingleTon *getInstance();
 
+
 	// 플레이어 hp
 	int hp = 100;
-	int money_In_Hand = 1000;
+	int money_In_Hand = 30000;
 
 	// 가지고있는 트랩 수
 	int have_trap1 = 0;
@@ -32,19 +33,19 @@ public:
 	int machine_Damage = 10;
 	float machine_Rate = 0.1;
 	int machine_price = 100;
-	int machine_level = 7;
+	int machine_level = 0;
 
 
 	int ak_Damage = 40;
 	float ak_Rate = 0.4;
 	int ak_price = 200;
-	int ak_level = 1;
+	int ak_level = 0;
 
 
 	int sniper_Damage = 100;
 	float sniper_Rate = 0.6;
 	int sniper_price = 150;
-	int sniper_level = 5;
+	int sniper_level = 0;
 
 
 

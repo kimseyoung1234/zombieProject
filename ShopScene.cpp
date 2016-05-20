@@ -139,6 +139,27 @@ bool ShopScene::init()
 	money_label->setAnchorPoint(Vec2(0.5, 0.5));
 	this->addChild(money_label, 1);
 
+	//////////
+	auto _weapon_table = weapon_table->getTableView();
+	auto cell_1 = _weapon_table->cellAtIndex(0);
+	auto cell_2 = _weapon_table->cellAtIndex(1);
+	auto cell_3 = _weapon_table->cellAtIndex(2);
+
+	auto gage1 = Sprite::create("ui/ui_gage.png");
+	gage1->setPosition(Vec2(160, 60));
+	gage1->setTag(500);
+	cell_1->addChild(gage1);
+
+	auto gage2 = Sprite::create("ui/ui_gage.png");
+	gage2->setPosition(Vec2(160, 60));
+	gage2->setTag(500);
+	cell_2->addChild(gage2);
+
+	auto gage3 = Sprite::create("ui/ui_gage.png");
+	gage3->setPosition(Vec2(160, 60));
+	gage3->setTag(500);
+	cell_3->addChild(gage3);
+
 	this->schedule(schedule_selector(ShopScene::tick));
 
 	return true;
@@ -157,29 +178,32 @@ void ShopScene::upgrade(Ref * pSender)
 	bool isBuy = false; // 구입 했는지 아닌지
 
 	// 선택된 무기에 따라 업그레이드, 가격 올리기
-	if (selectedWeapon == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->machine_price)
+	if (selectedWeapon == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->machine_price && PlayerInfoSingleTon::getInstance()->machine_level < 10)
 	{
 		// 소지금에서 구입한 물품에 가격 빼기
 		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->machine_price;
 		// 무기 업그레이드 비용 증가
 		PlayerInfoSingleTon::getInstance()->machine_price = PlayerInfoSingleTon::getInstance()->machine_price + 500;
 		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->machine_price);
+		PlayerInfoSingleTon::getInstance()->machine_level++;
 
 		isBuy = true;
 	}
-	else if (selectedWeapon == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->ak_price)
+	else if (selectedWeapon == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->ak_price && PlayerInfoSingleTon::getInstance()->ak_level < 10)
 	{
 		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->ak_price;
 		PlayerInfoSingleTon::getInstance()->ak_price = PlayerInfoSingleTon::getInstance()->ak_price + 500;
 		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->ak_price);
+		PlayerInfoSingleTon::getInstance()->ak_level++;
 
 		isBuy = true;
 	}
-	else if (selectedWeapon == 2 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->sniper_price)
+	else if (selectedWeapon == 2 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->sniper_price && PlayerInfoSingleTon::getInstance()->sniper_level < 10)
 	{
 		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->sniper_price;
 		PlayerInfoSingleTon::getInstance()->sniper_price = PlayerInfoSingleTon::getInstance()->sniper_price + 500;
 		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->sniper_price);
+		PlayerInfoSingleTon::getInstance()->sniper_level++;
 
 		isBuy = true;
 	}
@@ -281,7 +305,45 @@ void ShopScene::tick(float dt)
 	int helper_tableCellCount = helper_table->cellCount;
 
 
-	//
+
+	// 실험
+	auto _weapon_table = weapon_table->getTableView();
+	auto cell_1 = _weapon_table->cellAtIndex(0);
+	if (cell_1 != nullptr) {
+		auto gage1 = (Sprite*)cell_1->getChildByTag(500);
+		gage1->removeAllChildren();
+		for (int i = 0; i < PlayerInfoSingleTon::getInstance()->machine_level; i++)
+		{
+			auto upgrade = Sprite::create("ui/ui_upgrade.png");
+			upgrade->setPosition(Vec2(13, 18 + (9 * i)));
+			gage1->addChild(upgrade);
+		}
+	}
+
+	auto cell_2 = _weapon_table->cellAtIndex(1);
+	if (cell_2 != nullptr) {
+		auto gage2 = (Sprite*)cell_2->getChildByTag(500);
+		gage2->removeAllChildren();
+		for (int i = 0; i < PlayerInfoSingleTon::getInstance()->ak_level; i++)
+		{
+			auto upgrade = Sprite::create("ui/ui_upgrade.png");
+			upgrade->setPosition(Vec2(13, 18 + (9 * i)));
+			gage2->addChild(upgrade);
+		}
+	}
+
+	auto cell_3 = _weapon_table->cellAtIndex(2);
+	if (cell_3 != nullptr) {
+		auto gage3 = (Sprite*)cell_3->getChildByTag(500);
+		gage3->removeAllChildren();
+		for (int i = 0; i < PlayerInfoSingleTon::getInstance()->sniper_level; i++)
+		{
+			auto upgrade = Sprite::create("ui/ui_upgrade.png");
+			upgrade->setPosition(Vec2(13, 18 + (9 * i)));
+			gage3->addChild(upgrade);
+		}
+	}
+
 
 	//소지금 라벨 업데이트
 	cocos2d::String *money_In_Hand;
