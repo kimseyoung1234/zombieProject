@@ -31,7 +31,7 @@ public:
 	TableViewLayer * weapon_table;
 	TableViewLayer * trap_table;
 	TableViewLayer * helper_table;
-	LabelTTF * money_label;
+	LabelBMFont * money_label;
 
 	void shopClose(Ref * pSender);
 	void upgrade(Ref * pSender);

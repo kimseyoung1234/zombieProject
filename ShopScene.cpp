@@ -52,7 +52,7 @@ bool ShopScene::init()
 	weapon_background->setPosition(Vec2(weapon_tableLayer->getContentSize().width / 2, weapon_tableLayer->getContentSize().height / 2));
 	weapon_tableLayer->addChild(weapon_background);
 
-	auto weaponLabel = Label::create("Weapon", "Arial", 34);
+	auto weaponLabel = LabelBMFont::create("Weapon", "fonts/futura-48.fnt");
 	weaponLabel->setPosition(Vec2(100, 60));
 	weaponLabel->setColor(Color3B::RED);
 	weapon_tableLayer->addChild(weaponLabel, 101);
@@ -66,7 +66,7 @@ bool ShopScene::init()
 	trap_background->setPosition(Vec2(trap_tableLayer->getContentSize().width / 2, trap_tableLayer->getContentSize().height / 2));
 	trap_tableLayer->addChild(trap_background);
 
-	auto trapLabel = Label::create("Trap", "Arial", 34);
+	auto trapLabel = LabelBMFont::create("Trap", "fonts/futura-48.fnt");
 	trapLabel->setPosition(Vec2(100, 60));
 	trapLabel->setColor(Color3B::RED);
 	trap_tableLayer->addChild(trapLabel, 101);
@@ -80,7 +80,7 @@ bool ShopScene::init()
 	helper_background->setPosition(Vec2(helper_tableLayer->getContentSize().width / 2, helper_tableLayer->getContentSize().height / 2));
 	helper_tableLayer->addChild(helper_background);
 	
-	auto helperLabel = Label::create("Helper", "Arial", 34);
+	auto helperLabel = LabelBMFont::create("Helper", "fonts/futura-48.fnt");
 	helperLabel->setPosition(Vec2(100, 60));
 	helperLabel->setColor(Color3B::RED);
 	helper_tableLayer->addChild(helperLabel, 101);
@@ -132,10 +132,10 @@ bool ShopScene::init()
 	cocos2d::String *money_In_Hand;
 	money_In_Hand = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
 
-	money_label = LabelTTF::create(money_In_Hand->getCString(), "Helvetica", 20.0);
-	money_label->setPosition(Vec2(220, winSize.height - 100));
-	money_label->setScale(1.5f);
-	money_label->setColor(Color3B::YELLOW);;
+	money_label = LabelBMFont::create(money_In_Hand->getCString(), "fonts/futura-48.fnt");
+	money_label->setPosition(Vec2(240, winSize.height - 100));
+	money_label->setScale(0.8f);
+	//money_label->setColor(Color3B::YELLOW);;
 	money_label->setAnchorPoint(Vec2(0.5, 0.5));
 	this->addChild(money_label, 1);
 
@@ -214,7 +214,7 @@ void ShopScene::upgrade(Ref * pSender)
 		auto selectedCell = _weapon_table->cellAtIndex(selectedWeapon);
 
 		if (selectedCell) {
-			auto label = (LabelTTF*)selectedCell->getChildByTag(101);
+			auto label = (LabelBMFont*)selectedCell->getChildByTag(101);
 			label->setString(price->getCString());
 		}
 	}

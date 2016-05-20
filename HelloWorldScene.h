@@ -37,13 +37,11 @@ public:
 	b2Body * body;
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
-	cocos2d::Label * levelLabel;
-	cocos2d::Label * item_Label;
-	cocos2d::Label * item2_Label;
-	cocos2d::LabelTTF * money_label;
+	cocos2d::LabelBMFont * levelLabel;
+	cocos2d::LabelBMFont * item_Label;
+	cocos2d::LabelBMFont * item2_Label;
+	cocos2d::LabelBMFont * money_label;
 
-	//cocos2d::ProgressTimer * progress;
-	//cocos2d::ProgressTimer * progress2;
 
 	cocos2d::Sprite * waveProgress;
 	cocos2d::Sprite * playerHpBar;

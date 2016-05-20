@@ -137,9 +137,9 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 		cell->addChild(layer_cell);
 
 		// АЁАн
-
-		auto label = LabelTTF::create(price->getCString(), "Helvetica", 20.0);
+		auto label = LabelBMFont::create(price->getCString(), "fonts/futura-48.fnt");
 		label->setPosition(Vec2(75,25));
+		label->setScale(0.8f);
 		label->setAnchorPoint(Vec2(0.5,0.5));
 		label->setTag(101);
 		cell->addChild(label,1);
@@ -169,13 +169,12 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 		}
 	}
 	else
-	{
-		
+	{	
 		auto sprite1 = (Sprite*)(cell->getChildByTag(150));
 		sprite1->setTexture(str->getCString());
 		sprite1->setPosition(Vec2(79, 60));
 
-		auto label = (LabelTTF*)cell->getChildByTag(101);
+		auto label = (LabelBMFont*)cell->getChildByTag(101);
 		label->setString(price->getCString());
 		
 		if (tag == WEAPON) {
@@ -188,7 +187,6 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 			{
 				check1->setVisible(false);
 			}
-
 		}
 	}
 	return cell;

@@ -56,7 +56,7 @@ bool HelloWorld::init()
 	//배경
 	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//this->addChild(background);
+	this->addChild(background);
 
 	// 사용자 UI 추가
 	addMenu();
@@ -208,6 +208,10 @@ void HelloWorld::tick(float dt)
 		
 		skill1DelayTime = skill1DelayTime + dt;
 		skill2DelayTime = skill2DelayTime + dt;
+
+		//현재 무기 갱신
+		auto str = String::createWithFormat("item/gun%02d.png", PlayerInfoSingleTon::getInstance()->weaponSeleted+1);
+		weapon->setTexture(str->getCString());
 
 		//보유 아이템 수 갱신
 		item_Label->setString((String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->have_trap1)->getCString()));
@@ -878,7 +882,8 @@ void HelloWorld::addMenu()
 
 	// 현재 레벨
 
-	levelLabel = Label::create("Level : 1", "Arial", 24);
+	levelLabel = LabelBMFont::create("Level : 1", "fonts/futura-48.fnt");
+	levelLabel->setScale(0.7f);
 	levelLabel->setPosition(Vec2(level_ui_Size.width/2,level_ui_Size.height/2));
 	levelLabel->setColor(Color3B::RED);
 	level_ui->addChild(levelLabel);
@@ -914,28 +919,28 @@ void HelloWorld::addMenu()
 	cocos2d::String *money_In_Hand;
 	money_In_Hand = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
 
-	money_label = LabelTTF::create(money_In_Hand->getCString(), "Helvetica", 20.0);
-	money_label->setPosition(Vec2(level_ui_Size.width + 80, level_ui_Size.height / 2 - 20));
-	money_label->setScale(1.3f);
-	money_label->setColor(Color3B::YELLOW);;
+	money_label = LabelBMFont::create(money_In_Hand->getCString(), "fonts/futura-48.fnt");
+	money_label->setPosition(Vec2(level_ui_Size.width + 90, level_ui_Size.height / 2 - 20));
+	money_label->setScale(0.5f);
 	level_ui->addChild(money_label);
 
 	// 시작 버튼
 
 	auto pMenuItem = MenuItemImage::create(
-		"btn-play-normal.png",
-		"btn-play-normal.png",
+		"ui/ui_play.png",
+		"ui/ui_play.png",
 		CC_CALLBACK_1(HelloWorld::waveStart, this));
-
+	pMenuItem->setScale(0.7f);
 	auto pMenu = Menu::create(pMenuItem, nullptr);
 	pMenu->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
 	menuLayer->addChild(pMenu);
 
 	// 상점 메뉴
-	auto shop = MenuItemFont::create(
-		"상점",
+	auto shop = MenuItemImage::create(
+		"ui/ui_shop.png",
+		"ui/ui_shop.png",
 		CC_CALLBACK_1(HelloWorld::shopOpen, this));
-	shop->setColor(Color3B::RED);
+	shop->setScale(0.7f);
 	auto shopMenu = Menu::create(shop, nullptr);
 
 	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
@@ -998,10 +1003,11 @@ void HelloWorld::addMenu()
 	trap1->setOpacity(180.0f);
 	item->addChild(trap1);
 
-	item_Label = Label::create("0","Arial", 34);
+	item_Label = LabelBMFont::create("0", "fonts/futura-48.fnt");
+	
 	item_Label->setPosition(parentSize.width/2.0, 15);
 	item_Label->setColor(Color3B::RED);
-	item_Label->setOpacity(180.0f);
+	item_Label->setScale(0.8f);
 	item->addChild(item_Label);
 	
 
@@ -1017,10 +1023,10 @@ void HelloWorld::addMenu()
 	trap2->setOpacity(180.0f);
 	item2->addChild(trap2);
 	
-	item2_Label = Label::create("0", "Arial", 34);
+	item2_Label = LabelBMFont::create("0", "fonts/futura-48.fnt");
 	item2_Label->setPosition(parentSize.width / 2.0, 15);
 	item2_Label->setColor(Color3B::RED);
-	item2_Label->setOpacity(180.0f);
+	item2_Label->setScale(0.8f);
 	item2->addChild(item2_Label);
 }
 
