@@ -52,14 +52,14 @@ b2Body* Bullet::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int typ
 		sprite = Sprite::create("bullet3.png");
 		sprite->setRotation(angle);
 		sprite->setTag(BULLET);
-		sprite->setScaleX(1.5f);
+		sprite->setScaleX(1.2f);
 	}
 	else 
 	{
 		sprite = Sprite::create("bullet1.png");
 		sprite->setRotation(angle);
 		sprite->setTag(BULLET);
-		sprite->setScaleX(1.2f);
+		sprite->setScaleX(1.0f);
 	}
 	this->sprite = sprite;
 	gameLayer->addChild(sprite);
@@ -117,7 +117,6 @@ Bullet::~Bullet()
 // 저격총일 경우 몬스터들을 관통하면서 공격
 void Bullet::tick(float dt)
 {
-	log("저격");
 	MyQueryCallback queryCallback; //see "World querying topic"
 	b2AABB aabb;
 

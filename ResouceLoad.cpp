@@ -41,7 +41,7 @@ void ResouceLoad::Loading()
 	auto s_player_attack = Sprite::create("player_attack.png");
 	auto t_player_attack = s_player_attack->getTexture();
 	auto a_player_attack = Animation::create();
-	a_player_attack->setDelayPerUnit(0.05f);
+	a_player_attack->setDelayPerUnit(0.02f);
 
 	for (int i = 0; i < 8; i++)
 	{

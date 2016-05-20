@@ -31,7 +31,7 @@ public:
 
 	//ÃÑ¾Ë Á¤º¸
 	int machine_Damage = 10;
-	float machine_Rate = 0.1;
+	float machine_Rate = 0.15;
 	int machine_price = 100;
 	int machine_level = 0;
 

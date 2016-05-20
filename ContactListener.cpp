@@ -90,6 +90,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 				b2Body * b_body = (b2Body*)bullets->at(k)->body;
 				if (b_body == bodyB)
 				{
+					log("Ãæµ¹");
 					bullets->at(k)->isRemove = true;
 					break;
 				}

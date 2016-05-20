@@ -81,6 +81,7 @@ public:
 	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
 
 	void tick(float dt);
+	void re_Idle();
 	
 	void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
 	void waveStart(Ref* pSender);

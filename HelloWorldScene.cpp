@@ -219,7 +219,7 @@ void HelloWorld::tick(float dt)
 
 		//소지금 라벨 업데이트
 		cocos2d::String *money_In_Hand;
-		money_In_Hand = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
+		money_In_Hand = String	::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->money_In_Hand);
 		money_label->setString(money_In_Hand->getCString());
 
 		//게임오버 체크
@@ -283,10 +283,13 @@ void HelloWorld::tick(float dt)
 
 		// 터치 누르고 있을 시 자동 공격
 		attackDelayTime = attackDelayTime + dt;
+	
 		if (isAttack) {
 			Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
 			Vec2 nPos2 = player->convertToWorldSpace(nPos1);
 			Vec2 shootVector = attackPoint - nPos2;
+
+
 			// 각도 실험
 			float shootAngle = shootVector.getAngle();
 			cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
@@ -294,52 +297,63 @@ void HelloWorld::tick(float dt)
 			shootVector.normalize();
 
 			if (attackDelayTime >= attackRate) {
-				attackDelayTime = 0;
-				int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
-
-				// 머신건
-				if (current_Weapon == 0) {
-					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
-					bullets->push_back(bullet);
-					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
-				}
-				// 멀티공격
-				else if (current_Weapon == 1)
+				auto weapon_touchPoint = level_ui->convertToNodeSpace(attackPoint);
+				if (weapon_ui->getBoundingBox().containsPoint(weapon_touchPoint))
+				{}
+				else
 				{
-					float shootLength = shootVector.length();
+					attackDelayTime = 0;
+					int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
 
-					// 상탄
-					// 원점에서 각도를 바꿔 일정 길이만큼 이동한 좌표값 구하기
-					Vec2 shootVector2(shootLength * cosf(shootAngle + 0.15), shootLength * sinf(shootAngle + 0.15));
-					shootVector2.normalize();
-					float shootAngle2 = shootAngle + 0.15;
-					float cocosAngle2 = CC_RADIANS_TO_DEGREES(-1 * shootAngle2);
-					// 하탄
-					Vec2 shootVector3(shootLength * cosf(shootAngle - 0.15), shootLength * sinf(shootAngle - 0.15));
-					shootVector3.normalize();
-					float shootAngle3 = shootAngle - 0.15;
-					float cocosAngle3 = CC_RADIANS_TO_DEGREES(-1 * shootAngle3);
+					// 머신건
+					if (current_Weapon == 0) {
+						Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
+						bullets->push_back(bullet);
+						bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+					}
+					// 멀티공격
+					else if (current_Weapon == 1)
+					{
+						float shootLength = shootVector.length();
 
-					// 총알 생성
-					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
-					bullets->push_back(bullet);
-					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
+						// 상탄
+						// 원점에서 각도를 바꿔 일정 길이만큼 이동한 좌표값 구하기
+						Vec2 shootVector2(shootLength * cosf(shootAngle + 0.15), shootLength * sinf(shootAngle + 0.15));
+						shootVector2.normalize();
+						float shootAngle2 = shootAngle + 0.15;
+						float cocosAngle2 = CC_RADIANS_TO_DEGREES(-1 * shootAngle2);
+						// 하탄
+						Vec2 shootVector3(shootLength * cosf(shootAngle - 0.15), shootLength * sinf(shootAngle - 0.15));
+						shootVector3.normalize();
+						float shootAngle3 = shootAngle - 0.15;
+						float cocosAngle3 = CC_RADIANS_TO_DEGREES(-1 * shootAngle3);
 
-					Bullet * bullet2 = new Bullet(nPos2, current_Weapon, cocosAngle2);
-					bullets->push_back(bullet2);
-					bullet2->body->SetLinearVelocity(b2Vec2(shootVector2.x * 30, shootVector2.y * 30));
+						// 총알 생성
+						Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
+						bullets->push_back(bullet);
+						bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
 
-					Bullet * bullet3 = new Bullet(nPos2, current_Weapon, cocosAngle3);
-					bullets->push_back(bullet3);
-					bullet3->body->SetLinearVelocity(b2Vec2(shootVector3.x * 30, shootVector3.y * 30));
-				}
-				// 저격총
-				else if (current_Weapon == 2)
-				{
-					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
-					bullets->push_back(bullet);
-					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 70, shootVector.y * 70));
-					gameLayer->addChild(bullet);
+						Bullet * bullet2 = new Bullet(nPos2, current_Weapon, cocosAngle2);
+						bullets->push_back(bullet2);
+						bullet2->body->SetLinearVelocity(b2Vec2(shootVector2.x * 30, shootVector2.y * 30));
+
+						Bullet * bullet3 = new Bullet(nPos2, current_Weapon, cocosAngle3);
+						bullets->push_back(bullet3);
+						bullet3->body->SetLinearVelocity(b2Vec2(shootVector3.x * 30, shootVector3.y * 30));
+					}
+					// 저격총
+					else if (current_Weapon == 2)
+					{
+						Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
+						bullets->push_back(bullet);
+						bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 70, shootVector.y * 70));
+						gameLayer->addChild(bullet);
+					}
+					player->stopAllActions();
+					auto player_attack = ResouceLoad::getInstance()->player_attackAnimate->clone();
+					auto seq = Sequence::create(player_attack,
+						CallFunc::create(CC_CALLBACK_0(HelloWorld::re_Idle, this)), nullptr);
+					player->runAction(seq);
 				}
 			}
 		}
@@ -437,7 +451,6 @@ void HelloWorld::removeObject()
 	}
 }
 
-
 // 폭파 밀림
 void HelloWorld::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower)
 {
@@ -451,11 +464,12 @@ void HelloWorld::applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 appl
 	body->ApplyLinearImpulse(impulseMag * blastDir, applyPoint, true);
 }
 
-
 bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
 	auto touchPoint = touch->getLocation();
 	 
+	attackPoint = touchPoint;
+	
 	// 웨이브 도중 트랩 누르면 폭발
 	if (isWave) {
 		for (int i = traps->size() - 1; i >= 0; i--)
@@ -597,20 +611,18 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 	// 누르고 공격가능 하면 총알 생성
 	if (attackDelayTime >= attackRate) {
 
+		isAttack = true;
 		// 플레이어 기준으로 터치지점 방향벡터 구하기
 
 		Vec2 nPos1 = Vec2(player->getContentSize().width - 50, player->getContentSize().height / 2 - 10);
 		Vec2 nPos2 = player->convertToWorldSpace(nPos1);
-		Vec2 shootVector = touchPoint - nPos2;
+		Vec2 shootVector = attackPoint - nPos2;
 		// 각도 실험
 		float shootAngle = shootVector.getAngle();
 		cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
 
 		shootVector.normalize();
 
-		isAttack = true;
-
-		attackPoint = touchPoint;
 		// 공격한번 했으면 딜레이 초기화
 		attackDelayTime = 0;
 
@@ -661,10 +673,10 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 		// 공격 애니메이션 
 		player->stopAllActions();
-
 		auto player_attack = ResouceLoad::getInstance()->player_attackAnimate->clone();
-		auto rep = RepeatForever::create(player_attack);
-		player->runAction(rep);
+		auto seq = Sequence::create(player_attack,
+			CallFunc::create(CC_CALLBACK_0(HelloWorld::re_Idle,this)),nullptr);
+		player->runAction(seq);
 	}
 
 	return true;
@@ -693,25 +705,33 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 
 	// 아니라면 공격
 	else {
-		attackPoint = touchPoint;
-		if (attackDelayTime >= 0.2)
-		{
+		if(attackDelayTime>= attackRate){
 			isAttack = true;
 		}
+		attackPoint = touchPoint;
 	}
 }
 
-void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
+void HelloWorld::re_Idle()
 {
-	auto touchPoint = touch->getLocation();
-	// 플레이어 idle 애니메이션 재시작
 	player->stopAllActions();
-	
+
 	auto player_idle = ResouceLoad::getInstance()->player_idleAnimate->clone();
 	auto rep = RepeatForever::create(player_idle);
 	player->runAction(rep);
 	
+}
+void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
+{
+	auto touchPoint = touch->getLocation();
 	isAttack = false;
+	// 플레이어 idle 애니메이션 재시작
+/*	player->stopAllActions();
+	
+	auto player_idle = ResouceLoad::getInstance()->player_idleAnimate->clone();
+	auto rep = RepeatForever::create(player_idle);
+	player->runAction(rep);
+	*/
 
 	// 스킬실험
 	if (isSkill) {
@@ -994,8 +1014,8 @@ void HelloWorld::addMenu()
 	//아이템 창
 	item = Sprite::create("ui/ui_item.png");
 	item->setPosition(Vec2(75, 60));
-	item->setOpacity(180.0f);
-	gameLayer->addChild(item);
+	//item->setOpacity(180.0f);
+	gameLayer->addChild(item,1000);
 
 	auto trap1 = Sprite::create("item/trap01.png");
 	trap1->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
@@ -1014,8 +1034,8 @@ void HelloWorld::addMenu()
 	///
 	item2 = Sprite::create("ui/ui_item.png");
 	item2->setPosition(Vec2(225, 60));
-	item2->setOpacity(180.0f);
-	gameLayer->addChild(item2);
+	//item2->setOpacity(180.0f);
+	gameLayer->addChild(item2,1000);
 
 	auto trap2 = Sprite::create("item/trap02.png");
 	trap2->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
