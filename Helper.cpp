@@ -23,6 +23,7 @@ Helper::Helper(Vec2 position, int type)
 		sprite->setScale(1.5f);
 		sprite->setAnchorPoint(Vec2(0, 0));
 		sprite->setPosition(Vec2(position));
+		sprite->setTag(100);
 		gameLayer->addChild(sprite);
 
 		auto helper1_idle = ResouceLoad::getInstance()->helper1_idle->clone();
@@ -39,6 +40,7 @@ Helper::Helper(Vec2 position, int type)
 		sprite->setScale(1.5f);
 		sprite->setAnchorPoint(Vec2(0, 0));
 		sprite->setPosition(Vec2(position));
+		sprite->setTag(200);
 		gameLayer->addChild(sprite);
 
 		auto helper2_idle = ResouceLoad::getInstance()->helper2_idle->clone();

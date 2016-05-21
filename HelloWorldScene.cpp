@@ -1131,8 +1131,6 @@ void HelloWorld::addMenu()
 	item_Label->setScale(0.8f);
 	item->addChild(item_Label);
 	
-
-	///
 	item2 = Sprite::create("ui/ui_item.png");
 	item2->setPosition(Vec2(225, 60));
 	//item2->setOpacity(180.0f);

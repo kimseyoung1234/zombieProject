@@ -38,6 +38,11 @@ public:
 	LabelBMFont * item_Label;
 	LabelBMFont * item2_Label;
 
+	bool isHelper1 = false;
+	bool isHelper2 = false;
+	bool isUpdate = false;
+	MenuItemImage * have_helper1;
+	MenuItemImage * have_helper2;
 	void buyAni(int price);
 	void remove_label(Node* sender);
 	void remove_sprite(Node* sender);
@@ -45,9 +50,12 @@ public:
 	void upgrade(Ref * pSender);
 	void buy(Ref * pSender);
 	void tick(float dt);
+	void helperUpdate(int type);
 	void onEnter();
 	void onExit();
 
+	void sellHelper1(Ref *pSender);
+	void sellHelper2(Ref *pSender);
 
 };
 

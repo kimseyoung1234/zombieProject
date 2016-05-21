@@ -182,8 +182,7 @@ bool ShopScene::init()
 	item_Label->setScale(0.8f);
 	item->addChild(item_Label);
 
-
-	
+	// 보유 아이템
 	item2 = Sprite::create("ui/ui_item.png");
 	item2->setPosition(Vec2(225, 60));
 	//item2->setOpacity(180.0f);
@@ -201,10 +200,36 @@ bool ShopScene::init()
 	item2_Label->setScale(0.8f);
 	item2->addChild(item2_Label);
 
+	// 보유 도우미
+	have_helper1= MenuItemImage::create(
+		"ui/ui_item.png",
+		"ui/ui_item.png",
+		CC_CALLBACK_1(ShopScene::sellHelper1, this));
+	have_helper1->setPosition(Vec2(winSize.width - 225, 60));
+
+	have_helper2 = MenuItemImage::create(
+		"ui/ui_item.png",
+		"ui/ui_item.png",
+		CC_CALLBACK_1(ShopScene::sellHelper2, this));
+	have_helper2->setPosition(Vec2(winSize.width - 75, 60));
+		
+	auto helper_Menu = Menu::create(have_helper1,have_helper2, nullptr);
+	helper_Menu->setPosition(Vec2::ZERO);
+	this->addChild(helper_Menu);
+	
+	helperUpdate(0);
 	this->schedule(schedule_selector(ShopScene::tick));
 	return true;
 }
 
+void ShopScene::sellHelper1(Ref * pSender)
+{
+	log("1번쨰칸");
+}
+void ShopScene::sellHelper2(Ref * pSender)
+{
+	log("2번쨰칸");
+}
 void ShopScene::shopClose(Ref * pSender)
 {
 	PlayerInfoSingleTon::getInstance()->trapSeleted = -1;
@@ -403,7 +428,9 @@ void ShopScene::buy(Ref * pSender)
 				helpers->push_back(helper);
 
 				PlayerInfoSingleTon::getInstance()->have_helper++;
+				
 			}
+			helperUpdate(1);
 			buyAni(item_price);
 		}
 		else
@@ -418,9 +445,101 @@ void ShopScene::buy(Ref * pSender)
 	}
 }
 
+void ShopScene::helperUpdate(int type)
+{
+	if (type == 0) {
+		for (int i = 0; i < helpers->size(); i++)
+		{
+			auto helper = (Helper *)helpers->at(i);
+			log("몇번째 %d", i);
+			if (!isHelper1)
+			{
+				if (helper->sprite->getTag() == 100)
+				{
+					auto helper = Sprite::create("item/helper01.png");
+					helper->setPosition(Vec2(have_helper1->getContentSize().width / 2, have_helper1->getContentSize().height / 2));
+					have_helper1->addChild(helper);
+					log("1");
+				}
+				else if (helper->sprite->getTag() == 200)
+				{
+					auto helper = Sprite::create("item/helper02.png");
+					helper->setPosition(Vec2(have_helper1->getContentSize().width / 2, have_helper1->getContentSize().height / 2));
+					have_helper1->addChild(helper);
+					log("2");
+				}
+				isHelper1 = true;
+			}
+			else if (!isHelper2)
+			{
+				if (helper->sprite->getTag() == 100)
+				{
+					auto helper = Sprite::create("item/helper01.png");
+					helper->setPosition(Vec2(have_helper1->getContentSize().width / 2, have_helper1->getContentSize().height / 2));
+					have_helper2->addChild(helper);
+					log("3");
+				}
+				else if (helper->sprite->getTag() == 200)
+				{
+					auto helper = Sprite::create("item/helper02.png");
+					helper->setPosition(Vec2(have_helper1->getContentSize().width / 2, have_helper1->getContentSize().height / 2));
+					have_helper2->addChild(helper);
+					log("4");
+				}
+				isHelper2 = true;
+			}
+		}
+	}
+	else
+	{
+		if (!isHelper1)
+		{
+			if (PlayerInfoSingleTon::getInstance()->helperSeleted == 0)
+			{
+				auto helper = Sprite::create("item/helper01.png");
+				helper->setPosition(Vec2(have_helper1->getContentSize().width / 2, have_helper1->getContentSize().height / 2));
+				have_helper1->addChild(helper);
+				log("1");
+			}
+			else if (PlayerInfoSingleTon::getInstance()->helperSeleted == 1)
+			{
+				auto helper = Sprite::create("item/helper02.png");
+				helper->setPosition(Vec2(have_helper1->getContentSize().width / 2, have_helper1->getContentSize().height / 2));
+				have_helper1->addChild(helper);
+				log("2");
+			}
+			isHelper1 = true;
+		}
+		else if (!isHelper2)
+		{
+			if (PlayerInfoSingleTon::getInstance()->helperSeleted == 0)
+			{
+				auto helper = Sprite::create("item/helper01.png");
+				helper->setPosition(Vec2(have_helper1->getContentSize().width / 2, have_helper1->getContentSize().height / 2));
+				have_helper2->addChild(helper);
+				log("3");
+			}
+			else if (PlayerInfoSingleTon::getInstance()->helperSeleted == 1)
+			{
+				auto helper = Sprite::create("item/helper02.png");
+				helper->setPosition(Vec2(have_helper1->getContentSize().width / 2, have_helper1->getContentSize().height / 2));
+				have_helper2->addChild(helper);
+				log("4");
+			}
+			isHelper2 = true;
+		}
+	}
+}
 
 void ShopScene::tick(float dt)
 {
+
+	// 보유 도우미 갱신
+	if (isUpdate = false) {
+		isUpdate = true;
+	}
+
+
 	// 아이템 수 갱신
 	item_Label->setString((String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->have_trap1)->getCString()));
 	item2_Label->setString((String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->have_trap2)->getCString()));
