@@ -33,6 +33,8 @@ public:
 	TableViewLayer * helper_table;
 	LabelBMFont * money_label;
 
+	void buyAni(int price);
+	void remove_label(Node* sender);
 	void shopClose(Ref * pSender);
 	void upgrade(Ref * pSender);
 	void buy(Ref * pSender);

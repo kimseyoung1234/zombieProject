@@ -182,6 +182,7 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 			if (PlayerInfoSingleTon::getInstance()->weaponSeleted == idx)
 			{
 				check1->setVisible(true);
+				
 			}
 			else
 			{

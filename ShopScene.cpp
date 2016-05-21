@@ -167,6 +167,9 @@ bool ShopScene::init()
 
 void ShopScene::shopClose(Ref * pSender)
 {
+	PlayerInfoSingleTon::getInstance()->trapSeleted = -1;
+	PlayerInfoSingleTon::getInstance()->helperSeleted = -1;
+
 	Director::getInstance()->popScene();
 }
 
@@ -176,14 +179,17 @@ void ShopScene::upgrade(Ref * pSender)
 	int selectedWeapon = PlayerInfoSingleTon::getInstance()->weaponSeleted; //선택된 무기
 	int money_In_Hand = PlayerInfoSingleTon::getInstance()->money_In_Hand; // 플레이어 소지금
 	bool isBuy = false; // 구입 했는지 아닌지
+	int item_price = 0;
+
 
 	// 선택된 무기에 따라 업그레이드, 가격 올리기
 	if (selectedWeapon == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->machine_price && PlayerInfoSingleTon::getInstance()->machine_level < 10)
 	{
+		item_price = PlayerInfoSingleTon::getInstance()->machine_price;
 		// 소지금에서 구입한 물품에 가격 빼기
-		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->machine_price;
+		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - item_price;
 		// 무기 업그레이드 비용 증가
-		PlayerInfoSingleTon::getInstance()->machine_price = PlayerInfoSingleTon::getInstance()->machine_price + 500;
+		PlayerInfoSingleTon::getInstance()->machine_price = item_price + 500;
 		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->machine_price);
 		PlayerInfoSingleTon::getInstance()->machine_level++;
 
@@ -191,8 +197,9 @@ void ShopScene::upgrade(Ref * pSender)
 	}
 	else if (selectedWeapon == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->ak_price && PlayerInfoSingleTon::getInstance()->ak_level < 10)
 	{
-		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->ak_price;
-		PlayerInfoSingleTon::getInstance()->ak_price = PlayerInfoSingleTon::getInstance()->ak_price + 500;
+		item_price = PlayerInfoSingleTon::getInstance()->ak_price;
+		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - item_price;
+		PlayerInfoSingleTon::getInstance()->ak_price = item_price + 500;
 		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->ak_price);
 		PlayerInfoSingleTon::getInstance()->ak_level++;
 
@@ -200,8 +207,9 @@ void ShopScene::upgrade(Ref * pSender)
 	}
 	else if (selectedWeapon == 2 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->sniper_price && PlayerInfoSingleTon::getInstance()->sniper_level < 10)
 	{
-		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->sniper_price;
-		PlayerInfoSingleTon::getInstance()->sniper_price = PlayerInfoSingleTon::getInstance()->sniper_price + 500;
+		item_price = PlayerInfoSingleTon::getInstance()->sniper_price;
+		PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - item_price;
+		PlayerInfoSingleTon::getInstance()->sniper_price = item_price + 500;
 		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->sniper_price);
 		PlayerInfoSingleTon::getInstance()->sniper_level++;
 
@@ -213,6 +221,8 @@ void ShopScene::upgrade(Ref * pSender)
 		auto _weapon_table = weapon_table->getTableView();
 		auto selectedCell = _weapon_table->cellAtIndex(selectedWeapon);
 
+		buyAni(item_price);
+
 		if (selectedCell) {
 			auto label = (LabelBMFont*)selectedCell->getChildByTag(101);
 			label->setString(price->getCString());
@@ -221,31 +231,58 @@ void ShopScene::upgrade(Ref * pSender)
 	else
 		log("돈 부족해서 못삼");
 }
+
+void ShopScene::buyAni(int price)
+{
+	auto buy_gold = String::createWithFormat(" - %d", price);
+
+	auto buy_gold_label = LabelBMFont::create(buy_gold->getCString(), "fonts/futura-48.fnt");
+	buy_gold_label->setAnchorPoint(Vec2(0, 0.5));
+	buy_gold_label->setPosition(Vec2(220, 650));
+	buy_gold_label->setScale(0.7f);
+	this->addChild(buy_gold_label, 1000);
+
+	auto move = MoveBy::create(1.5, Vec2(0, 30));
+	auto fade_seq = Sequence::create(DelayTime::create(0.7),
+		FadeOut::create(0.8), nullptr);
+	auto spawn = Spawn::create(move, fade_seq, nullptr);
+	auto gold_seq = Sequence::create(spawn,
+		CallFunc::create(CC_CALLBACK_0(ShopScene::remove_label, this, buy_gold_label)), nullptr);
+	buy_gold_label->runAction(gold_seq);
+
+}
+void ShopScene::remove_label(Node* sender)
+{
+	auto label = (LabelBMFont*)sender;
+	this->removeChild(label);
+}
 void ShopScene::buy(Ref * pSender)
 {
 	int money_In_Hand = PlayerInfoSingleTon::getInstance()->money_In_Hand; // 플레이어 소지금
 	bool isBuy = false;
+	int item_price = 0;
 	//트랩에서 선택된거 있으면
 	if (PlayerInfoSingleTon::getInstance()->trapSeleted > -1)
 	{
 		int selectedTrap = PlayerInfoSingleTon::getInstance()->trapSeleted;
 		if (selectedTrap == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->trap1_price)
 		{
-			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->trap1_price;
+			item_price = PlayerInfoSingleTon::getInstance()->trap1_price;
+			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - item_price;
 			PlayerInfoSingleTon::getInstance()->have_trap1++;
 			isBuy = true;
 		}
 		else if (selectedTrap == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->trap2_price)
 		{
-			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->trap2_price;
+			item_price = PlayerInfoSingleTon::getInstance()->trap2_price;
+			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - item_price;
 			PlayerInfoSingleTon::getInstance()->have_trap2++;
 			isBuy = true;
 		}
 
-		if (isBuy) {
-			/*auto trap = new Trap(Vec2(winSize.width / 2, winSize.height / 2), selectedTrap);
-			gameLayer->addChild(trap);
-			traps->push_back(trap);*/
+		if (isBuy) 
+		{
+			buyAni(item_price);
 		}
 		else
 		{
@@ -257,15 +294,18 @@ void ShopScene::buy(Ref * pSender)
 	{
 		
 		int selectedHelper = PlayerInfoSingleTon::getInstance()->helperSeleted;
+		int item_price = 0;
 
 		if (selectedHelper == 0 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->helper1_price && PlayerInfoSingleTon::getInstance()->have_helper < 2)
 		{
-			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->helper1_price;
+			item_price = PlayerInfoSingleTon::getInstance()->helper1_price;
+			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - item_price;
 			isBuy = true;
 		}
 		else if (selectedHelper == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->helper2_price && PlayerInfoSingleTon::getInstance()->have_helper < 2)
 		{
-			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - PlayerInfoSingleTon::getInstance()->helper2_price;
+			item_price = PlayerInfoSingleTon::getInstance()->helper2_price;
+			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - item_price;
 			isBuy = true;
 		}
 
@@ -285,6 +325,7 @@ void ShopScene::buy(Ref * pSender)
 
 				PlayerInfoSingleTon::getInstance()->have_helper++;
 			}
+			buyAni(item_price);
 		}
 		else
 		{

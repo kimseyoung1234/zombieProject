@@ -91,8 +91,10 @@ public:
 	void shopOpen(Ref * pSender);
 	void addMenu();
 	void remove_anim(Node* sender);
+	void remove_label(Node* sender);
 	void cooldown_finish(Node* sender,int type);
-
+	void resultClose(Ref* pSender);
+	void result();
 	//실험
 	Sprite* skill;
 	Sprite* skill2;
@@ -105,7 +107,13 @@ public:
 	bool isSkill2 = false;
 	bool skill_cool = false;
 	bool skill2_cool = false;
+	bool isResultLayer = false;
 	DrawNode * draw_node;
+
+	Menu * pMenu;
+	Menu * shopMenu;
+
+	int take_gold= 0;
 protected:
 	void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 	cocos2d::CustomCommand _customCommand;
