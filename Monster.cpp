@@ -265,7 +265,6 @@ void Monster::moving(float dt)
 			sprite->runAction(rep);
 			present_ani = ATTACK;
 		}
-		// 바리게이트와 충돌 시 2초마다 공격
 	}
 	else if(!isAttack && !isHit){
 		if (present_ani != MOVE) {

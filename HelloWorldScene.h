@@ -95,6 +95,7 @@ public:
 	void cooldown_finish(Node* sender,int type);
 	void resultClose(Ref* pSender);
 	void result();
+	void close();
 	//실험
 	Sprite* skill;
 	Sprite* skill2;
@@ -103,6 +104,7 @@ public:
 	Sprite* level_ui;
 	Sprite* weapon;
 	Sprite* weapon_ui;
+	Sprite* result_background;
 	bool isSkill = false;
 	bool isSkill2 = false;
 	bool skill_cool = false;

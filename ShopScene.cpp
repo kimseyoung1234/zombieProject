@@ -139,7 +139,7 @@ bool ShopScene::init()
 	money_label->setAnchorPoint(Vec2(0.5, 0.5));
 	this->addChild(money_label, 1);
 
-	//////////
+	////////// 무기 업그레이드 수치
 	auto _weapon_table = weapon_table->getTableView();
 	auto cell_1 = _weapon_table->cellAtIndex(0);
 	auto cell_2 = _weapon_table->cellAtIndex(1);
@@ -160,8 +160,48 @@ bool ShopScene::init()
 	gage3->setTag(500);
 	cell_3->addChild(gage3);
 
-	this->schedule(schedule_selector(ShopScene::tick));
+	// 아이템 보유수
 
+	item = Sprite::create("ui/ui_item.png");
+	item->setPosition(Vec2(75, 60));
+	this->addChild(item, 1000);
+
+	Size parentSize;
+	parentSize = item->getContentSize();
+
+	auto trap1 = Sprite::create("item/trap01.png");
+	trap1->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+	trap1->setScale(2.0f);
+	trap1->setOpacity(180.0f);
+	item->addChild(trap1);
+
+	item_Label = LabelBMFont::create("0", "fonts/futura-48.fnt");
+
+	item_Label->setPosition(parentSize.width / 2.0, 15);
+	item_Label->setColor(Color3B::RED);
+	item_Label->setScale(0.8f);
+	item->addChild(item_Label);
+
+
+	
+	item2 = Sprite::create("ui/ui_item.png");
+	item2->setPosition(Vec2(225, 60));
+	//item2->setOpacity(180.0f);
+	this->addChild(item2, 1000);
+
+	auto trap2 = Sprite::create("item/trap02.png");
+	trap2->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+	trap2->setScale(2.0f);
+	trap2->setOpacity(180.0f);
+	item2->addChild(trap2);
+
+	item2_Label = LabelBMFont::create("0", "fonts/futura-48.fnt");
+	item2_Label->setPosition(parentSize.width / 2.0, 15);
+	item2_Label->setColor(Color3B::RED);
+	item2_Label->setScale(0.8f);
+	item2->addChild(item2_Label);
+
+	this->schedule(schedule_selector(ShopScene::tick));
 	return true;
 }
 
@@ -256,6 +296,11 @@ void ShopScene::remove_label(Node* sender)
 	auto label = (LabelBMFont*)sender;
 	this->removeChild(label);
 }
+void ShopScene::remove_sprite(Node* sender)
+{
+	auto sprite = (Sprite*)sender;
+	this->removeChild(sprite);
+}
 void ShopScene::buy(Ref * pSender)
 {
 	int money_In_Hand = PlayerInfoSingleTon::getInstance()->money_In_Hand; // 플레이어 소지금
@@ -271,6 +316,23 @@ void ShopScene::buy(Ref * pSender)
 			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - item_price;
 			PlayerInfoSingleTon::getInstance()->have_trap1++;
 			isBuy = true;
+
+			// bezier 실험
+			auto trap01 = Sprite::create("item/trap01.png");
+			trap01->setPosition(Vec2(400, 400));
+			trap01->setScale(1.5f);
+			this->addChild(trap01, 2000);
+
+			ccBezierConfig bezier;
+			bezier.controlPoint_1 = Vec2(100, winSize.height - 200);
+			bezier.controlPoint_2 = Vec2(75, winSize.height / 2 / 2);
+			bezier.endPosition = Vec2(item->getPosition());
+
+			auto bezierForward = BezierTo::create(0.7, bezier);
+
+			auto seq = Sequence::create(bezierForward,
+				CallFunc::create(CC_CALLBACK_0(ShopScene::remove_sprite, this, trap01)), nullptr);
+			trap01->runAction(seq);
 		}
 		else if (selectedTrap == 1 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->trap2_price)
 		{
@@ -278,6 +340,23 @@ void ShopScene::buy(Ref * pSender)
 			PlayerInfoSingleTon::getInstance()->money_In_Hand = money_In_Hand - item_price;
 			PlayerInfoSingleTon::getInstance()->have_trap2++;
 			isBuy = true;
+
+			// bezier 실험
+			auto trap02 = Sprite::create("item/trap02.png");
+			trap02->setPosition(Vec2(600, 400));
+			trap02->setScale(1.5f);
+			this->addChild(trap02, 2000);
+
+			ccBezierConfig bezier;
+			bezier.controlPoint_1 = Vec2(325, winSize.height - 200);
+			bezier.controlPoint_2 = Vec2(225, winSize.height / 2 / 2);
+			bezier.endPosition = Vec2(item2->getPosition());
+
+			auto bezierForward = BezierTo::create(0.7, bezier);
+
+			auto seq = Sequence::create(bezierForward,
+				CallFunc::create(CC_CALLBACK_0(ShopScene::remove_sprite, this, trap02)), nullptr);
+			trap02->runAction(seq);
 		}
 
 		if (isBuy) 
@@ -342,10 +421,12 @@ void ShopScene::buy(Ref * pSender)
 
 void ShopScene::tick(float dt)
 {
+	// 아이템 수 갱신
+	item_Label->setString((String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->have_trap1)->getCString()));
+	item2_Label->setString((String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->have_trap2)->getCString()));
+
 	int trap_tableCellCount = trap_table->cellCount;
 	int helper_tableCellCount = helper_table->cellCount;
-
-
 
 	// 실험
 	auto _weapon_table = weapon_table->getTableView();

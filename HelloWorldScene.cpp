@@ -369,14 +369,21 @@ void HelloWorld::tick(float dt)
 }
 void HelloWorld::result()
 {
-	log("클리어!");
+	result_Layer->setVisible(true);
 
 	// 게임 결과 배경
-	auto result_background = Sprite::create("ui/ui_result.png");
+	result_background = Sprite::create("ui/ui_result.png");
 	result_background->setPosition(winSize.width / 2, winSize.height / 2);
 	result_Layer->addChild(result_background);
+	result_background->setScale(0.0f);
 
-	result_Layer->setVisible(true);
+	//결과창 애니메이션
+	auto scale = ScaleTo::create(0.6f, 1.0f);
+	auto rotate = RotateBy::create(0.3, 360);
+	auto r_rep = Repeat::create(rotate, 2);
+	auto spa = Spawn::create(scale, r_rep,nullptr);
+	result_background->runAction(spa);
+
 
 	auto complete = Sprite::create("ui/complete.png");
 	complete->setPosition(Vec2(result_background->getContentSize().width / 2, result_background->getContentSize().height- 100));
@@ -1154,19 +1161,31 @@ void HelloWorld::addMenu()
 
 void HelloWorld::resultClose(Ref* pSender)
 {
+
+	//결과창 애니메이션
+	auto scale = ScaleTo::create(0.6f, 0.0f);
+	auto rotate = RotateBy::create(0.3, 360);
+	auto r_rep = Repeat::create(rotate, 2);
+	auto spa = Spawn::create(scale, r_rep, nullptr);	
+	auto seq = Sequence::create(spa,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::close, this)), nullptr);
+	result_background->runAction(seq);
+
+}
+void HelloWorld::close()
+{
 	take_gold = 0;
 	result_Layer->removeAllChildrenWithCleanup(true);
 	result_Layer->setVisible(false);
 	isResultLayer = false;
 	pMenu->setEnabled(true);
 	shopMenu->setEnabled(true);
-
 }
 void HelloWorld::shopOpen(Ref * pSender)
 {
 	if (isWave == false) {
 		auto pScene = ShopScene::createScene();
-		Director::getInstance()->pushScene(pScene);
+		Director::getInstance()->pushScene(TransitionFadeTR::create(1, pScene));
 	}
 }
 
