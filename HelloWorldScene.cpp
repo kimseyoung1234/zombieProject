@@ -53,11 +53,14 @@ bool HelloWorld::init()
 	this->addChild(gameLayer, 4);
 	this->addChild(menuLayer, 5);
 	//배경
-	auto background = Sprite::create("background.png");
+	auto background = Sprite::create("ui/background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	background->setAnchorPoint(Vec2(0.5, 0.5));
 	this->addChild(background);
 
+	auto background_down = Sprite::create("ui/background_down.png");
+	background_down->setPosition(Vec2(winSize.width / 2, 53));
+	menuLayer->addChild(background_down,-100);
 	// 사용자 UI 추가
 	addMenu();
 
@@ -75,7 +78,7 @@ bool HelloWorld::init()
 	player->setScale(1.5f);
 	player->setAnchorPoint(Vec2(0, 0));
 	player->setPosition(Vec2(player->getContentSize().width / 2 + 30,
-		winSize.height / 2 + 43));
+		winSize.height / 2- 70));
 	gameLayer->addChild(player);
 
 	auto player_idle = ResouceLoad::getInstance()->player_idleAnimate->clone();
@@ -94,7 +97,7 @@ void HelloWorld::waveStart(Ref* pSender)
 		int maxMonster = MonsterInfoSingleTon::getInstance()->maxMonster;
 		for (int i = 0; i < maxMonster; i++) {
 			int x_rand = random(1350, 1700);
-			int y_rand = random(50, 600);
+			int y_rand = random(90, 520);
 			int r_monsterType = random(1, 3);
 			Monster * mon = new Monster(Vec2(x_rand, y_rand),r_monsterType);
 			gameLayer->addChild(mon);
@@ -154,7 +157,7 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	//그리고 바디(groundBody)에 모양(groundEdge)을 고정시킨다.
 
 	//아래
-	groundEdge.Set(b2Vec2(0, 1), b2Vec2((winSize.width + 500) / PTM_RATIO, 1));
+	groundEdge.Set(b2Vec2(0, 2.7), b2Vec2((winSize.width + 500) / PTM_RATIO, 2.7));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//왼쪽
@@ -162,7 +165,7 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//위쪽
-	groundEdge.Set(b2Vec2(0, (winSize.height-100) / PTM_RATIO), b2Vec2((winSize.width + 500) / PTM_RATIO, (winSize.height-100) / PTM_RATIO));
+	groundEdge.Set(b2Vec2(0, (winSize.height-195) / PTM_RATIO), b2Vec2((winSize.width + 500) / PTM_RATIO, (winSize.height-195) / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//오른쪽
@@ -788,6 +791,11 @@ void HelloWorld::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 	if (isSelectedTrap) {
 		
 		auto target = static_cast<Sprite*>(selectedTrap);
+		if (touchPoint.y > 500)
+		{
+			log("리턴");
+			return;
+		}
 		target->setPosition(target->getPosition() + touch->getDelta());
 	}
 	else if (isSkill)
@@ -1070,16 +1078,16 @@ void HelloWorld::addMenu()
 	//스킬1
 	skill = Sprite::create("ui/ui_item.png");
 	skill->setPosition(Vec2(winSize.width - 225, 60));
-	skill->setOpacity(180.0f);
+	//skill->setOpacity(180.0f);
 
-	gameLayer->addChild(skill,1000);
+	menuLayer->addChild(skill,1000);
 
 	auto bomb = Sprite::create("item/bomb.png");
 	Size parentSize;
 	parentSize = skill->getContentSize();
 	bomb->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	bomb->setScale(3.0f);
-	bomb->setOpacity(180.0f);
+	//bomb->setOpacity(180.0f);
 	skill->addChild(bomb);
 
 	auto range = Sprite::create("ui/ui_range.png");
@@ -1094,15 +1102,13 @@ void HelloWorld::addMenu()
 	
 	skill2 = Sprite::create("ui/ui_item.png");
 	skill2->setPosition(Vec2(winSize.width - 75, 60));
-	skill2->setOpacity(180.0f);
-	gameLayer->addChild(skill2,1000);
+	menuLayer->addChild(skill2,1000);
 
 	auto bomb2 = Sprite::create("item/pipe_bomb.png");
 	Size parentSize2;
 	parentSize2 = skill2->getContentSize();
 	bomb2->setPosition(Vec2(parentSize2.width / 2.0, parentSize2.height / 2.0));
 	bomb2->setScale(3.0f);
-	bomb2->setOpacity(180.0f);
 	skill2->addChild(bomb2);
 
 	auto range2 = Sprite::create("ui/ui_range.png");
@@ -1115,13 +1121,11 @@ void HelloWorld::addMenu()
 	//아이템 창
 	item = Sprite::create("ui/ui_item.png");
 	item->setPosition(Vec2(75, 60));
-	//item->setOpacity(180.0f);
-	gameLayer->addChild(item,1000);
+	menuLayer->addChild(item,1000);
 
 	auto trap1 = Sprite::create("item/trap01.png");
 	trap1->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	trap1->setScale(2.0f);
-	trap1->setOpacity(180.0f);
 	item->addChild(trap1);
 
 	item_Label = LabelBMFont::create("0", "fonts/futura-48.fnt");
@@ -1133,13 +1137,11 @@ void HelloWorld::addMenu()
 	
 	item2 = Sprite::create("ui/ui_item.png");
 	item2->setPosition(Vec2(225, 60));
-	//item2->setOpacity(180.0f);
-	gameLayer->addChild(item2,1000);
+	menuLayer->addChild(item2,1000);
 
 	auto trap2 = Sprite::create("item/trap02.png");
 	trap2->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	trap2->setScale(2.0f);
-	trap2->setOpacity(180.0f);
 	item2->addChild(trap2);
 	
 	item2_Label = LabelBMFont::create("0", "fonts/futura-48.fnt");
