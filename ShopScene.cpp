@@ -415,7 +415,7 @@ void ShopScene::buy(Ref * pSender)
 
 		if (isBuy) {
 			if (PlayerInfoSingleTon::getInstance()->have_helper == 0) {
-				auto helper = new Helper(Vec2(50, 200), selectedHelper);
+				auto helper = new Helper(Vec2(30, 160), selectedHelper);
 				gameLayer->addChild(helper);
 				helpers->push_back(helper);
 
@@ -423,7 +423,7 @@ void ShopScene::buy(Ref * pSender)
 			}
 			else if (PlayerInfoSingleTon::getInstance()->have_helper == 1)
 			{
-				auto helper = new Helper(Vec2(50, 300), selectedHelper);
+				auto helper = new Helper(Vec2(30, 400), selectedHelper);
 				gameLayer->addChild(helper);
 				helpers->push_back(helper);
 

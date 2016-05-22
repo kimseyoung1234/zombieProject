@@ -154,6 +154,7 @@ TableViewCell* TableViewLayer::tableCellAtIndex(TableView *table, ssize_t idx)
 		// 체크박스
 		auto check = Sprite::create("check.png");
 		check->setAnchorPoint(Vec2::ZERO);
+		check->setScale(1.5f);
 		check->setTag(123);
 
 		check->setVisible(false);

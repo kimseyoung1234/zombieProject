@@ -60,7 +60,21 @@ bool HelloWorld::init()
 
 	auto background_down = Sprite::create("ui/background_down.png");
 	background_down->setPosition(Vec2(winSize.width / 2, 53));
-	menuLayer->addChild(background_down,-100);
+	gameLayer->addChild(background_down,2000);
+
+
+	auto bari = Sprite::create("ui/barricade.png");
+	bari->setPosition(Vec2(200, winSize.height / 2+ 100));
+	gameLayer->addChild(bari,1000);
+
+	auto bari2 = Sprite::create("ui/barricade.png");
+	bari2->setPosition(Vec2(280, winSize.height / 2 - 45));
+	gameLayer->addChild(bari2, 1000);
+
+	auto bari3 = Sprite::create("ui/barricade.png");
+	bari3->setPosition(Vec2(370, winSize.height / 2 - 200));
+	gameLayer->addChild(bari3, 1000);
+
 	// 사용자 UI 추가
 	addMenu();
 
@@ -77,7 +91,7 @@ bool HelloWorld::init()
 	player = Sprite::create("player_idle.png", Rect(0, 0, 136, 72));
 	player->setScale(1.5f);
 	player->setAnchorPoint(Vec2(0, 0));
-	player->setPosition(Vec2(player->getContentSize().width / 2 + 30,
+	player->setPosition(Vec2(player->getContentSize().width / 2 - 20,
 		winSize.height / 2- 70));
 	gameLayer->addChild(player);
 
@@ -85,8 +99,6 @@ bool HelloWorld::init()
 	auto rep = RepeatForever::create(player_idle);
 	player->runAction(rep);
 
-
-	result();
 	return true;
 }
 
@@ -189,15 +201,16 @@ bool HelloWorld::createBox2dWorld(bool debug)
 
 	auto _barricade = _world->CreateBody(&barricadeBodyDef);
 
-	b2FixtureDef BoxShapeDef;
-	b2PolygonShape barricadeBox;
-	BoxShapeDef.shape = &barricadeBox;
-	BoxShapeDef.filter.categoryBits = 0x0004;
-	BoxShapeDef.filter.maskBits = 0x0002 ;
+	b2EdgeShape barricade_Edge;
+	b2FixtureDef bari_ShapeDef;
 
-	barricadeBox.SetAsBox(100 / PTM_RATIO, winSize.height / PTM_RATIO);
+	bari_ShapeDef.shape = &barricade_Edge;
+	bari_ShapeDef.filter.categoryBits = 0x0004;
+	bari_ShapeDef.filter.maskBits = 0x0002 ;
 
-	_barricade->CreateFixture(&BoxShapeDef);
+	barricade_Edge.Set(b2Vec2(-3.0,5), b2Vec2(5.5,-10));
+
+	_barricade->CreateFixture(&bari_ShapeDef);
 
 	barricade->push_back(_barricade);
 
