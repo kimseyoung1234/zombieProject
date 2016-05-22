@@ -56,7 +56,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 									auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
 									exp->setPosition(bullets->at(k)->sprite->getPosition());
 									exp->setScale(1.7f);
-									gameLayer->addChild(exp, 200);
+									gameLayer->addChild(exp, 1200);
 
 									auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
 									auto rep = Sequence::create(explosion1,

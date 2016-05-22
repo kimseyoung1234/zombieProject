@@ -105,6 +105,7 @@ public:
 	Sprite* weapon;
 	Sprite* weapon_ui;
 	Sprite* result_background;
+	Sprite* m_pro;
 	bool isSkill = false;
 	bool isSkill2 = false;
 	bool skill_cool = false;

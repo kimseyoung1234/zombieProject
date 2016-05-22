@@ -262,9 +262,11 @@ void HelloWorld::tick(float dt)
 		}
 		// 웨이브 진행상황 갱신
 		waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
-
+		log("콘텐츠사이즈 %f", waveProgress->getContentSize().width *  waveProgress->getScaleX());
+		m_pro->setPositionX(winSize.width / 2 - 100 + (waveProgress->getContentSize().width * waveProgress->getScaleX()));
 		// 플레이어 HP바 갱신
 		playerHp->setScaleX(PlayerInfoSingleTon::getInstance()->hp / 100.0f);
+
 
 		int velocityIterations = 8;
 		int positionIterations = 3;
@@ -604,7 +606,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 						auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
 						exp->setPosition(trap->sprite->getPosition());
 						exp->setScale(2.8f);
-						gameLayer->addChild(exp, 200);
+						gameLayer->addChild(exp, 1200);
 
 						auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
 						auto rep = Sequence::create(explosion1,
@@ -621,7 +623,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 						auto exp = Sprite::createWithSpriteFrameName("explosion_11002.png");
 						exp->setPosition(trap->sprite->getPosition());
 						exp->setScale(2.8f);
-						gameLayer->addChild(exp, 200);
+						gameLayer->addChild(exp, 1200);
 
 						auto explosion2 = ResouceLoad::getInstance()->explosion2->clone();
 						auto rep = Sequence::create(explosion2,
@@ -872,7 +874,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
 		exp->setPosition(w_position);
 		exp->setScale(2.8f);
-		gameLayer->addChild(exp,200);
+		gameLayer->addChild(exp,1200);
 
 		auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
 		auto rep = Sequence::create(explosion1,
@@ -1032,12 +1034,22 @@ void HelloWorld::addMenu()
 
 	// 웨이브 진행 상황
 
-	waveProgress = Sprite::create("white-512x512.png");
-	waveProgress->setTextureRect(Rect(0, 0, 300, 10));
-	waveProgress->setColor(Color3B::BLUE);
+	auto _waveProgress = Sprite::create("ui/m_pro.png");
+	
+	_waveProgress->setAnchorPoint(Vec2(0, 0.5));
+	_waveProgress->setPosition(Vec2(winSize.width / 2 - 100, winSize.height - 50));
+	menuLayer->addChild(_waveProgress);
+
+	waveProgress = Sprite::create("ui/m_pro2.png");
+	//waveProgress->setTextureRect(Rect(0, 0, 300, 10));
+	//waveProgress->setColor(Color3B::BLUE);
 	waveProgress->setAnchorPoint(Vec2(0, 0.5));
-	waveProgress->setPosition(Vec2(winSize.width / 2 - 150, winSize.height - 50));
+	waveProgress->setPosition(Vec2(winSize.width / 2 - 100, winSize.height - 50));
 	menuLayer->addChild(waveProgress);
+
+	m_pro = Sprite::create("ui/m_pro3.png");
+	m_pro->setPosition(Vec2(((winSize.width / 2 - 100)), winSize.height - 40));
+	menuLayer->addChild(m_pro);
 
 	// 플레이어 HP
 
