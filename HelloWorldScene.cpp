@@ -262,7 +262,6 @@ void HelloWorld::tick(float dt)
 		}
 		// 웨이브 진행상황 갱신
 		waveProgress->setScaleX((float)(monsters->size() / (float)MonsterInfoSingleTon::getInstance()->maxMonster));
-		log("콘텐츠사이즈 %f", waveProgress->getContentSize().width *  waveProgress->getScaleX());
 		m_pro->setPositionX(winSize.width / 2 - 100 + (waveProgress->getContentSize().width * waveProgress->getScaleX()));
 		// 플레이어 HP바 갱신
 		playerHp->setScaleX(PlayerInfoSingleTon::getInstance()->hp / 100.0f);
@@ -909,6 +908,35 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		Vec2 w_position = skill2->convertToWorldSpace(target->getPosition());
 		myContactListener->trigger(w_position, PlayerInfoSingleTon::getInstance()->skill2_blastRadius, 2, 100);
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
+
+
+		//파이프폭탄 이펙트 시험
+
+		auto cache = SpriteFrameCache::getInstance();
+		cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
+
+		auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
+		exp->setPosition(w_position);
+		exp->setScale(1.5f);
+		gameLayer->addChild(exp, 1200);
+
+		auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
+		auto rep = Sequence::create(explosion1,
+			CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, exp)), nullptr);
+		exp->runAction(rep);
+		
+		ParticleSystem * smoke = ParticleSmoke::create();
+
+		auto texture = Director::getInstance()->getTextureCache()->addImage("explosion/fire.png");
+		smoke->setTexture(texture);
+		if (smoke != nullptr)
+		{
+			smoke->setScaleX(1.5);
+			smoke->setScaleY(3.0);
+			smoke->setDuration(3.0);
+			smoke->setPosition(w_position);
+			gameLayer->addChild(smoke,1000);
+		}
 
 		// 프로그래스 시험
 		auto ui_cooldown = Sprite::create("ui/ui_cooldown.png");

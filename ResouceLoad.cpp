@@ -385,18 +385,18 @@ void ResouceLoad::Loading()
 	helper2_attack->retain();
 
 	// ÆÄÀÌÇÁÆøÅº ¾Ö´Ï¸ÅÀÌ¼Ç
-	/*auto s_pipe_move = Sprite::create("item/pipe_bomb_ani.png");
+	auto s_pipe_move = Sprite::create("explosion/pip_bomb_ani.png");
 	auto t_pipe_move = s_pipe_move->getTexture();
 	auto a_pipe_move = Animation::create();
-	a_pipe_move->setDelayPerUnit(0.05f);
+	a_pipe_move->setDelayPerUnit(0.01f);
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 28; i++)
 	{
 		int column = i % 8;
 		int row = i / 8;
-		a_pipe_move->addSpriteFrameWithTexture(t_pipe_move, Rect(column * 56, row * 56, 56, 56));
+		a_pipe_move->addSpriteFrameWithTexture(t_pipe_move, Rect(column * 24, row * 24, 24, 24));
 	}
 
 	pipe_move = Animate::create(a_pipe_move);
-	pipe_move->retain();*/
+	pipe_move->retain();
 }
