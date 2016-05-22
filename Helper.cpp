@@ -2,6 +2,7 @@
 #include "DataSingleTon.h"
 #include "ResouceLoad.h"
 #include "PlayerInfoSingleTon.h"
+#include "MyQueryCallback.h"
 USING_NS_CC;
 
 Helper::Helper(Vec2 position, int type)
@@ -15,7 +16,7 @@ Helper::Helper(Vec2 position, int type)
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
 	monsters = DataSingleTon::getInstance()->getMonsters();
 	bullets = DataSingleTon::getInstance()->getBullets();
-
+	_world = DataSingleTon::getInstance()->get_world();
 	this->type = type;
 
 	if (type == 0) {
@@ -59,18 +60,40 @@ void Helper::autoAttack(float dt)
 	attackDelayTime = attackDelayTime + dt;
 	if (attackDelayTime >= attackRate)
 	{
-		if (monsters->size() > 0) {
-			int monsterSize = monsters->size() - 1;
-			int selected_monster = random(0, monsterSize);
 
+		MyQueryCallback queryCallback; //see "World querying topic"
+		b2AABB aabb;
+		// center : 폭탄 중심 위치
+		// 폭발 범위
+		// 폭발 바운딩박스 위치와 크기 
+		aabb.lowerBound = b2Vec2(0, 0);
+		aabb.upperBound = b2Vec2(1200 / PTM_RATIO, 720 / PTM_RATIO);
+		_world->QueryAABB(&queryCallback, aabb);
 
-			
+		Sprite * monster;
+		bool isAttack = false;
+
+		for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
+			b2Body* body = queryCallback.foundBodies[i];
+			auto q_sprite = (Sprite*)body->GetUserData();
+			if (q_sprite != nullptr)
+			{
+				if (q_sprite->getTag() == MONSTER)
+				{
+					monster = q_sprite;
+					isAttack = true;
+					log("대상찾음");
+					break;
+				}
+			}
+		}
+		if (isAttack) {
 			// 대포
-			if (type == 0) 
+			if (type == 0)
 			{
 				Vec2 nPos1 = Vec2(sprite->getContentSize().width, sprite->getContentSize().height / 2);
 				Vec2 nPos2 = sprite->convertToWorldSpace(nPos1);
-				Vec2 shootVector = monsters->at(selected_monster)->sprite->getPosition() - nPos2;
+				Vec2 shootVector = monster->getPosition() - nPos2;
 
 				float shootAngle = shootVector.getAngle();
 				float cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
@@ -93,13 +116,13 @@ void Helper::autoAttack(float dt)
 			{
 				Vec2 nPos1 = Vec2(sprite->getContentSize().width - 20, sprite->getContentSize().height / 2 + 5);
 				Vec2 nPos2 = sprite->convertToWorldSpace(nPos1);
-				Vec2 shootVector = monsters->at(selected_monster)->sprite->getPosition() - nPos2;
+				Vec2 shootVector = monster->getPosition() - nPos2;
 
 				shootVector.normalize();
 
 				float shootAngle = shootVector.getAngle();
 				float cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
-				
+
 				Bullet * bullet = new Bullet(nPos2, 2, cocosAngle);
 				bullets->push_back(bullet);
 				bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 70, shootVector.y * 70));
@@ -114,9 +137,8 @@ void Helper::autoAttack(float dt)
 			}
 			attackDelayTime = 0;
 
-
-
 		}
+	
 	}
 }
 

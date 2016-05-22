@@ -21,6 +21,7 @@ public:
 	void re_Idle();
 	
 	void autoAttack(float dt);
+	b2World* _world;
 	virtual void onEnter();
 	virtual void onExit();
 
