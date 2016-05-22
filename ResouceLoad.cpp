@@ -385,7 +385,7 @@ void ResouceLoad::Loading()
 	helper2_attack->retain();
 
 	// ÆÄÀÌÇÁÆøÅº ¾Ö´Ï¸ÅÀÌ¼Ç
-	auto s_pipe_move = Sprite::create("explosion/pip_bomb_ani.png");
+/*	auto s_pipe_move = Sprite::create("explosion/pip_bomb_ani.png");
 	auto t_pipe_move = s_pipe_move->getTexture();
 	auto a_pipe_move = Animation::create();
 	a_pipe_move->setDelayPerUnit(0.01f);
@@ -398,5 +398,5 @@ void ResouceLoad::Loading()
 	}
 
 	pipe_move = Animate::create(a_pipe_move);
-	pipe_move->retain();
+	pipe_move->retain();*/
 }
