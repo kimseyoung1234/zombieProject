@@ -23,7 +23,7 @@ void ResouceLoad::Loading()
 {
 	/////////////////////// 플레이어
 	// 플레이어 Idle
-	auto s_player_idle = Sprite::create("player_idle.png");
+	auto s_player_idle = Sprite::create("player/player_idle.png");
 	auto t_player_idle = s_player_idle->getTexture();
 	auto a_player_idle = Animation::create();
 	a_player_idle->setDelayPerUnit(0.1f);
@@ -38,7 +38,7 @@ void ResouceLoad::Loading()
 	player_idleAnimate->retain();
 
 	//플레이어 공격
-	auto s_player_attack = Sprite::create("player_attack.png");
+	auto s_player_attack = Sprite::create("player/player_attack.png");
 	auto t_player_attack = s_player_attack->getTexture();
 	auto a_player_attack = Animation::create();
 	a_player_attack->setDelayPerUnit(0.02f);
@@ -51,6 +51,21 @@ void ResouceLoad::Loading()
 	}
 	player_attackAnimate = Animate::create(a_player_attack);
 	player_attackAnimate->retain();
+
+	//플레이어 죽음
+	auto s_player_dead = Sprite::create("player/player_dead.png");
+	auto t_player_dead = s_player_dead->getTexture();
+	auto a_player_dead = Animation::create();
+	a_player_dead->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 12; i++)
+	{
+		int column = i % 6;
+		int row = i / 6;
+		a_player_dead->addSpriteFrameWithTexture(t_player_dead, Rect(column * 136, row * 72, 136, 72));
+	}
+	player_deadAnimate = Animate::create(a_player_dead);
+	player_deadAnimate->retain();
 
 	//////////////////////////// 몬스터 애니메이션
 
@@ -298,6 +313,22 @@ void ResouceLoad::Loading()
 	explosion2 = Animate::create(a_exp2);
 	explosion2->retain();
 
+
+	//바리게이트 폭파 애니메이션
+	auto s_bari = Sprite::create("explosion/barricade_bomb.png");
+	auto t_bari = s_bari->getTexture();
+	auto a_bari = Animation::create();
+	a_bari->setDelayPerUnit(0.03f);
+
+	for (int i = 0; i < 25; i++)
+	{
+		int column = i % 5;
+		int row = i / 5;
+		a_bari->addSpriteFrameWithTexture(t_bari, Rect(column * 66, row * 81, 66, 81));
+	}
+
+	barricade_bomb = Animate::create(a_bari);
+	barricade_bomb->retain();
 	// 슬로우 흔적
 	auto s_slow = Sprite::create("explosion/slow_effect.png");
 	auto t_slow = s_slow->getTexture();
@@ -384,19 +415,19 @@ void ResouceLoad::Loading()
 	helper2_attack = Animate::create(a_helper2_attack);
 	helper2_attack->retain();
 
-	// 파이프폭탄 애니매이션
-/*	auto s_pipe_move = Sprite::create("explosion/pip_bomb_ani.png");
-	auto t_pipe_move = s_pipe_move->getTexture();
-	auto a_pipe_move = Animation::create();
-	a_pipe_move->setDelayPerUnit(0.01f);
+	// 피 애니매이션
+	auto s_blood = Sprite::create("player/blood.png");
+	auto t_blood = s_blood->getTexture();
+	auto a_blood = Animation::create();
+	a_blood->setDelayPerUnit(0.07f);
 
-	for (int i = 0; i < 28; i++)
+	for (int i = 0; i < 8; i++)
 	{
-		int column = i % 8;
-		int row = i / 8;
-		a_pipe_move->addSpriteFrameWithTexture(t_pipe_move, Rect(column * 24, row * 24, 24, 24));
+		int column = i % 4;
+		int row = i / 4;
+		a_blood->addSpriteFrameWithTexture(t_blood, Rect(column * 128, row * 128, 128, 128));
 	}
 
-	pipe_move = Animate::create(a_pipe_move);
-	pipe_move->retain();*/
+	blood = Animate::create(a_blood);
+	blood->retain();
 }

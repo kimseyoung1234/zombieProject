@@ -16,6 +16,8 @@ public:
 	//플레이어
 	Animate * player_idleAnimate;
 	Animate * player_attackAnimate;
+	Animate * player_deadAnimate;
+	Animate * blood;
 
 	//몬스터
 	Animate * brain_attackAnimate;
@@ -39,8 +41,8 @@ public:
 	// 폭파
 	Animate * explosion1;
 	Animate * explosion2;
-	Animate * pipe_move;
 	Animate * slow_effect;
+	Animate * barricade_bomb;
 	//도우미
 	Animate * helper1_idle;
 	Animate * helper1_attack;

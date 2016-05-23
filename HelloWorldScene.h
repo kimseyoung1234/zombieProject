@@ -35,6 +35,7 @@ public:
 	std::vector<b2Body * >* barricade;
 	std::vector<Trap *>* traps;
 	b2Body * body;
+	b2Body * _barricade;
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::LayerColor* result_Layer;
@@ -96,6 +97,7 @@ public:
 	void resultClose(Ref* pSender);
 	void result();
 	void close();
+	void gameOverMenu();
 	//실험
 	Sprite* skill;
 	Sprite* skill2;
@@ -106,6 +108,9 @@ public:
 	Sprite* weapon_ui;
 	Sprite* result_background;
 	Sprite* m_pro;
+	Sprite* bari;
+	Sprite* bari2;
+	Sprite* bari3;
 	bool isSkill = false;
 	bool isSkill2 = false;
 	bool skill_cool = false;

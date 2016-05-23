@@ -63,21 +63,20 @@ bool HelloWorld::init()
 	gameLayer->addChild(background_down,2000);
 
 
-	auto bari = Sprite::create("ui/barricade.png");
+	 bari = Sprite::create("ui/barricade.png");
 	bari->setPosition(Vec2(200, winSize.height / 2+ 100));
 	gameLayer->addChild(bari,1000);
 
-	auto bari2 = Sprite::create("ui/barricade.png");
+	 bari2 = Sprite::create("ui/barricade.png");
 	bari2->setPosition(Vec2(280, winSize.height / 2 - 45));
 	gameLayer->addChild(bari2, 1000);
 
-	auto bari3 = Sprite::create("ui/barricade.png");
+	 bari3 = Sprite::create("ui/barricade.png");
 	bari3->setPosition(Vec2(370, winSize.height / 2 - 200));
 	gameLayer->addChild(bari3, 1000);
 
 	// 사용자 UI 추가
 	addMenu();
-
 
 	///////////////////////
 	//월드 생성
@@ -88,12 +87,12 @@ bool HelloWorld::init()
 	// 플레이어 생성
 	
 
-	player = Sprite::create("player_idle.png", Rect(0, 0, 136, 72));
+	player = Sprite::create("player/player_idle.png", Rect(0, 0, 136, 72));
 	player->setScale(1.5f);
 	player->setAnchorPoint(Vec2(0, 0));
 	player->setPosition(Vec2(player->getContentSize().width / 2 - 20,
 		winSize.height / 2- 70));
-	gameLayer->addChild(player);
+	gameLayer->addChild(player,1500);
 
 	auto player_idle = ResouceLoad::getInstance()->player_idleAnimate->clone();
 	auto rep = RepeatForever::create(player_idle);
@@ -111,7 +110,7 @@ void HelloWorld::waveStart(Ref* pSender)
 			int x_rand = random(1350, 1700);
 			int y_rand = random(90, 520);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(x_rand, y_rand),r_monsterType);
+			Monster * mon = new Monster(Vec2(500, y_rand),r_monsterType);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
@@ -199,7 +198,7 @@ bool HelloWorld::createBox2dWorld(bool debug)
 	barricadeBodyDef.type = b2_staticBody;
 	barricadeBodyDef.userData = b_sprite;
 
-	auto _barricade = _world->CreateBody(&barricadeBodyDef);
+	_barricade = _world->CreateBody(&barricadeBodyDef);
 
 	b2EdgeShape barricade_Edge;
 	b2FixtureDef bari_ShapeDef;
@@ -222,6 +221,24 @@ bool HelloWorld::createBox2dWorld(bool debug)
 
 void HelloWorld::tick(float dt)
 {
+	int velocityIterations = 8;
+	int positionIterations = 3;
+
+	_world->Step(dt, velocityIterations, positionIterations);
+
+	//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
+	//만들어진 객체만큼 루프를 돌리면서 바디에 붙인 스프라이트를 여기서 제어한다
+	for (b2Body *b = _world->GetBodyList(); b; b = b->GetNext())
+	{
+		if (b->GetUserData() != nullptr)
+		{
+			Sprite* spriteData = (Sprite *)b->GetUserData();
+			spriteData->setPosition(Vec2(b->GetPosition().x * PTM_RATIO,
+				b->GetPosition().y *PTM_RATIO));
+			spriteData->setRotation(spriteData->getRotation());
+		}
+	}
+
 	if (!isgameOver) {
 		
 		skill1DelayTime = skill1DelayTime + dt;
@@ -267,11 +284,6 @@ void HelloWorld::tick(float dt)
 		playerHp->setScaleX(PlayerInfoSingleTon::getInstance()->hp / 100.0f);
 
 
-		int velocityIterations = 8;
-		int positionIterations = 3;
-
-		_world->Step(dt, velocityIterations, positionIterations);
-
 		// Z_order 재설정하기 위해 몬스터 Y축 기준으로 벡터의 오름차순 정렬
 		sort(monsters->begin(), monsters->end(), comp);
 
@@ -287,18 +299,6 @@ void HelloWorld::tick(float dt)
 		// 오브젝트 제거
 		removeObject();
 
-		//모든 물리 객체들은 링크드 리스트에 저장되어 참조해 볼 수 있게 구현돼 있다.
-		//만들어진 객체만큼 루프를 돌리면서 바디에 붙인 스프라이트를 여기서 제어한다
-		for (b2Body *b = _world->GetBodyList(); b; b = b->GetNext())
-		{
-			if (b->GetUserData() != nullptr)
-			{
-				Sprite* spriteData = (Sprite *)b->GetUserData();
-				spriteData->setPosition(Vec2(b->GetPosition().x * PTM_RATIO,
-					b->GetPosition().y *PTM_RATIO));
-				spriteData->setRotation(spriteData->getRotation());
-			}
-		}
 
 		// 터치 누르고 있을 시 자동 공격
 		attackDelayTime = attackDelayTime + dt;
@@ -723,7 +723,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 
 		// 누르고 공격가능 하면 총알 생성
-		if (attackDelayTime >= attackRate) {
+		if (attackDelayTime >= attackRate && !isgameOver) {
 
 			isAttack = true;
 			// 플레이어 기준으로 터치지점 방향벡터 구하기
@@ -846,12 +846,6 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 	auto touchPoint = touch->getLocation();
 	isAttack = false;
 	// 플레이어 idle 애니메이션 재시작
-/*	player->stopAllActions();
-	
-	auto player_idle = ResouceLoad::getInstance()->player_idleAnimate->clone();
-	auto rep = RepeatForever::create(player_idle);
-	player->runAction(rep);
-	*/
 
 	// 스킬실험
 	if (isSkill) {
@@ -1028,8 +1022,174 @@ void HelloWorld::remove_anim(Node* sender)
 
 void HelloWorld::gameOver()
 {
-	//isgameOver = true;
+
+	pMenu->setEnabled(false);
+	shopMenu->setEnabled(false);
+
+
+	// 바리게이트 페이드
+	auto ba_seq = Sequence::create(FadeOut::create(1.5),
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, bari)), nullptr);
+	auto ba_seq2 = Sequence::create(FadeOut::create(1.5),
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, bari)), nullptr);
+	auto ba_seq3 = Sequence::create(FadeOut::create(1.5),
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, bari)), nullptr);
+
+	bari->runAction(ba_seq);
+	bari2->runAction(ba_seq2);
+	bari3->runAction(ba_seq3);
+	
+
+	// 바리게이트 폭탄
+	auto b_bomb = Sprite::create("explosion/barricade_bomb.png");
+	b_bomb->setTextureRect(Rect(262, 324, 66, 81));
+	b_bomb->setPosition(Vec2(200, winSize.height / 2 + 100));
+	b_bomb->setScale(3.0f);
+	gameLayer->addChild(b_bomb,2000);
+	auto barri_bomb_anim = ResouceLoad::getInstance()->barricade_bomb->clone();
+	auto rep = Sequence::create(Repeat::create(barri_bomb_anim,2),
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, b_bomb)), nullptr);
+	b_bomb->runAction(rep);
+
+	auto b_bomb2 = Sprite::create("explosion/barricade_bomb.png");
+	b_bomb2->setTextureRect(Rect(262, 324, 66, 81));
+	b_bomb2->setPosition(Vec2(280, winSize.height / 2 - 45));
+	b_bomb2->setScale(3.0f);
+	gameLayer->addChild(b_bomb2, 2000);
+	auto barri_bomb_anim2 = ResouceLoad::getInstance()->barricade_bomb->clone();
+	auto rep2 = Sequence::create(DelayTime::create(0.1f)
+		,barri_bomb_anim2,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, b_bomb2)), nullptr);
+	b_bomb2->runAction(rep2);
+
+	auto b_bomb3 = Sprite::create("explosion/barricade_bomb.png");
+	b_bomb3->setTextureRect(Rect(262, 324, 66, 81));
+	b_bomb3->setPosition(Vec2(370, winSize.height / 2 - 100));
+	b_bomb3->setScale(3.0f);
+	gameLayer->addChild(b_bomb3, 2000);
+	auto barri_bomb_anim3 = ResouceLoad::getInstance()->barricade_bomb->clone();
+	auto rep3 = Sequence::create(DelayTime::create(0.3f)
+		,barri_bomb_anim3,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, b_bomb3)), nullptr);
+	b_bomb3->runAction(rep3);
+	
+	auto b_bomb4 = Sprite::create("explosion/barricade_bomb.png");
+	b_bomb4->setTextureRect(Rect(262, 324, 66, 81));
+	b_bomb4->setPosition(Vec2(390, winSize.height / 2 - 150));
+	b_bomb4->setScale(3.0f);
+	gameLayer->addChild(b_bomb4, 2000);
+	auto barri_bomb_anim4 = ResouceLoad::getInstance()->barricade_bomb->clone();
+	auto rep4 = Sequence::create(DelayTime::create(0.1f)
+		, Repeat::create(barri_bomb_anim4,2)
+		,CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, b_bomb4)), nullptr);
+	b_bomb4->runAction(rep4);
+	
+	auto b_bomb5 = Sprite::create("explosion/barricade_bomb.png");
+	b_bomb5->setTextureRect(Rect(262, 324, 66, 81));
+	b_bomb5->setPosition(Vec2(290, winSize.height / 2 - 60));
+	b_bomb5->setScale(3.0f);
+	gameLayer->addChild(b_bomb5, 2000);
+	auto barri_bomb_anim5 = ResouceLoad::getInstance()->barricade_bomb->clone();
+	auto rep5 = Sequence::create(DelayTime::create(0.15f)
+		, Repeat::create(barri_bomb_anim5, 2)
+		, CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, b_bomb5)), nullptr);
+	b_bomb5->runAction(rep5);
+	
+	auto b_bomb6 = Sprite::create("explosion/barricade_bomb.png");
+	b_bomb6->setTextureRect(Rect(262, 324, 66, 81));
+	b_bomb6->setPosition(Vec2(195, winSize.height / 2 + 190));
+	b_bomb6->setScale(3.0f);
+	gameLayer->addChild(b_bomb6, 2000);
+	auto barri_bomb_anim6 = ResouceLoad::getInstance()->barricade_bomb->clone();
+	auto rep6 = Sequence::create(DelayTime::create(0.01f)
+		, Repeat::create(barri_bomb_anim6, 1)
+		, barri_bomb_anim6,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, b_bomb6)), nullptr);
+	b_bomb6->runAction(rep6);
+	
+	auto b_bomb7 = Sprite::create("explosion/barricade_bomb.png");
+	b_bomb7->setTextureRect(Rect(262, 324, 66, 81));
+	b_bomb7->setPosition(Vec2(300, winSize.height / 2 ));
+	b_bomb7->setScale(3.0f);
+	gameLayer->addChild(b_bomb7, 2000);
+	auto barri_bomb_anim7 = ResouceLoad::getInstance()->barricade_bomb->clone();
+	auto rep7 = Sequence::create(DelayTime::create(0.08f)
+		, Repeat::create(barri_bomb_anim7, 1)
+		, barri_bomb_anim7,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, b_bomb7)), nullptr);
+	b_bomb7->runAction(rep7);
+
+	auto b_bomb8 = Sprite::create("explosion/barricade_bomb.png");
+	b_bomb8->setTextureRect(Rect(262, 324, 66, 81));
+	b_bomb8->setPosition(Vec2(240, winSize.height / 2 + 50));
+	b_bomb8->setScale(3.0f);
+	gameLayer->addChild(b_bomb8, 2000);
+	auto barri_bomb_anim8 = ResouceLoad::getInstance()->barricade_bomb->clone();
+	auto rep8 = Sequence::create(DelayTime::create(0.02f)
+		, Repeat::create(barri_bomb_anim8, 1)
+		, barri_bomb_anim8,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, b_bomb8)), nullptr);
+	b_bomb8->runAction(rep8);
+	
+	//////////////////
+	
+	auto blood = Sprite::create("player/blood.png");
+	blood->setTextureRect(Rect(0, 0,0,0));
+	blood->setPosition(Vec2(player->getPosition().x + 40,player->getPosition().y + 70));
+	gameLayer->addChild(blood, 1600);
+	auto blood_anim = ResouceLoad::getInstance()->blood->clone();
+
+	auto b_seq = Sequence::create(DelayTime::create(2.6)
+		, blood_anim,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, blood)), nullptr);
+	blood->runAction(b_seq);
+
+	auto blood2 = Sprite::create("player/blood.png");
+	blood2->setTextureRect(Rect(0, 0, 0, 0));
+	blood2->setRotation(200.0f);
+	blood2->setPosition(Vec2(player->getPosition().x + 60, player->getPosition().y + 20));
+	gameLayer->addChild(blood2, 1600);
+	auto blood_anim2 = ResouceLoad::getInstance()->blood->clone();
+	auto b_seq2 = Sequence::create(DelayTime::create(2.7)
+		,blood_anim2,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, blood2)), nullptr);
+	blood2->runAction(b_seq2);
+
+	auto blood3 = Sprite::create("player/blood.png");
+	blood3->setTextureRect(Rect(0, 0, 0, 0));
+	blood3->setRotation(250.0f);
+	blood3->setPosition(Vec2(player->getPosition().x + 20, player->getPosition().y + 20));
+	gameLayer->addChild(blood3,1600);
+	auto blood_anim3 = ResouceLoad::getInstance()->blood->clone();
+	auto b_seq3 = Sequence::create(DelayTime::create(2.85)
+		, blood_anim3,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::remove_anim, this, blood3)),
+		nullptr);
+	blood3->runAction(b_seq3);
+
+	player->stopAllActions();
+	auto dead_player = Sprite::create("player/player_idle.png", Rect(0, 0, 136, 72));
+	auto texture = dead_player->getTexture();
+	player->setTexture(texture);
+	auto dead = ResouceLoad::getInstance()->player_deadAnimate->clone();
+	auto p_seq = Sequence::create(DelayTime::create(2.6)
+		, dead,
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::gameOverMenu, this)), nullptr);
+	player->runAction(p_seq);
+
+	isgameOver = true;
 	log("게임 오버!");
+	_world->DestroyBody(_barricade);
+}
+
+void HelloWorld::gameOverMenu()
+{
+	/*
+	
+	auto dead = ResouceLoad::getInstance()->player_deadAnimate->clone();
+	player->runAction(dead);
+	*/
+
 }
 void HelloWorld::addMenu()
 {
