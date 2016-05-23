@@ -36,6 +36,7 @@ public:
 	std::vector<Trap *>* traps;
 	b2Body * body;
 	b2Body * _barricade;
+	b2Body * groundBody;
 	cocos2d::LayerColor* gameLayer;
 	cocos2d::LayerColor* menuLayer;
 	cocos2d::LayerColor* result_Layer;
@@ -98,6 +99,7 @@ public:
 	void result();
 	void close();
 	void gameOverMenu();
+	void Intro(Ref* pSender);
 	//실험
 	Sprite* skill;
 	Sprite* skill2;
