@@ -46,6 +46,7 @@ bool HelloWorld::init()
 	barricade = DataSingleTon::getInstance()->getBarricade();
 	traps = DataSingleTon::getInstance()->getTraps();
 	helpers = DataSingleTon::getInstance()->getHelpers();
+
 	
 	ResouceLoad::getInstance();
 
@@ -1322,9 +1323,20 @@ void HelloWorld::high_LevelUpdate(float f)
 
 	highLevel->runAction(seq1);
 
+
 	this->scheduleOnce(schedule_selector(HelloWorld::back_button), 2.0f);
+	this->schedule(schedule_selector(HelloWorld::high_particle),5.0 / 60);
 }
 
+void HelloWorld::high_particle(float f)
+{
+	ParticleSystem* emitter = ParticleSystemQuad::create("explosion/ExplodingRing.plist");
+
+	emitter->setPosition(Vec2(random(50, 1200), random(50, 680)));
+	emitter->setAutoRemoveOnFinish(true);
+
+	result_Layer->addChild(emitter);
+}
 void HelloWorld::back_button(float f)
 {
 	auto pMenuItem = MenuItemImage::create(
@@ -1452,7 +1464,6 @@ void HelloWorld::addMenu()
 	//스킬1
 	skill = Sprite::create("ui/ui_item.png");
 	skill->setPosition(Vec2(winSize.width - 225, 60));
-	//skill->setOpacity(180.0f);
 
 	menuLayer->addChild(skill,1000);
 
@@ -1461,7 +1472,6 @@ void HelloWorld::addMenu()
 	parentSize = skill->getContentSize();
 	bomb->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 	bomb->setScale(3.0f);
-	//bomb->setOpacity(180.0f);
 	skill->addChild(bomb);
 
 	auto range = Sprite::create("ui/ui_range.png");
@@ -1592,6 +1602,8 @@ void HelloWorld::onExit()
 {
 	//_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
 
+	this->unschedule(schedule_selector(HelloWorld::tick));
+	this->unschedule(schedule_selector(HelloWorld::high_particle));
 	Layer::onExit();
 }
 void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)

@@ -104,6 +104,7 @@ public:
 	void LabelUpdate();
 	void back_button(float f);
 	void monsterSpawn();
+	void high_particle(float f);
 	//실험
 	Sprite* skill;
 	Sprite* skill2;
