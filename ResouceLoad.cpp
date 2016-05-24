@@ -69,6 +69,25 @@ void ResouceLoad::Loading()
 
 	//////////////////////////// 몬스터 애니메이션
 
+	// 바리게이트 히트
+
+	auto cache3 = SpriteFrameCache::getInstance();
+	cache3->addSpriteFramesWithFile("monster/hit.plist");
+
+	Vector<SpriteFrame*> hitFrames;
+
+	char str3[100] = { 0 };
+	for (int i = 0; i < 5; i++)
+	{
+		sprintf(str3, "hit%02d.png", i + 1);
+		SpriteFrame* frame = cache3->getSpriteFrameByName(str3);
+		hitFrames.pushBack(frame);
+	}
+
+	auto a_hit = Animation::createWithSpriteFrames(hitFrames, 0.1f);
+	hit = Animate::create(a_hit);
+	hit->retain();
+
 	// 브레인좀비 공격 애니메이션
 	auto s_brain_attack = Sprite::create("monster/brain_attack.png");
 	auto t_brain_attack = s_brain_attack->getTexture();

@@ -20,6 +20,7 @@ public:
 	Animate * blood;
 
 	//∏ÛΩ∫≈Õ
+	Animate * hit;
 	Animate * brain_attackAnimate;
 	Animate * brain_attack2Animate;
 	Animate * brain_moveAnimate;

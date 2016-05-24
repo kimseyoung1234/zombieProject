@@ -434,6 +434,15 @@ void Monster::attackFinish()
 			CallFunc::create(CC_CALLBACK_0(Monster::remove_anim, this, exp)), nullptr);
 		exp->runAction(rep);
 	}
+
+	auto hit = Sprite::create("monster/hit.png");
+	hit->setTextureRect(Rect(0, 0, 0, 0));
+	hit->setPosition(Vec2(sprite->getPosition().x - 100,sprite->getPosition().y + 50));
+	gameLayer->addChild(hit, 2000);
+
+	auto hit_anim = ResouceLoad::getInstance()->hit->clone();
+	auto seq = Sequence::create(hit_anim, RemoveSelf::create(true), nullptr);
+	hit->runAction(seq);
 }
 void Monster::finish_hit()
 {

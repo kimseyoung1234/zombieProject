@@ -14,7 +14,7 @@ public:
 
 
 	// 플레이어 hp
-	int hp = 10;
+	int hp = 100;
 	int money_In_Hand = 30000;
 
 	// 가지고있는 트랩 수

@@ -356,7 +356,6 @@ void ShopScene::buy(Ref * pSender)
 			bezier.endPosition = Vec2(item->getPosition());
 
 			auto bezierForward = BezierTo::create(0.7, bezier);
-
 			auto seq = Sequence::create(bezierForward,
 				CallFunc::create(CC_CALLBACK_0(ShopScene::remove_sprite, this, trap01)), nullptr);
 			trap01->runAction(seq);
