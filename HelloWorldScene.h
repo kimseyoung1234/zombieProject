@@ -100,6 +100,9 @@ public:
 	void close();
 	void gameOverMenu();
 	void Intro(Ref* pSender);
+	void high_LevelUpdate(float f);
+	void LabelUpdate();
+	void back_button(float f);
 	//실험
 	Sprite* skill;
 	Sprite* skill2;
@@ -122,6 +125,9 @@ public:
 
 	Menu * pMenu;
 	Menu * shopMenu;
+	LabelBMFont * nowLevel;
+	LabelBMFont * highLevel;
+
 
 	int take_gold= 0;
 protected:

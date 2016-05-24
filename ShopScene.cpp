@@ -99,27 +99,29 @@ bool ShopScene::init()
 	auto helper_view = helper_table->getTableView();
 	helper_tableLayer->addChild(helper_view);
 
-	auto buy = MenuItemFont::create(
-		"구입",
+	auto buy = MenuItemImage::create(
+		"ui/buy.png",
+		"ui/buy_push.png",
 		CC_CALLBACK_1(ShopScene::buy, this));
-	buy->setColor(Color3B(0, 0, 0));
-
-	auto upgrade = MenuItemFont::create(
-		"업그레이드",
+	buy->setScale(0.7f);
+	auto upgrade = MenuItemImage::create(
+		"ui/upgrade.png",
+		"ui/upgrade_push.png",
 		CC_CALLBACK_1(ShopScene::upgrade, this));
-	upgrade->setColor(Color3B(0, 0, 0));
+	upgrade->setScale(0.7f);
 
-	auto exit = MenuItemFont::create(
-		"상점 나가기",
+	auto exit = MenuItemImage::create(
+		"ui/back.png",
+		"ui/back_push.png",
 		CC_CALLBACK_1(ShopScene::shopClose, this));
-	exit->setColor(Color3B(0, 0, 0));
+	exit->setScale(0.7f);
 
 	//메뉴생성
 	auto menu = Menu::create(buy,upgrade,exit, nullptr);
 	
 	//메뉴 위치
 	menu->alignItemsHorizontally();
-	menu->alignItemsHorizontallyWithPadding(50.0f);
+	menu->alignItemsHorizontallyWithPadding(30.0f);
 	menu->setPosition(Vec2(winSize.width/2, 50));
 	// 레이어에 메뉴 객체 추가
 	this->addChild(menu);

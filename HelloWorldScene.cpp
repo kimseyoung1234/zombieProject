@@ -1041,9 +1041,16 @@ void HelloWorld::gameOver()
 	for (int k = 0; k < bullets->size(); k++)
 	{
 		gameLayer->removeChild(bullets->at(k)->sprite);
-		_world->DestroyBody(bullets->at(k)->body);
+		_world->DestroyBody(bullets->at(k)->body);;
 		delete bullets->at(k);
 	}
+	for (int z = 0; z < helpers->size(); z++)
+	{
+		gameLayer->removeChild(helpers->at(z)->sprite);
+		gameLayer->removeChild(helpers->at(z));
+		//delete helpers->at(z);
+	}
+	helpers->clear();
 	bullets->clear();
 
 	// ------------ 게임 오버 애니매이션 ---------
@@ -1189,10 +1196,17 @@ void HelloWorld::gameOver()
 	blood3->runAction(b_seq3);
 
 	player->stopAllActions();
+	gameLayer->removeChild(player);
+	player = nullptr;
 
-	auto dead_player = Sprite::create("player/player_idle.png", Rect(136, 72, 136, 72));
-	auto texture = dead_player->getTexture();
-	player->setTexture(texture);
+
+	player = Sprite::create("player/player_idle.png", Rect(0, 0, 136, 72));
+	player->setScale(1.5f);
+	player->setAnchorPoint(Vec2(0, 0));
+	player->setPosition(Vec2(player->getContentSize().width / 2 - 20,
+		winSize.height / 2 - 70));
+	gameLayer->addChild(player, 1500);
+	
 	auto dead = ResouceLoad::getInstance()->player_deadAnimate->clone();
 	auto p_seq = Sequence::create(DelayTime::create(2.6)
 		, dead, FadeOut::create(1.5f), nullptr);
@@ -1226,19 +1240,81 @@ void HelloWorld::gameOverMenu()
 	result_Layer->setVisible(true);
 	result_Layer->setOpacity(0);
 
-	auto fade = FadeTo::create(1.0, 100);
+	auto fade = FadeTo::create(2.5, 150);
 	result_Layer->runAction(fade);
 	
+	auto highLevel_str = String::createWithFormat("High Level :   %d", UserDefault::getInstance()->getIntegerForKey("int_key"));
 
+	highLevel = LabelBMFont::create(highLevel_str->getCString(), "fonts/futura-48.fnt");
+	highLevel->setScale(0.0f);
+	highLevel->setPosition(Vec2(winSize.width / 2, winSize.height / 2 + 150));
+	highLevel->setColor(Color3B::RED);
+	result_Layer->addChild(highLevel);
+
+	auto seq2 = Sequence::create(DelayTime::create(2.6f),
+		ScaleTo::create(0.6f, 2.0f), nullptr);
+	highLevel->runAction(seq2);
+
+	auto nowLevel_str = String::createWithFormat("Last Level :   %d", MonsterInfoSingleTon::getInstance()->level);
+
+	nowLevel = LabelBMFont::create(nowLevel_str->getCString(), "fonts/futura-48.fnt");
+	nowLevel->setScale(0.0f);
+	nowLevel->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 100));
+	nowLevel->setColor(Color3B::RED);
+	result_Layer->addChild(nowLevel);
+
+	auto seq = Sequence::create(DelayTime::create(3.0f),
+		ScaleTo::create(0.6f, 2.0f), nullptr);
+	nowLevel->runAction(seq);
+	
+	// 최고기록 갱신
+	int high_Level = UserDefault::getInstance()->getIntegerForKey("int_key");
+	if (high_Level < MonsterInfoSingleTon::getInstance()->level)
+	{
+		UserDefault::getInstance()->setIntegerForKey("int_key", MonsterInfoSingleTon::getInstance()->level);
+		this->scheduleOnce(schedule_selector(HelloWorld::high_LevelUpdate), 5.0f);
+	}
+	else {
+		this->scheduleOnce(schedule_selector(HelloWorld::back_button), 4.0f);
+	}
+}
+
+void HelloWorld::high_LevelUpdate(float f)
+{
+	auto seq = Sequence::create(DelayTime::create(0.3f)
+		,ScaleTo::create(0.5, 0.0),
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::LabelUpdate, this)),
+		ScaleTo::create(0.7, 3.0), nullptr);
+	nowLevel->runAction(seq);
+
+	auto seq1 = Sequence::create(ScaleTo::create(0.5, 0),
+		RemoveSelf::create(true), nullptr);
+
+	highLevel->runAction(seq1);
+
+	this->scheduleOnce(schedule_selector(HelloWorld::back_button), 2.0f);
+}
+
+void HelloWorld::back_button(float f)
+{
 	auto pMenuItem = MenuItemImage::create(
-		"ui/ui_play.png",
-		"ui/ui_play.png",
+		"ui/back.png",
+		"ui/back_push.png",
 		CC_CALLBACK_1(HelloWorld::Intro, this));
-	pMenuItem->setScale(0.7f);
+	pMenuItem->setScale(0.0f);
 	auto pMenu = Menu::create(pMenuItem, nullptr);
-	pMenu->setPosition(Vec2(680, 360));
-	menuLayer->addChild(pMenu);
+	pMenu->setPosition(Vec2(winSize.width/2, 100));
+	result_Layer->addChild(pMenu);
 
+	auto scale = ScaleTo::create(0.2, 1.0f);
+	pMenuItem->runAction(scale);
+}
+
+void HelloWorld::LabelUpdate()
+{
+	auto highLevel_str = String::createWithFormat("High Level :   %d", UserDefault::getInstance()->getIntegerForKey("int_key"));
+	nowLevel->setString(highLevel_str->getCString());
+	nowLevel->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 }
 void HelloWorld::Intro(Ref* pSender)
 {
@@ -1322,23 +1398,25 @@ void HelloWorld::addMenu()
 	// 시작 버튼
 
 	auto pMenuItem = MenuItemImage::create(
-		"ui/ui_play.png",
-		"ui/ui_play.png",
+		"ui/play.png",
+		"ui/play_push.png",
 		CC_CALLBACK_1(HelloWorld::waveStart, this));
-	pMenuItem->setScale(0.7f);
+	pMenuItem->setScaleX(0.6);
+	pMenuItem->setScaleY(0.7);
 	pMenu = Menu::create(pMenuItem, nullptr);
 	pMenu->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
 	menuLayer->addChild(pMenu);
 
 	// 상점 메뉴
 	auto shop = MenuItemImage::create(
-		"ui/ui_shop.png",
-		"ui/ui_shop.png",
+		"ui/shop.png",
+		"ui/shop_push.png",
 		CC_CALLBACK_1(HelloWorld::shopOpen, this));
-	shop->setScale(0.7f);
+	shop->setScaleX(0.6f);
+	shop->setScaleY(0.7f);
 	 shopMenu = Menu::create(shop, nullptr);
 
-	shopMenu->setPosition(Vec2(winSize.width - 250, winSize.height - 50));
+	shopMenu->setPosition(Vec2(winSize.width - 280, winSize.height - 50));
 	menuLayer->addChild(shopMenu);
 
 	//스킬1
