@@ -103,6 +103,7 @@ public:
 	void high_LevelUpdate(float f);
 	void LabelUpdate();
 	void back_button(float f);
+	void monsterSpawn();
 	//실험
 	Sprite* skill;
 	Sprite* skill2;

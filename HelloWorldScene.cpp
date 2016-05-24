@@ -104,20 +104,50 @@ bool HelloWorld::init()
 // 웨이브 시작 (나중에 조정)
 void HelloWorld::waveStart(Ref* pSender)
 {
+	// 시작전 실험
+	auto Level_str = String::createWithFormat("Level : %d", MonsterInfoSingleTon::getInstance()->level);
+
+	auto Level = LabelBMFont::create(Level_str->getCString(), "fonts/futura-48.fnt");
+	Level->setScale(0.0f);
+	Level->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	Level->setColor(Color3B::RED);
+	gameLayer->addChild(Level,2000);
+
+	auto seq = Sequence::create(ScaleTo::create(0.5, 4.0f),
+		DelayTime::create(0.5), ScaleTo::create(0.1, 20.0f),
+		RemoveSelf::create(true), nullptr);
+	Level->runAction(seq);
+
+	auto start = LabelBMFont::create("Start", "fonts/futura-48.fnt");
+	start->setScale(0.0f);
+	start->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	start->setColor(Color3B::RED);
+	gameLayer->addChild(start, 2000);
+
+	auto seq2 = Sequence::create(DelayTime::create(1.5f)
+		,ScaleTo::create(0.3, 5.0f),
+		DelayTime::create(0.5), ScaleTo::create(0.1, 20.0f),
+		RemoveSelf::create(true),
+		CallFunc::create(CC_CALLBACK_0(HelloWorld::monsterSpawn, this)), nullptr);
+	start->runAction(seq2);
+
+
+}
+void HelloWorld::monsterSpawn()
+{
 	if (isWave == false) {
 		int maxMonster = MonsterInfoSingleTon::getInstance()->maxMonster;
 		for (int i = 0; i < maxMonster; i++) {
 			int x_rand = random(1350, 1700);
 			int y_rand = random(90, 520);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(500, y_rand),r_monsterType);
+			Monster * mon = new Monster(Vec2(500, y_rand), r_monsterType);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
 	}
 	isWave = true;
 }
-
 bool HelloWorld::createBox2dWorld(bool debug)
 {
 	//월드 생성 시작----------------------------------------------------------
@@ -1042,7 +1072,7 @@ void HelloWorld::gameOver()
 	{
 		gameLayer->removeChild(bullets->at(k)->sprite);
 		_world->DestroyBody(bullets->at(k)->body);;
-		delete bullets->at(k);
+		//delete bullets->at(k);
 	}
 	for (int z = 0; z < helpers->size(); z++)
 	{
