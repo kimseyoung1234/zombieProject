@@ -123,13 +123,14 @@ public:
 	bool skill_cool = false;
 	bool skill2_cool = false;
 	bool isResultLayer = false;
+	bool isPlaySeleted = false;
 	DrawNode * draw_node;
 
 	Menu * pMenu;
 	Menu * shopMenu;
 	LabelBMFont * nowLevel;
 	LabelBMFont * highLevel;
-
+	
 
 	int take_gold= 0;
 protected:

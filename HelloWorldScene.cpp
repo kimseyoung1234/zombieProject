@@ -106,37 +106,38 @@ bool HelloWorld::init()
 void HelloWorld::waveStart(Ref* pSender)
 {
 	// 시작전 실험
-	auto Level_str = String::createWithFormat("Level : %d", MonsterInfoSingleTon::getInstance()->level);
+	if (!isWave && !isPlaySeleted) {
+		isPlaySeleted = true;
+		auto Level_str = String::createWithFormat("Level : %d", MonsterInfoSingleTon::getInstance()->level);
 
-	auto Level = LabelBMFont::create(Level_str->getCString(), "fonts/futura-48.fnt");
-	Level->setScale(0.0f);
-	Level->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	Level->setColor(Color3B::RED);
-	gameLayer->addChild(Level,2000);
+		auto Level = LabelBMFont::create(Level_str->getCString(), "fonts/futura-48.fnt");
+		Level->setScale(0.0f);
+		Level->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+		Level->setColor(Color3B::RED);
+		gameLayer->addChild(Level, 2000);
 
-	auto seq = Sequence::create(ScaleTo::create(0.5, 4.0f),
-		DelayTime::create(0.5), ScaleTo::create(0.1, 20.0f),
-		RemoveSelf::create(true), nullptr);
-	Level->runAction(seq);
+		auto seq = Sequence::create(ScaleTo::create(0.5, 4.0f),
+			DelayTime::create(0.5), ScaleTo::create(0.1, 20.0f),
+			RemoveSelf::create(true), nullptr);
+		Level->runAction(seq);
 
-	auto start = LabelBMFont::create("Start", "fonts/futura-48.fnt");
-	start->setScale(0.0f);
-	start->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	start->setColor(Color3B::RED);
-	gameLayer->addChild(start, 2000);
+		auto start = LabelBMFont::create("Start", "fonts/futura-48.fnt");
+		start->setScale(0.0f);
+		start->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+		start->setColor(Color3B::RED);
+		gameLayer->addChild(start, 2000);
 
-	auto seq2 = Sequence::create(DelayTime::create(1.5f)
-		,ScaleTo::create(0.3, 5.0f),
-		DelayTime::create(0.5), ScaleTo::create(0.1, 20.0f),
-		RemoveSelf::create(true),
-		CallFunc::create(CC_CALLBACK_0(HelloWorld::monsterSpawn, this)), nullptr);
-	start->runAction(seq2);
+		auto seq2 = Sequence::create(DelayTime::create(1.5f)
+			, ScaleTo::create(0.3, 5.0f),
+			DelayTime::create(0.5), ScaleTo::create(0.1, 20.0f),
+			RemoveSelf::create(true),
+			CallFunc::create(CC_CALLBACK_0(HelloWorld::monsterSpawn, this)), nullptr);
+		start->runAction(seq2);
 
-
+	}
 }
 void HelloWorld::monsterSpawn()
 {
-	if (isWave == false) {
 		int maxMonster = MonsterInfoSingleTon::getInstance()->maxMonster;
 		for (int i = 0; i < maxMonster; i++) {
 			int x_rand = random(1350, 1700);
@@ -146,8 +147,7 @@ void HelloWorld::monsterSpawn()
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
-	}
-	isWave = true;
+		isWave = true;
 }
 bool HelloWorld::createBox2dWorld(bool debug)
 {
@@ -291,6 +291,7 @@ void HelloWorld::tick(float dt)
 		//게임오버 체크
 		if (PlayerInfoSingleTon::getInstance()->hp <= 0)
 		{
+			log("??");
 			PlayerInfoSingleTon::getInstance()->hp = 0;
 			gameOver();
 		}
@@ -412,6 +413,7 @@ void HelloWorld::tick(float dt)
 		if (monsters->size() == 0 && isWave == true)
 		{
 			result();
+			isPlaySeleted = false;
 		}
 	}
 }
@@ -1602,7 +1604,7 @@ void HelloWorld::onExit()
 {
 	//_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
 
-	this->unschedule(schedule_selector(HelloWorld::tick));
+	//this->unschedule(schedule_selector(HelloWorld::tick));
 	this->unschedule(schedule_selector(HelloWorld::high_particle));
 	Layer::onExit();
 }

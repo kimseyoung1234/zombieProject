@@ -12,7 +12,7 @@ private:
 public:
 	static MonsterInfoSingleTon *getInstance();
 
-	int level = 7;
+	int level = 1;
 	int maxMonster = 50;
 
 	int fatZombie_HP = 150;
