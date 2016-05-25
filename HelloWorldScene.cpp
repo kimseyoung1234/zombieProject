@@ -871,9 +871,9 @@ void HelloWorld::re_Idle()
 {
 	player->stopAllActions();
 
-	auto player_idle = ResouceLoad::getInstance()->player_idleAnimate->clone();
-	auto rep = RepeatForever::create(player_idle);
-	player->runAction(rep);
+		auto player_idle = ResouceLoad::getInstance()->player_idleAnimate->clone();
+		auto rep = RepeatForever::create(player_idle);
+		player->runAction(rep);
 	
 }
 void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
@@ -1230,10 +1230,10 @@ void HelloWorld::gameOver()
 
 	player->stopAllActions();
 	gameLayer->removeChild(player);
-	player = nullptr;
+//	player = nullptr;
 
 
-	player = Sprite::create("player/player_idle.png", Rect(0, 0, 136, 72));
+	auto player = Sprite::create("player/player_idle.png", Rect(0, 0, 136, 72));
 	player->setScale(1.5f);
 	player->setAnchorPoint(Vec2(0, 0));
 	player->setPosition(Vec2(player->getContentSize().width / 2 - 20,
