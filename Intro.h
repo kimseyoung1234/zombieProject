@@ -19,6 +19,7 @@ public:
 	cocos2d::Size winSize;
 
 	void playbtn(Ref * pSender);
+	void doRain();
 };
 
 #endif // __HELLOWORLD_SCENE_H__

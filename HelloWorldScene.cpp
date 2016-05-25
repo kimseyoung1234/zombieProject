@@ -1078,7 +1078,7 @@ void HelloWorld::gameOver()
 	{
 		gameLayer->removeChild(bullets->at(k)->sprite);
 		_world->DestroyBody(bullets->at(k)->body);;
-		//delete bullets->at(k);
+	//	delete bullets->at(k);
 	}
 	for (int z = 0; z < helpers->size(); z++)
 	{

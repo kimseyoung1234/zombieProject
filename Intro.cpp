@@ -41,7 +41,32 @@ bool Intro::init()
 	pMenu->setPosition(Vec2(winSize.width / 2, 100));
 	this->addChild(pMenu);
 
+	doRain();
+
 	return true;
+}
+
+
+void Intro::doRain()
+{
+	ParticleSystem* m_emitter = ParticleRain::create();
+	m_emitter->retain();
+
+	Point p = m_emitter->getPosition();
+	m_emitter->setPosition(Vec2(p.x, p.y - 100));
+	m_emitter->setLife(4);
+	auto texture = Director::getInstance()->getTextureCache()->addImage("explosion/fire.png");
+	
+	m_emitter->setTexture(texture);
+	m_emitter->setColor(Color3B(166, 166, 166));
+	m_emitter->setScaleY(15);
+
+	if (m_emitter != NULL)
+	{
+		m_emitter->setPosition(Vec2(winSize.width/2, winSize.height));
+
+		this->addChild(m_emitter);
+	}
 }
 
 
