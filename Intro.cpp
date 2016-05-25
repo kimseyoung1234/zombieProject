@@ -79,6 +79,6 @@ void Intro::playbtn(Ref * pSender)
 void Intro::doReplaceScene()
 {
 	auto pScene = HelloWorld::createScene();
-	Director::getInstance()->replaceScene(pScene);
+	Director::getInstance()->replaceScene(TransitionFade::create(2,pScene));
 }
 

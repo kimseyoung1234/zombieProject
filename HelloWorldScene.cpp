@@ -1372,7 +1372,7 @@ void HelloWorld::Intro(Ref* pSender)
 	PlayerInfoSingleTon::FreeInstance();
 	MonsterInfoSingleTon::FreeInstance();
 	auto pScene = Intro::createScene();
-	Director::getInstance()->replaceScene(pScene);
+	Director::getInstance()->replaceScene(TransitionFade::create(2, pScene));
 }
 void HelloWorld::addMenu()
 {
