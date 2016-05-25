@@ -9,6 +9,10 @@ MonsterInfoSingleTon::MonsterInfoSingleTon() {
 	
 }
 
+MonsterInfoSingleTon::~MonsterInfoSingleTon()
+{
+	log("몬스터싱글톤 삭제");
+}
 MonsterInfoSingleTon * MonsterInfoSingleTon::getInstance()
 {
 
@@ -19,6 +23,16 @@ MonsterInfoSingleTon * MonsterInfoSingleTon::getInstance()
 	return m_pInstance;
 }
 
+
+void MonsterInfoSingleTon::FreeInstance()
+{
+	if (m_pInstance != nullptr)
+	{
+
+		delete m_pInstance;
+		m_pInstance = nullptr;
+	}
+}
 
 // 스테이지 클리어하면 레벨업
 void MonsterInfoSingleTon::level_up()

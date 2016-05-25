@@ -12,7 +12,7 @@ class DataSingleTon {
 private:
 	static DataSingleTon *m_pInstance;
 	DataSingleTon();
-
+	~DataSingleTon();
 	b2World* _world;
 	std::vector<b2Body*> * barricade;
 	std::vector<Monster*>* monsters;
@@ -28,6 +28,7 @@ private:
 
 public:
 
+	static void FreeInstance();
 	static DataSingleTon *getInstance();
 	b2World* get_world();
 

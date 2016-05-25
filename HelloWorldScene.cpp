@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "MyQueryCallback.h"
 #include "ResouceLoad.h"
+#include "Intro.h"
 USING_NS_CC;
 
 // 몬스터 Y축 값에 따른 벡터 정렬
@@ -35,6 +36,7 @@ bool HelloWorld::init()
 	{
 		return false;
 	}
+	log("레이어추가댐ㅋㅋㅋ?");
 	////////////////////////////////////
 	//공용변수들 가져오기
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
@@ -46,14 +48,15 @@ bool HelloWorld::init()
 	barricade = DataSingleTon::getInstance()->getBarricade();
 	traps = DataSingleTon::getInstance()->getTraps();
 	helpers = DataSingleTon::getInstance()->getHelpers();
-
+	log("모냐 ㅁ");
 	
-	ResouceLoad::getInstance();
 
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
+	log("fsd");
 	this->addChild(menuLayer, 5);
 	//배경
+	log("레이어추가댐?");
 	auto background = Sprite::create("ui/background.png");
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	background->setAnchorPoint(Vec2(0.5, 0.5));
@@ -1362,7 +1365,14 @@ void HelloWorld::LabelUpdate()
 }
 void HelloWorld::Intro(Ref* pSender)
 {
-	log("인트로");
+	this->unschedule(schedule_selector(HelloWorld::tick));
+
+	// 게임오버면 싱글톤 객체들 초기화
+	DataSingleTon::FreeInstance();
+	PlayerInfoSingleTon::FreeInstance();
+	MonsterInfoSingleTon::FreeInstance();
+	auto pScene = Intro::createScene();
+	Director::getInstance()->replaceScene(pScene);
 }
 void HelloWorld::addMenu()
 {

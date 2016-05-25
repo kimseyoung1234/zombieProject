@@ -8,10 +8,10 @@ class MonsterInfoSingleTon {
 private:
 	static MonsterInfoSingleTon *m_pInstance;
 	MonsterInfoSingleTon();
-
+	~MonsterInfoSingleTon();
 public:
 	static MonsterInfoSingleTon *getInstance();
-
+	static void FreeInstance();
 	int level = 1;
 	int maxMonster = 50;
 

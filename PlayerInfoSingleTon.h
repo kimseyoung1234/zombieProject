@@ -8,13 +8,14 @@ class PlayerInfoSingleTon {
 private:
 	static PlayerInfoSingleTon *m_pInstance;
 	PlayerInfoSingleTon();
+	~PlayerInfoSingleTon();
 
 public:
 	static PlayerInfoSingleTon *getInstance();
-
+	static void FreeInstance();
 
 	// 플레이어 hp
-	int hp = 100;
+	int hp = 10;
 	int money_In_Hand = 30000;
 
 	// 가지고있는 트랩 수

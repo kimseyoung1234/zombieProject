@@ -19,7 +19,15 @@ DataSingleTon::DataSingleTon() {
 	shopLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
 
 }
-
+DataSingleTon::~DataSingleTon()
+{
+	delete monsters;
+	delete bullets;
+	delete barricade;
+	delete traps;
+	delete helpers;
+	log("µ•¿Ã≈∏ ΩÃ±€≈Ê ªË¡¶");
+}
 DataSingleTon * DataSingleTon::getInstance()
 {
 
@@ -28,6 +36,16 @@ DataSingleTon * DataSingleTon::getInstance()
 		m_pInstance = new DataSingleTon;
 	}
 	return m_pInstance;
+}
+
+void DataSingleTon::FreeInstance()
+{
+	if (m_pInstance != nullptr)
+	{
+		
+		delete m_pInstance;
+		m_pInstance = nullptr;
+	}
 }
 
 b2World* DataSingleTon::get_world()
