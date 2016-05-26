@@ -4,6 +4,8 @@
 #include "PlayerInfoSingleTon.h"
 #include "MyQueryCallback.h"
 #include "ResouceLoad.h"
+#include "SimpleAudioEngine.h"
+using namespace CocosDenshion;
 ContactListener::ContactListener() {
 	_world = DataSingleTon::getInstance()->get_world();
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
@@ -65,6 +67,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 								}
 								else {
 
+									SimpleAudioEngine::getInstance()->playEffect("sounds/monster_hit.wav");
 									monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;							
 									monsters->at(i)->hpBar->setVisible(true);
 									monsters->at(i)->hpBarShowTime = 0;

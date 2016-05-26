@@ -105,6 +105,7 @@ public:
 	void back_button(float f);
 	void monsterSpawn();
 	void high_particle(float f);
+	void bloodSound(float dt);
 	//실험
 	Sprite* skill;
 	Sprite* skill2;

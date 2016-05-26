@@ -1,6 +1,8 @@
 #include "ResouceLoad.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
+using namespace CocosDenshion;
 
 ResouceLoad * ResouceLoad::m_pInstance = nullptr;
 
@@ -449,4 +451,25 @@ void ResouceLoad::Loading()
 
 	blood = Animate::create(a_blood);
 	blood->retain();
+
+	// ---------------------------------------------------사운드 프리로드
+
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/intro_backgrund.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/barricade_hit.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/weapon_change.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/sniper.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/monster_die2.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/waveStart.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/monster_hit.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/upgrade.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/menuSelect.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/machine.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/bazooka.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/player_die.wav");	
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/player_die2.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/highLevel.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/barricade_die.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/ak.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/item_buy.wav");
 }

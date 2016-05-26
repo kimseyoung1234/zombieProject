@@ -17,9 +17,11 @@ public:
 	void doReplaceScene();
 
 	cocos2d::Size winSize;
+	unsigned int m_nSoundId;
 
 	void playbtn(Ref * pSender);
 	void doRain();
+	void tick(float dt);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

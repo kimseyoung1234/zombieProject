@@ -1,7 +1,10 @@
 ﻿#include "ShopScene.h"
 #include "DataSingleTon.h"
 #include "PlayerInfoSingleTon.h"
+#include "SimpleAudioEngine.h"
 USING_NS_CC;
+
+using namespace CocosDenshion;
 
 Scene* ShopScene::createScene()
 {
@@ -234,6 +237,7 @@ void ShopScene::sellHelper2(Ref * pSender)
 }
 void ShopScene::shopClose(Ref * pSender)
 {
+	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.wav");
 	PlayerInfoSingleTon::getInstance()->trapSeleted = -1;
 	PlayerInfoSingleTon::getInstance()->helperSeleted = -1;
 
@@ -285,6 +289,8 @@ void ShopScene::upgrade(Ref * pSender)
 
 	// 새로운 가격으로 업데이트
 	if (isBuy) {
+		SimpleAudioEngine::getInstance()->playEffect("sounds/upgrade.wav");
+
 		auto _weapon_table = weapon_table->getTableView();
 		auto selectedCell = _weapon_table->cellAtIndex(selectedWeapon);
 
@@ -387,6 +393,7 @@ void ShopScene::buy(Ref * pSender)
 
 		if (isBuy) 
 		{
+			SimpleAudioEngine::getInstance()->playEffect("sounds/item_buy.wav");
 			buyAni(item_price);
 		}
 		else
@@ -431,6 +438,7 @@ void ShopScene::buy(Ref * pSender)
 				PlayerInfoSingleTon::getInstance()->have_helper++;
 				
 			}
+			SimpleAudioEngine::getInstance()->playEffect("sounds/item_buy.wav");
 			helperUpdate(1);
 			buyAni(item_price);
 		}

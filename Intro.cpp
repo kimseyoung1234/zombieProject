@@ -1,6 +1,9 @@
 ﻿#include "Intro.h"
 #include "HelloWorldScene.h"
 #include "ResouceLoad.h"
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
 USING_NS_CC;
 
 Scene* Intro::createScene()
@@ -26,10 +29,14 @@ bool Intro::init()
 	ResouceLoad::getInstance();
 	winSize = Director::getInstance()->getWinSize();
 
+	m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/intro_backgrund.wav");
+
+
 	auto background = Sprite::create("intro/intro_background.png");
 	background->setPosition(winSize.width / 2, winSize.height / 2);
 	this->addChild(background);
-
+	
+	
 	
 	auto pMenuItem = MenuItemImage::create(
 		"ui/play.png",
@@ -43,10 +50,15 @@ bool Intro::init()
 
 	doRain();
 
+	this->schedule(schedule_selector(Intro::tick),2.3);
+
 	return true;
 }
 
-
+void Intro::tick(float dt)
+{
+	m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/intro_backgrund.wav");
+}
 void Intro::doRain()
 {
 	ParticleSystem* m_emitter = ParticleRain::create();
@@ -72,6 +84,11 @@ void Intro::doRain()
 
 void Intro::playbtn(Ref * pSender)
 {
+	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.wav");
+
+	this->unschedule(schedule_selector(Intro::tick));
+	SimpleAudioEngine::getInstance()->stopEffect(m_nSoundId);
+
 	doReplaceScene();
 }
 

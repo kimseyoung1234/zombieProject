@@ -5,6 +5,8 @@
 #include "MonsterInfoSingleTon.h"
 #include "PlayerInfoSingleTon.h"
 #include "ResouceLoad.h"
+#include "SimpleAudioEngine.h"
+using namespace CocosDenshion;
 USING_NS_CC;
 
 // 생성자 변수 초기화와 공용 변수 불러오기
@@ -419,6 +421,9 @@ void Monster::attackFinish()
 	PlayerInfoSingleTon::getInstance()->hp = PlayerInfoSingleTon::getInstance()->hp - damage;
 	log("맞았다");
 	log("플레이어 hp : %d", PlayerInfoSingleTon::getInstance()->hp);
+
+
+	SimpleAudioEngine::getInstance()->playEffect("sounds/barricade_hit.wav");
 
 	if (monsterType == 4)
 	{

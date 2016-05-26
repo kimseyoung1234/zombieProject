@@ -3,6 +3,9 @@
 #include "ResouceLoad.h"
 #include "PlayerInfoSingleTon.h"
 #include "MyQueryCallback.h"
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
 USING_NS_CC;
 
 Helper::Helper(Vec2 position, int type)
@@ -100,6 +103,8 @@ void Helper::autoAttack(float dt)
 
 				shootVector.normalize();
 
+				SimpleAudioEngine::getInstance()->playEffect("sounds/bazooka.wav");
+
 				Bullet * bullet = new Bullet(nPos2, 3, cocosAngle);
 				bullets->push_back(bullet);
 				bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 25, shootVector.y * 25));
@@ -122,6 +127,8 @@ void Helper::autoAttack(float dt)
 
 				float shootAngle = shootVector.getAngle();
 				float cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
+
+				SimpleAudioEngine::getInstance()->playEffect("sounds/sniper.wav");
 
 				Bullet * bullet = new Bullet(nPos2, 2, cocosAngle);
 				bullets->push_back(bullet);

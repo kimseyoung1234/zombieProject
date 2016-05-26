@@ -15,7 +15,7 @@ public:
 	static void FreeInstance();
 
 	// 플레이어 hp
-	int hp = 10;
+	int hp = 100;
 	int money_In_Hand = 30000;
 
 	// 가지고있는 트랩 수
@@ -38,13 +38,13 @@ public:
 
 
 	int ak_Damage = 40;
-	float ak_Rate = 0.4;
+	float ak_Rate = 0.8;
 	int ak_price = 200;
 	int ak_level = 0;
 
 
 	int sniper_Damage = 100;
-	float sniper_Rate = 0.6;
+	float sniper_Rate = 1.0;
 	int sniper_price = 150;
 	int sniper_level = 0;
 
