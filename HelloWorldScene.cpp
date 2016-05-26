@@ -146,9 +146,9 @@ void HelloWorld::monsterSpawn()
 		int maxMonster = MonsterInfoSingleTon::getInstance()->maxMonster;
 		for (int i = 0; i < maxMonster; i++) {
 			int x_rand = random(1350, 1700);
-			int y_rand = random(90, 520);
+			int y_rand = random(90, 500);
 			int r_monsterType = random(1, 3);
-			Monster * mon = new Monster(Vec2(500, y_rand), r_monsterType);
+			Monster * mon = new Monster(Vec2(x_rand, y_rand), r_monsterType);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}
@@ -644,6 +644,10 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 							auto cache = SpriteFrameCache::getInstance();
 							cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
 
+
+							SimpleAudioEngine::getInstance()->playEffect("sounds/trap01.wav");
+
+
 							auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
 							exp->setPosition(trap->sprite->getPosition());
 							exp->setScale(2.8f);
@@ -966,6 +970,9 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 			exp->setPosition(w_position);
 			exp->setScale(1.5f);
 			gameLayer->addChild(exp, 1200);
+
+			SimpleAudioEngine::getInstance()->playEffect("sounds/explosion2.wav");
+			SimpleAudioEngine::getInstance()->playEffect("sounds/pipe.wav");
 
 			auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
 			auto rep = Sequence::create(explosion1,

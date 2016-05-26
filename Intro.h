@@ -22,6 +22,7 @@ public:
 	void playbtn(Ref * pSender);
 	void doRain();
 	void tick(float dt);
+	void tick2(float dt);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

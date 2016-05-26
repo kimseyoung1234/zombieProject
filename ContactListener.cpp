@@ -51,6 +51,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 									trigger(position, 3.0f, 0, 20);
 									bullets->at(k)->isRemove = true;
 
+									SimpleAudioEngine::getInstance()->playEffect("sounds/explosion3.wav");
 									// 폭파 애니매이션
 									auto cache = SpriteFrameCache::getInstance();
 									cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");

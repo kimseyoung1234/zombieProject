@@ -464,6 +464,8 @@ void ResouceLoad::Loading()
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/upgrade.wav");
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/menuSelect.wav");
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion2.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion3.wav");
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/machine.wav");
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/bazooka.wav");
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/player_die.wav");	
@@ -472,4 +474,9 @@ void ResouceLoad::Loading()
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/barricade_die.wav");
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/ak.ogg");
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/item_buy.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/miss.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/trap01.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/pipe.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/zombie_howl.wav");
+	
 }

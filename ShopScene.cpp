@@ -302,7 +302,10 @@ void ShopScene::upgrade(Ref * pSender)
 		}
 	}
 	else
+	{
+		SimpleAudioEngine::getInstance()->playEffect("sounds/miss.wav");
 		log("돈 부족해서 못삼");
+	}
 }
 
 void ShopScene::buyAni(int price)
@@ -398,6 +401,7 @@ void ShopScene::buy(Ref * pSender)
 		}
 		else
 		{
+			SimpleAudioEngine::getInstance()->playEffect("sounds/miss.wav");
 			log("살돈 없다");
 		}
 	}
@@ -444,12 +448,14 @@ void ShopScene::buy(Ref * pSender)
 		}
 		else
 		{
+			SimpleAudioEngine::getInstance()->playEffect("sounds/miss.wav");
 			log("못삼");
 		}
 	}
 	// 선택된 것이 아무 것도 없으면
 	else
 	{
+		SimpleAudioEngine::getInstance()->playEffect("sounds/miss.wav");
 		log("살 거 선택해");
 	}
 }

@@ -50,6 +50,7 @@ bool Intro::init()
 
 	doRain();
 
+	this->schedule(schedule_selector(Intro::tick2));
 	this->schedule(schedule_selector(Intro::tick),2.3);
 
 	return true;
@@ -58,6 +59,13 @@ bool Intro::init()
 void Intro::tick(float dt)
 {
 	m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/intro_backgrund.wav");
+}
+
+void Intro::tick2(float dt)
+{
+	/*if (rand_0_1() < 0.002) {
+		SimpleAudioEngine::getInstance()->playEffect("sounds/zombie_howl.wav");
+	}*/
 }
 void Intro::doRain()
 {
@@ -85,7 +93,7 @@ void Intro::doRain()
 void Intro::playbtn(Ref * pSender)
 {
 	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.wav");
-
+	this->unschedule(schedule_selector(Intro::tick2));
 	this->unschedule(schedule_selector(Intro::tick));
 	SimpleAudioEngine::getInstance()->stopEffect(m_nSoundId);
 
