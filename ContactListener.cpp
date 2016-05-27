@@ -51,7 +51,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 									trigger(position, 3.0f, 0, 20);
 									bullets->at(k)->isRemove = true;
 
-									SimpleAudioEngine::getInstance()->playEffect("sounds/explosion3.wav");
+									SimpleAudioEngine::getInstance()->playEffect("sounds/explosion3.ogg");
 									// 폭파 애니매이션
 									auto cache = SpriteFrameCache::getInstance();
 									cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
@@ -68,7 +68,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 								}
 								else {
 
-									SimpleAudioEngine::getInstance()->playEffect("sounds/monster_hit.wav");
+									SimpleAudioEngine::getInstance()->playEffect("sounds/monster_hit.ogg");
 									monsters->at(i)->hp = monsters->at(i)->hp - bullets->at(k)->damage;							
 									monsters->at(i)->hpBar->setVisible(true);
 									monsters->at(i)->hpBarShowTime = 0;

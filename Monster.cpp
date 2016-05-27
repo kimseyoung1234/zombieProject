@@ -189,8 +189,6 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 		fixtureDef.shape = &circle;
 	}
 
-
-
 	body->SetLinearDamping(7.0f);
 	body->CreateFixture(&fixtureDef);
 
@@ -222,6 +220,10 @@ void Monster::moving(float dt)
 	hpBarShowTime = hpBarShowTime + dt;
 	slowTime = slowTime + dt;
 	stiffenTime = stiffenTime + dt;
+
+	if (rand_0_1() < 0.004) {
+		ySpeed *= -1;
+	}
 
 	if (stiffenTime >= 0.1)
 	{
@@ -366,7 +368,7 @@ void Monster::moving(float dt)
 					sprite->runAction(FlipX);
 				}
 
-				body->ApplyLinearImpulse(b2Vec2(xSpeed * transVector.x, ySpeed * transVector.y), body->GetWorldCenter(), true);
+				body->ApplyLinearImpulse(b2Vec2(xSpeed * transVector.x, abs(ySpeed) * transVector.y), body->GetWorldCenter(), true);
 			}
 			// 평소에 이동
 			else
@@ -385,7 +387,7 @@ void Monster::moving(float dt)
 					sprite->runAction(FlipX);
 				}
 
-				body->ApplyLinearImpulse(b2Vec2(-xSpeed, 0), body->GetWorldCenter(), true);
+				body->ApplyLinearImpulse(b2Vec2(-xSpeed, ySpeed), body->GetWorldCenter(), true);
 			}
 		}
 	}
@@ -423,7 +425,7 @@ void Monster::attackFinish()
 	log("플레이어 hp : %d", PlayerInfoSingleTon::getInstance()->hp);
 
 
-	SimpleAudioEngine::getInstance()->playEffect("sounds/barricade_hit.wav");
+	SimpleAudioEngine::getInstance()->playEffect("sounds/barricade_hit.ogg");
 
 	if (monsterType == 4)
 	{

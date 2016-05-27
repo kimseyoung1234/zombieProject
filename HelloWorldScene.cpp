@@ -39,7 +39,6 @@ bool HelloWorld::init()
 	{
 		return false;
 	}
-	log("레이어추가댐ㅋㅋㅋ?");
 	////////////////////////////////////
 	//공용변수들 가져오기
 	gameLayer = DataSingleTon::getInstance()->getGameLayer();
@@ -52,6 +51,8 @@ bool HelloWorld::init()
 	traps = DataSingleTon::getInstance()->getTraps();
 	helpers = DataSingleTon::getInstance()->getHelpers();
 	
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/game_background.ogg");
+	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.45);
 
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
@@ -65,7 +66,6 @@ bool HelloWorld::init()
 	auto background_down = Sprite::create("ui/background_down.png");
 	background_down->setPosition(Vec2(winSize.width / 2, 53));
 	gameLayer->addChild(background_down,2000);
-
 
 	 bari = Sprite::create("ui/barricade.png");
 	bari->setPosition(Vec2(200, winSize.height / 2+ 100));
@@ -90,7 +90,6 @@ bool HelloWorld::init()
 	}
 	// 플레이어 생성
 	
-
 	player = Sprite::create("player/player_idle.png", Rect(0, 0, 136, 72));
 	player->setScale(1.5f);
 	player->setAnchorPoint(Vec2(0, 0));
@@ -108,9 +107,12 @@ bool HelloWorld::init()
 // 웨이브 시작 (나중에 조정)
 void HelloWorld::waveStart(Ref* pSender)
 {
+	shopMenu->setEnabled(false);
+	pMenu->setEnabled(false);
 	// 시작전 실험
 	if (!isWave && !isPlaySeleted) {
-		SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.wav");
+		
+		SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.ogg");
 		isPlaySeleted = true;
 		auto Level_str = String::createWithFormat("Level : %d", MonsterInfoSingleTon::getInstance()->level);
 
@@ -142,7 +144,7 @@ void HelloWorld::waveStart(Ref* pSender)
 }
 void HelloWorld::monsterSpawn()
 {
-	SimpleAudioEngine::getInstance()->playEffect("sounds/waveStart.wav");
+	SimpleAudioEngine::getInstance()->playEffect("sounds/waveStart.ogg");
 		int maxMonster = MonsterInfoSingleTon::getInstance()->maxMonster;
 		for (int i = 0; i < maxMonster; i++) {
 			int x_rand = random(1350, 1700);
@@ -363,7 +365,7 @@ void HelloWorld::tick(float dt)
 
 					// 머신건
 					if (current_Weapon == 0) {
-						SimpleAudioEngine::getInstance()->playEffect("sounds/machine.wav");
+						SimpleAudioEngine::getInstance()->playEffect("sounds/machine.ogg");
 						Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
 						bullets->push_back(bullet);
 						bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
@@ -402,7 +404,7 @@ void HelloWorld::tick(float dt)
 					// 저격총
 					else if (current_Weapon == 2)
 					{
-						SimpleAudioEngine::getInstance()->playEffect("sounds/sniper.wav");
+						SimpleAudioEngine::getInstance()->playEffect("sounds/sniper.ogg");
 						Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
 						bullets->push_back(bullet);
 						bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 70, shootVector.y * 70));
@@ -561,7 +563,7 @@ void HelloWorld::removeObject()
 				take_gold = mon->reward + take_gold;
 				
 				// 골드 획득 애니메이션
-				SimpleAudioEngine::getInstance()->playEffect("sounds/monster_die2.wav");
+				SimpleAudioEngine::getInstance()->playEffect("sounds/monster_die2.ogg");
 				auto kill_gold = String::createWithFormat(" + %d", mon->reward);
 
 				auto kill_gold_label = LabelBMFont::create(kill_gold->getCString(), "fonts/futura-48.fnt");
@@ -645,7 +647,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 							cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
 
 
-							SimpleAudioEngine::getInstance()->playEffect("sounds/trap01.wav");
+							SimpleAudioEngine::getInstance()->playEffect("sounds/trap01.ogg");
 
 
 							auto exp = Sprite::createWithSpriteFrameName("explosion_10002.png");
@@ -664,6 +666,8 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 							auto cache = SpriteFrameCache::getInstance();
 							cache->addSpriteFramesWithFile("explosion/Explosion2Plist.plist");
+
+							SimpleAudioEngine::getInstance()->playEffect("sounds/trap01.ogg");
 
 							auto exp = Sprite::createWithSpriteFrameName("explosion_11002.png");
 							exp->setPosition(trap->sprite->getPosition());
@@ -760,7 +764,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 			if (weapon_ui->getBoundingBox().containsPoint(weapon_touchPoint))
 			{
-				SimpleAudioEngine::getInstance()->playEffect("sounds/weapon_change.wav");
+				SimpleAudioEngine::getInstance()->playEffect("sounds/weapon_change.ogg");
 				PlayerInfoSingleTon::getInstance()->weaponSeleted = (PlayerInfoSingleTon::getInstance()->weaponSeleted + 1) % 3;
 				auto str = String::createWithFormat("item/gun%02d.png", PlayerInfoSingleTon::getInstance()->weaponSeleted + 1);
 				weapon->setTexture(str->getCString());
@@ -790,7 +794,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 				// 현재 장착된 무기에 따라 총알 생성
 				int current_Weapon = PlayerInfoSingleTon::getInstance()->weaponSeleted;
 				if (current_Weapon == 0) {
-					SimpleAudioEngine::getInstance()->playEffect("sounds/machine.wav");
+					SimpleAudioEngine::getInstance()->playEffect("sounds/machine.ogg");
 					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
 					bullets->push_back(bullet);
 					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 30, shootVector.y * 30));
@@ -828,7 +832,7 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 				}
 				else if (current_Weapon == 2)
 				{
-					SimpleAudioEngine::getInstance()->playEffect("sounds/sniper.wav");
+					SimpleAudioEngine::getInstance()->playEffect("sounds/sniper.ogg");
 					Bullet * bullet = new Bullet(nPos2, current_Weapon, cocosAngle);
 					bullets->push_back(bullet);
 					bullet->body->SetLinearVelocity(b2Vec2(shootVector.x * 70, shootVector.y * 70));
@@ -914,7 +918,7 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 		target->setPosition(Vec2(parentSize.width / 2.0, parentSize.height / 2.0));
 
 		//폭탄애니메이션 실험
-		SimpleAudioEngine::getInstance()->playEffect("sounds/explosion.wav");
+		SimpleAudioEngine::getInstance()->playEffect("sounds/explosion.ogg");
 
 			auto cache = SpriteFrameCache::getInstance();
 			cache->addSpriteFramesWithFile("explosion/ExplosionPlist.plist");
@@ -971,8 +975,8 @@ void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 			exp->setScale(1.5f);
 			gameLayer->addChild(exp, 1200);
 
-			SimpleAudioEngine::getInstance()->playEffect("sounds/explosion2.wav");
-			SimpleAudioEngine::getInstance()->playEffect("sounds/pipe.wav");
+			SimpleAudioEngine::getInstance()->playEffect("sounds/explosion2.ogg");
+			SimpleAudioEngine::getInstance()->playEffect("sounds/pipe.ogg");
 
 			auto explosion1 = ResouceLoad::getInstance()->explosion1->clone();
 			auto rep = Sequence::create(explosion1,
@@ -1083,7 +1087,8 @@ void HelloWorld::remove_anim(Node* sender)
 
 void HelloWorld::gameOver()
 {
-	SimpleAudioEngine::getInstance()->playEffect("sounds/barricade_die.wav");
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	SimpleAudioEngine::getInstance()->playEffect("sounds/barricade_die.ogg");
 	pMenu->setEnabled(false);
 	shopMenu->setEnabled(false);
 
@@ -1292,8 +1297,8 @@ void HelloWorld::gameOver()
 
 void HelloWorld::bloodSound(float dt)
 {
-	SimpleAudioEngine::getInstance()->playEffect("sounds/player_die.wav");
-	SimpleAudioEngine::getInstance()->playEffect("sounds/player_die2.wav");
+	SimpleAudioEngine::getInstance()->playEffect("sounds/player_die.ogg");
+	SimpleAudioEngine::getInstance()->playEffect("sounds/player_die2.ogg");
 }
 
 void HelloWorld::gameOverMenu()
@@ -1342,7 +1347,7 @@ void HelloWorld::gameOverMenu()
 
 void HelloWorld::high_LevelUpdate(float f)
 {
-	SimpleAudioEngine::getInstance()->playEffect("sounds/highLevel.wav");
+	SimpleAudioEngine::getInstance()->playEffect("sounds/highLevel.ogg");
 	auto seq = Sequence::create(DelayTime::create(0.3f)
 		,ScaleTo::create(0.5, 0.0),
 		CallFunc::create(CC_CALLBACK_0(HelloWorld::LabelUpdate, this)),
@@ -1391,7 +1396,7 @@ void HelloWorld::LabelUpdate()
 }
 void HelloWorld::Intro(Ref* pSender)
 {
-	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.wav");
+	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.ogg");
 	this->unschedule(schedule_selector(HelloWorld::tick));
 
 	// 게임오버면 싱글톤 객체들 초기화
@@ -1606,7 +1611,7 @@ void HelloWorld::close()
 }
 void HelloWorld::shopOpen(Ref * pSender)
 {
-	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.wav");
+	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.ogg");
 	if (isWave == false) {
 		auto pScene = ShopScene::createScene();
 		Director::getInstance()->pushScene(TransitionFadeTR::create(1, pScene));

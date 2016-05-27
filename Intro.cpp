@@ -29,7 +29,7 @@ bool Intro::init()
 	ResouceLoad::getInstance();
 	winSize = Director::getInstance()->getWinSize();
 
-	m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/intro_backgrund.wav");
+	m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/intro_backgrund.ogg");
 
 
 	auto background = Sprite::create("intro/intro_background.png");
@@ -44,7 +44,7 @@ bool Intro::init()
 		CC_CALLBACK_1(Intro::playbtn, this));
 	pMenuItem->setScaleX(1.2);
 	pMenuItem->setScaleY(1.4);
-	auto pMenu = Menu::create(pMenuItem, nullptr);
+	pMenu = Menu::create(pMenuItem, nullptr);
 	pMenu->setPosition(Vec2(winSize.width / 2, 100));
 	this->addChild(pMenu);
 
@@ -58,7 +58,7 @@ bool Intro::init()
 
 void Intro::tick(float dt)
 {
-	m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/intro_backgrund.wav");
+	m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/intro_backgrund.ogg");
 }
 
 void Intro::tick2(float dt)
@@ -92,7 +92,8 @@ void Intro::doRain()
 
 void Intro::playbtn(Ref * pSender)
 {
-	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.wav");
+	pMenu->setEnabled(false);
+	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.ogg");
 	this->unschedule(schedule_selector(Intro::tick2));
 	this->unschedule(schedule_selector(Intro::tick));
 	SimpleAudioEngine::getInstance()->stopEffect(m_nSoundId);

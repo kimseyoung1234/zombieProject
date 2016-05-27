@@ -454,29 +454,31 @@ void ResouceLoad::Loading()
 
 	// ---------------------------------------------------사운드 프리로드
 
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/intro_backgrund.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/barricade_hit.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/weapon_change.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/sniper.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/monster_die2.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/waveStart.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/monster_hit.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/upgrade.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/menuSelect.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion2.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion3.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/machine.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/bazooka.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/player_die.wav");	
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/player_die2.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/highLevel.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/barricade_die.wav");
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sounds/game_background.ogg");
+	
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/intro_backgrund.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/barricade_hit.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/weapon_change.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/sniper.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/monster_die2.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/waveStart.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/monster_hit.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/upgrade.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/menuSelect.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion2.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/explosion3.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/machine.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/bazooka.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/player_die.ogg");	
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/player_die2.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/highLevel.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/barricade_die.ogg");
 	SimpleAudioEngine::getInstance()->preloadEffect("sounds/ak.ogg");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/item_buy.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/miss.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/trap01.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/pipe.wav");
-	SimpleAudioEngine::getInstance()->preloadEffect("sounds/zombie_howl.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/item_buy.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/miss.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/trap01.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/pipe.ogg");
+	SimpleAudioEngine::getInstance()->preloadEffect("sounds/zombie_howl.ogg");
 	
 }

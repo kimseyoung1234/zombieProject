@@ -237,7 +237,7 @@ void ShopScene::sellHelper2(Ref * pSender)
 }
 void ShopScene::shopClose(Ref * pSender)
 {
-	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.wav");
+	SimpleAudioEngine::getInstance()->playEffect("sounds/menuSelect.ogg");
 	PlayerInfoSingleTon::getInstance()->trapSeleted = -1;
 	PlayerInfoSingleTon::getInstance()->helperSeleted = -1;
 
@@ -263,6 +263,7 @@ void ShopScene::upgrade(Ref * pSender)
 		PlayerInfoSingleTon::getInstance()->machine_price = item_price + 500;
 		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->machine_price);
 		PlayerInfoSingleTon::getInstance()->machine_level++;
+		PlayerInfoSingleTon::getInstance()->machine_Damage += 10;
 
 		isBuy = true;
 	}
@@ -274,6 +275,7 @@ void ShopScene::upgrade(Ref * pSender)
 		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->ak_price);
 		PlayerInfoSingleTon::getInstance()->ak_level++;
 
+		PlayerInfoSingleTon::getInstance()->ak_Damage += 10;
 		isBuy = true;
 	}
 	else if (selectedWeapon == 2 && money_In_Hand >= PlayerInfoSingleTon::getInstance()->sniper_price && PlayerInfoSingleTon::getInstance()->sniper_level < 10)
@@ -284,12 +286,13 @@ void ShopScene::upgrade(Ref * pSender)
 		price = String::createWithFormat("%d", PlayerInfoSingleTon::getInstance()->sniper_price);
 		PlayerInfoSingleTon::getInstance()->sniper_level++;
 
+		PlayerInfoSingleTon::getInstance()->sniper_Damage += 10;
 		isBuy = true;
 	}
 
 	// 새로운 가격으로 업데이트
 	if (isBuy) {
-		SimpleAudioEngine::getInstance()->playEffect("sounds/upgrade.wav");
+		SimpleAudioEngine::getInstance()->playEffect("sounds/upgrade.ogg");
 
 		auto _weapon_table = weapon_table->getTableView();
 		auto selectedCell = _weapon_table->cellAtIndex(selectedWeapon);
@@ -303,7 +306,7 @@ void ShopScene::upgrade(Ref * pSender)
 	}
 	else
 	{
-		SimpleAudioEngine::getInstance()->playEffect("sounds/miss.wav");
+		SimpleAudioEngine::getInstance()->playEffect("sounds/miss.ogg");
 		log("돈 부족해서 못삼");
 	}
 }
@@ -396,12 +399,12 @@ void ShopScene::buy(Ref * pSender)
 
 		if (isBuy) 
 		{
-			SimpleAudioEngine::getInstance()->playEffect("sounds/item_buy.wav");
+			SimpleAudioEngine::getInstance()->playEffect("sounds/item_buy.ogg");
 			buyAni(item_price);
 		}
 		else
 		{
-			SimpleAudioEngine::getInstance()->playEffect("sounds/miss.wav");
+			SimpleAudioEngine::getInstance()->playEffect("sounds/miss.ogg");
 			log("살돈 없다");
 		}
 	}
@@ -427,7 +430,7 @@ void ShopScene::buy(Ref * pSender)
 
 		if (isBuy) {
 			if (PlayerInfoSingleTon::getInstance()->have_helper == 0) {
-				auto helper = new Helper(Vec2(30, 160), selectedHelper);
+				auto helper = new Helper(Vec2(180, 160), selectedHelper);
 				gameLayer->addChild(helper);
 				helpers->push_back(helper);
 
@@ -442,20 +445,20 @@ void ShopScene::buy(Ref * pSender)
 				PlayerInfoSingleTon::getInstance()->have_helper++;
 				
 			}
-			SimpleAudioEngine::getInstance()->playEffect("sounds/item_buy.wav");
+			SimpleAudioEngine::getInstance()->playEffect("sounds/item_buy.ogg");
 			helperUpdate(1);
 			buyAni(item_price);
 		}
 		else
 		{
-			SimpleAudioEngine::getInstance()->playEffect("sounds/miss.wav");
+			SimpleAudioEngine::getInstance()->playEffect("sounds/miss.ogg");
 			log("못삼");
 		}
 	}
 	// 선택된 것이 아무 것도 없으면
 	else
 	{
-		SimpleAudioEngine::getInstance()->playEffect("sounds/miss.wav");
+		SimpleAudioEngine::getInstance()->playEffect("sounds/miss.ogg");
 		log("살 거 선택해");
 	}
 }

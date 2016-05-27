@@ -19,6 +19,8 @@ public:
 	cocos2d::Size winSize;
 	unsigned int m_nSoundId;
 
+	Menu * pMenu;
+
 	void playbtn(Ref * pSender);
 	void doRain();
 	void tick(float dt);

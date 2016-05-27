@@ -34,7 +34,7 @@ Helper::Helper(Vec2 position, int type)
 		auto rep = RepeatForever::create(helper1_idle);
 		sprite->runAction(rep);
 
-		attackRate = PlayerInfoSingleTon::getInstance()->bazooka_Rate;
+		attackRate = PlayerInfoSingleTon::getInstance()->bazooka_Rate * 1.5;
 		this->sprite = sprite;
 	}
 	else if(type == 1)
@@ -51,7 +51,7 @@ Helper::Helper(Vec2 position, int type)
 		auto rep = RepeatForever::create(helper2_idle);
 		sprite->runAction(rep);
 
-		attackRate = PlayerInfoSingleTon::getInstance()->sniper_Rate * 2.5;
+		attackRate = PlayerInfoSingleTon::getInstance()->sniper_Rate * 4.0;
 		this->sprite = sprite;
 	}
 
@@ -66,6 +66,7 @@ void Helper::autoAttack(float dt)
 
 		MyQueryCallback queryCallback; //see "World querying topic"
 		b2AABB aabb;
+		b2Vec2 center = b2Vec2(sprite->getPosition().x / PTM_RATIO, sprite->getPosition().y / PTM_RATIO);
 		// center : 폭탄 중심 위치
 		// 폭발 범위
 		// 폭발 바운딩박스 위치와 크기 
@@ -103,7 +104,7 @@ void Helper::autoAttack(float dt)
 
 				shootVector.normalize();
 
-				SimpleAudioEngine::getInstance()->playEffect("sounds/bazooka.wav");
+				SimpleAudioEngine::getInstance()->playEffect("sounds/bazooka.ogg");
 
 				Bullet * bullet = new Bullet(nPos2, 3, cocosAngle);
 				bullets->push_back(bullet);
@@ -128,7 +129,7 @@ void Helper::autoAttack(float dt)
 				float shootAngle = shootVector.getAngle();
 				float cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
 
-				SimpleAudioEngine::getInstance()->playEffect("sounds/sniper.wav");
+				SimpleAudioEngine::getInstance()->playEffect("sounds/sniper.ogg");
 
 				Bullet * bullet = new Bullet(nPos2, 2, cocosAngle);
 				bullets->push_back(bullet);
