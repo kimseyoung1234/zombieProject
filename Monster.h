@@ -57,12 +57,13 @@ public:
 	bool isRight = false;
 	bool isLeft = true;
 	b2Body * hitBullet = nullptr;
+	float ySpeed;
 private:
 	cocos2d::LayerColor* gameLayer;
 	b2World * _world;
 	cocos2d::Vec2 position;
 	float xSpeed;
-	float ySpeed;
+	
 	
 	
 	void moving(float dt);

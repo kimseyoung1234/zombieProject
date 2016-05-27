@@ -127,6 +127,8 @@ public:
 	bool isPlaySeleted = false;
 	DrawNode * draw_node;
 
+	Sprite * wave;
+	Sprite * wave_shop;
 	Menu * pMenu;
 	Menu * shopMenu;
 	LabelBMFont * nowLevel;

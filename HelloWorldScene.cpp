@@ -109,6 +109,8 @@ void HelloWorld::waveStart(Ref* pSender)
 {
 	shopMenu->setEnabled(false);
 	pMenu->setEnabled(false);
+	wave->setVisible(true);
+	wave_shop->setVisible(true);
 	// 시작전 실험
 	if (!isWave && !isPlaySeleted) {
 		
@@ -710,7 +712,8 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 						PlayerInfoSingleTon::getInstance()->have_trap1--;
 
 						auto trap = new Trap(Vec2(touchPoint.x, touchPoint.y), 0);
-						gameLayer->addChild(trap);
+						trap->setScale(1.3f);
+						gameLayer->addChild(trap,2000);
 						traps->push_back(trap);
 
 						selectedTrap = trap->sprite;
@@ -724,7 +727,8 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 						PlayerInfoSingleTon::getInstance()->have_trap2--;
 
 						auto trap = new Trap(Vec2(touchPoint.x, touchPoint.y), 1);
-						gameLayer->addChild(trap);
+						trap->setScale(1.3f);
+						gameLayer->addChild(trap,2000);
 						traps->push_back(trap);
 
 						selectedTrap = trap->sprite;
@@ -1095,6 +1099,7 @@ void HelloWorld::gameOver()
 	for (int i = 0; i < monsters->size(); i++)
 	{
 		monsters->at(i)->isPipe = false;
+		monsters->at(i)->ySpeed = 0;
 	}
 	for (int k = 0; k < bullets->size(); k++)
 	{
@@ -1493,6 +1498,14 @@ void HelloWorld::addMenu()
 	pMenu->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
 	menuLayer->addChild(pMenu);
 
+	wave = Sprite::create("ui/wave.png");
+	wave->setScaleX(0.6);
+	wave->setScaleY(0.7);
+	wave->setPosition(Vec2(winSize.width - 100, winSize.height - 50));
+	menuLayer->addChild(wave);
+	wave->setVisible(false);
+
+
 	// 상점 메뉴
 	auto shop = MenuItemImage::create(
 		"ui/shop.png",
@@ -1504,6 +1517,13 @@ void HelloWorld::addMenu()
 
 	shopMenu->setPosition(Vec2(winSize.width - 280, winSize.height - 50));
 	menuLayer->addChild(shopMenu);
+
+	wave_shop = Sprite::create("ui/wave_shop.png");
+	wave_shop->setScaleX(0.6);
+	wave_shop->setScaleY(0.7);
+	wave_shop->setPosition(Vec2(winSize.width - 280, winSize.height - 50));
+	menuLayer->addChild(wave_shop);
+	wave_shop->setVisible(false);
 
 	//스킬1
 	skill = Sprite::create("ui/ui_item.png");
@@ -1608,6 +1628,8 @@ void HelloWorld::close()
 	isResultLayer = false;
 	pMenu->setEnabled(true);
 	shopMenu->setEnabled(true);
+	wave->setVisible(false);
+	wave_shop->setVisible(false);
 }
 void HelloWorld::shopOpen(Ref * pSender)
 {

@@ -6,6 +6,7 @@
 #include "PlayerInfoSingleTon.h"
 #include "ResouceLoad.h"
 #include "SimpleAudioEngine.h"
+#include "math.h"
 using namespace CocosDenshion;
 USING_NS_CC;
 
@@ -368,7 +369,7 @@ void Monster::moving(float dt)
 					sprite->runAction(FlipX);
 				}
 
-				body->ApplyLinearImpulse(b2Vec2(xSpeed * transVector.x, abs(ySpeed) * transVector.y), body->GetWorldCenter(), true);
+				body->ApplyLinearImpulse(b2Vec2(xSpeed * transVector.x, fabs(ySpeed) * transVector.y), body->GetWorldCenter(), true);
 			}
 			// 평소에 이동
 			else

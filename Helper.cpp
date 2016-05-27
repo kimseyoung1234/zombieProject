@@ -34,12 +34,11 @@ Helper::Helper(Vec2 position, int type)
 		auto rep = RepeatForever::create(helper1_idle);
 		sprite->runAction(rep);
 
-		attackRate = PlayerInfoSingleTon::getInstance()->bazooka_Rate * 1.5;
+		attackRate = PlayerInfoSingleTon::getInstance()->bazooka_Rate * 3.0;
 		this->sprite = sprite;
 	}
 	else if(type == 1)
 	{
-	
 		auto sprite = Sprite::create("helper/helper2_idle.png", Rect(0, 0, 72, 56));
 		sprite->setScale(1.5f);
 		sprite->setAnchorPoint(Vec2(0, 0));
@@ -71,7 +70,10 @@ void Helper::autoAttack(float dt)
 		// 폭발 범위
 		// 폭발 바운딩박스 위치와 크기 
 		aabb.lowerBound = b2Vec2(0, 0);
-		aabb.upperBound = b2Vec2(1200 / PTM_RATIO, 720 / PTM_RATIO);
+		//aabb.upperBound = b2Vec2(1200 / PTM_RATIO, 720 / PTM_RATIO);
+		aabb.upperBound = center + b2Vec2(1000 / PTM_RATIO, 720 / PTM_RATIO);
+
+
 		_world->QueryAABB(&queryCallback, aabb);
 
 		Sprite * monster;
