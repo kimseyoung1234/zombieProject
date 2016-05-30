@@ -149,7 +149,7 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 		auto sprite = Sprite::create("monster/boss_move.png");
 
 		zombie = Sprite::create("monster/boss_move.png", Rect(0, 0, 100, 100));
-		zombie->setScale(4.0f);
+		zombie->setScale(3.0f);
 
 		fixtureDef.density = 7.0f;
 	}
@@ -200,7 +200,14 @@ b2Body* Monster::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, int ty
 	hpBar->setVisible(false);
 	Size parentSize;
 	parentSize = zombie->getContentSize();
-	hpBar->setPosition(Vec2(parentSize.width / 2.0, parentSize.height + 10));
+	if (monsterType == 4)
+	{
+		hpBar->setPosition(Vec2(parentSize.width / 2.0, parentSize.height - 25));
+	}
+	else
+	{
+		hpBar->setPosition(Vec2(parentSize.width / 2.0, parentSize.height + 10));
+	}
 	zombie->addChild(hpBar);
 
 	return body;
@@ -239,8 +246,14 @@ void Monster::moving(float dt)
 		sprite->removeChild(slow,true);
 	}
 	// HP에 따른 HP바 크기
-	hpBar->setScaleX(hp / 100.0f);
-	
+	if (monsterType == 4)
+	{
+		hpBar->setScaleX(hp / 1000.0f);
+	}
+	else
+	{
+		hpBar->setScaleX(hp / 100.0f);
+	}
 	
 	if (pipeTime >= 3.0)
 	{

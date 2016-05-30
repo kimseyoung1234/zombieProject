@@ -147,12 +147,27 @@ void HelloWorld::waveStart(Ref* pSender)
 void HelloWorld::monsterSpawn()
 {
 	SimpleAudioEngine::getInstance()->playEffect("sounds/waveStart.ogg");
+
+	int boss = 0;
+	if ((MonsterInfoSingleTon::getInstance()->level % 3) == 0)
+	{
+		boss = MonsterInfoSingleTon::getInstance()->level / 3;
+	}
 		int maxMonster = MonsterInfoSingleTon::getInstance()->maxMonster;
-		for (int i = 0; i < maxMonster; i++) {
+		for (int i = 0; i < maxMonster - boss; i++) {
 			int x_rand = random(1350, 1700);
 			int y_rand = random(90, 500);
 			int r_monsterType = random(1, 3);
 			Monster * mon = new Monster(Vec2(x_rand, y_rand), r_monsterType);
+			gameLayer->addChild(mon);
+			monsters->push_back(mon);
+		}
+
+		for (int k = 0; k < boss; k++)
+		{
+			int x_rand = random(1350, 1700);
+			int y_rand = random(90, 500);
+			Monster * mon = new Monster(Vec2(x_rand, y_rand), 4);
 			gameLayer->addChild(mon);
 			monsters->push_back(mon);
 		}

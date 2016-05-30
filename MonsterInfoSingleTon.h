@@ -35,8 +35,8 @@ public:
 
 	int bossZombie_HP = 1000;
 	int bossZombie_damage = 10;
-	float bossZombie_xSpeed = 20.0;
-	float bossZomie_ySpeed = 20.0;
+	float bossZombie_xSpeed = 15.0;
+	float bossZomie_ySpeed = 0.0;
 	float bossZombie_reward = 10;
 
 	void level_up();
