@@ -11,6 +11,31 @@
 
 using namespace CocosDenshion;
 USING_NS_CC;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+//#include "platform\android\jni\JniHelper.h"
+
+void callJavaMethod(std::string func)
+{
+	JniMethodInfo t;
+	/*
+	JniHelper를 통해 org/cocos2dx/application/에 있는
+	AppActivity class의 JniTestFunc함수 정보르 가져온다
+	*/
+	if (JniHelper::getStaticMethodInfo(t
+		, "org.cocos2dx.cpp.AppActivity"
+		, func.c_str()
+		, "()V"))
+	{
+		//함수 호출
+		t.env->CallStaticVoidMethod(t.classID, t.methodID);
+		// Release
+		t.env->DeleteLocalRef(t.classID);
+	}
+}
+#else 
+//#include "Util/Admob/LayerAdmob.h"
+#endif
+
 
 // 몬스터 Y축 값에 따른 벡터 정렬
 bool comp(const Monster *a, const Monster *b)
@@ -53,6 +78,7 @@ bool HelloWorld::init()
 	
 	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/game_background.ogg");
 	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.45);
+
 
 	// 게임레이어 추가
 	this->addChild(gameLayer, 4);
@@ -446,6 +472,13 @@ void HelloWorld::tick(float dt)
 }
 void HelloWorld::result()
 {
+
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	callJavaMethod("ShowAdPopup");
+#else
+	// ShowAdmobAds();
+#endif
+
 	result_Layer->setVisible(true);
 
 	// 게임 결과 배경
@@ -1624,6 +1657,11 @@ void HelloWorld::addMenu()
 
 void HelloWorld::resultClose(Ref* pSender)
 {
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	callJavaMethod("HideAdPopup");
+#else
+	// HideAdmobAds();
+#endif
 
 	//결과창 애니메이션
 	auto scale = ScaleTo::create(0.6f, 0.0f);
@@ -1710,3 +1748,4 @@ void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
 
 	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
 }
+

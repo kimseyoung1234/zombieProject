@@ -5,7 +5,30 @@
 
 using namespace CocosDenshion;
 USING_NS_CC;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+//#include "platform\android\jni\JniHelper.h"
 
+void callJavaMethod(std::string func)
+{
+	JniMethodInfo t;
+	/*
+	JniHelper를 통해 org/cocos2dx/application/에 있는
+	AppActivity class의 JniTestFunc함수 정보르 가져온다
+	*/
+	if (JniHelper::getStaticMethodInfo(t
+		, "org.cocos2dx.cpp.AppActivity"
+		, func.c_str()
+		, "()V"))
+	{
+		//함수 호출
+		t.env->CallStaticVoidMethod(t.classID, t.methodID);
+		// Release
+		t.env->DeleteLocalRef(t.classID);
+	}
+}
+#else 
+//#include "Util/Admob/LayerAdmob.h"
+#endif
 Scene* Intro::createScene()
 {
 
@@ -26,6 +49,15 @@ bool Intro::init()
 	{
 		return false;
 	}
+
+
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	callJavaMethod("ShowAdFull");
+#else
+	// ShowAdmobFullAds();
+#endif
+
+
 	ResouceLoad::getInstance();
 	winSize = Director::getInstance()->getWinSize();
 
